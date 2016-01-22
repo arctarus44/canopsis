@@ -19,7 +19,7 @@
 # ---------------------------------
 
 from cnaopsis.router.filter import Mangle
-from canopsis.task import register_task
+from canopsis.task.core import register_task
 
 import json
 
@@ -60,6 +60,6 @@ def action_execjob(manager, event, jobid=None, **kwargs):
         manager.logger.error('No job provided')
         return event
 
-    jobmanager.execute(jobid=jobid, context=event)
+    jobmanager.execute(jobid, context=event)
 
     return event

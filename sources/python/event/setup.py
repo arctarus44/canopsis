@@ -24,14 +24,8 @@
 from canopsis.common.setup import setup
 
 install_requires = [
-    'canopsis.old',
     'canopsis.common',
-    'canopsis.mongo',
-    'canopsis.timeserie'
-    'canopsis.configuration',
-    'canopsis.middleware',
-    'canopsis.storage',
-    'canopsis.ctxprop'
+    'canopsis.configuration'
 ]
 
 setup(

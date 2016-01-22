@@ -19,31 +19,14 @@
 # ---------------------------------
 
 from canopsis.common.utils import singleton_per_scope
-from canopsis.selector.manager import SelectorManager
-from canopsis.storage.lock import Locker
+from canopsis.scheduledjobs.manager import JobManager
 from canopsis.task.core import register_task
 
 
 @register_task
 def beat_processing(engine, manager=None, **kwargs):
     if manager is None:
-        manager = singleton_per_scope(SelectorManager)
+        manager = singleton_per_scope(JobManager)
 
-    with Locker('get_selectors') as l:
-        if l.own():
-            mom = engine[engine.MOM]
-            publisher = mom.get_publisher(destination=mom.name)
-            map(publisher, manager.get_selectors())
-
-
-@register_task
-def selector_processing(engine, event, manager=None, **kwargs):
-    if manager is None:
-        manager = singleton_per_scope(SelectorManager)
-
-    selector = event
-    event = manager.get_event_from_selector(selector)
-
-    mom = engine[engine.MOM]
-    publisher = mom.get_publisher()
-    publisher(event)
+    for job in manager.get_pending_jobs():
+        manager.execute(job)

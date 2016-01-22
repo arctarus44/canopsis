@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
 # Copyright (c) 2015 "Capensis" [http://www.capensis.com]
@@ -18,22 +19,16 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.utils import singleton_per_scope
-from canopsis.context.manager import ContextManager
-from canopsis.task.core import register_task
+from canopsis.common.setup import setup
 
+install_requires = [
+    'canopsis.common',
+    'canopsis.task',
+    'canopsis.event'
+]
 
-@register_task
-def event_processing(engine, event, logger=None, manager=None, **kwargs):
-    if manager is None:
-        manager = singleton_per_scope(ContextManager)
-
-    scope, entities = manager.entities_from_event(event)
-
-    logger.debug('Scope: {0}'.format(scope.id))
-    map(
-        lambda e: logger.debug('Entity: {0}'.format(e.id)),
-        entities
-    )
-
-    return event
+setup(
+    description='Canopsis CollectD engine',
+    install_requires=install_requires,
+    keywords='collectd engine'
+)

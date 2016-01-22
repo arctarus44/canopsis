@@ -174,7 +174,12 @@ def send_event(
     clean_event = {}
     for k in event:
         v = event[k]
-        clean_event[k] = str(v).encode('utf-8')
+
+        if isinstance(v, basestring):
+            clean_event[k] = str(v).encode('utf-8')
+
+        else:
+            clean_event[k] = v
 
     request_params = {'event': dumps(clean_event)}
     request = Request(

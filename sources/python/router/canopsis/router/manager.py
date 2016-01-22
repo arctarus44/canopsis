@@ -22,7 +22,7 @@ from canopsis.middleware.registry import MiddlewareRegistry
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.configurable.decorator import add_category
 from canopsis.event.base import Event
-from canopsis.task import get_task
+from canopsis.task.core import get_task
 
 from canopsis.router.filter import Filter
 from copy import deepcopy

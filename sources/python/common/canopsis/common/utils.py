@@ -86,49 +86,6 @@ def del_singleton_per_scope(cls, scope=None):
     _SINGLETONS_PER_SCOPE.get(cls, {}).pop(scope, None)
 
 
-def dynmodloads(_path='.', subdef=False, pattern='.*', logger=None):
-    loaded = {}
-    _path = expanduser(_path)
-
-    for mfile in listdir(_path):
-        name, ext = splitext(mfile)
-
-        # Ignore "." and "__init__.py" and everything not matched by "*.py"
-        if name in ['.', '__init__'] or ext != '.py':
-            continue
-
-        logger.info("Load '{0}' ...".format(name))
-
-        try:
-            module = load_source(name, joinpath(_path, mfile))
-
-        except ImportError as err:
-            logger.error('Impossible to import {0}: {1}'.format(name, err))
-
-        else:
-            loaded[name] = module
-
-            if subdef:
-                alldefs = dir(module)
-                builtindefs = [
-                    '__builtins__',
-                    '__doc__',
-                    '__file__',
-                    '__name__',
-                    '__package__'
-                ]
-
-                for mydef in alldefs:
-                    if mydef not in builtindefs and regsearch(pattern, mydef):
-                        logger.debug('from {0} import {1}'.format(
-                            name, mydef
-                        ))
-
-                        loaded[mydef] = getattr(module, mydef)
-
-    return loaded
-
-
 def setdefaultattr(obj, attr, value):
     """
     Set attribute in object if not present.

@@ -18,32 +18,35 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.utils import singleton_per_scope
-from canopsis.selector.manager import SelectorManager
-from canopsis.storage.lock import Locker
 from canopsis.task.core import register_task
+from canopsis.event.check import Check
 
 
-@register_task
-def beat_processing(engine, manager=None, **kwargs):
-    if manager is None:
-        manager = singleton_per_scope(SelectorManager)
+def task_handler(func):
+    @register_task
+    def event_processing(engine, event, **params):
+        try:
+            func(engine=engine, job=event, **params)
 
-    with Locker('get_selectors') as l:
-        if l.own():
-            mom = engine[engine.MOM]
-            publisher = mom.get_publisher(destination=mom.name)
-            map(publisher, manager.get_selectors())
+        except Exception as err:
+            event = Check.create(
+                source_type='resource',
+                component=engine.name,
+                resource=event['jobid'],
+                output='An error occured: {0}'.format(err),
+                state=Check.CRITICAL
+            )
 
+        else:
+            event = Check.create(
+                source_type='resource',
+                component=engine.name,
+                resource=event['jobid'],
+                output='OK',
+                state=Check.INFO
+            )
 
-@register_task
-def selector_processing(engine, event, manager=None, **kwargs):
-    if manager is None:
-        manager = singleton_per_scope(SelectorManager)
+        publisher = engine[engine.MOM].get_publisher()
+        publisher(event)
 
-    selector = event
-    event = manager.get_event_from_selector(selector)
-
-    mom = engine[engine.MOM]
-    publisher = mom.get_publisher()
-    publisher(event)
+    return event_processing

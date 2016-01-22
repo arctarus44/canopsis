@@ -21,8 +21,10 @@
 from canopsis.common.utils import singleton_per_scope
 from canopsis.router.manager import RouterManager
 from canopsis.engines.core import Engine
+from canopsis.task.core import register_task
 
 
+@register_task
 def event_processing(engine, event, manager=None, **kwargs):
     if manager is None:
         manager = singleton_per_scope(RouterManager)
@@ -35,6 +37,7 @@ def event_processing(engine, event, manager=None, **kwargs):
     return result
 
 
+@register_task
 def beat_processing(engine, manager=None, **kwargs):
     if manager is None:
         manager = singleton_per_scope(RouterManager)

@@ -25,7 +25,7 @@ from canopsis.configuration.configurable.decorator import add_category
 from canopsis.common.template import Template
 from canopsis.event.selector import Selector
 from canopsis.event.check import Check
-from canopsis.task import get_task
+from canopsis.task.core import get_task
 
 
 CONF_PATH = 'selector/manager.conf'

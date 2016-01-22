@@ -22,11 +22,13 @@ from canopsis.common.utils import singleton_per_scope
 from canopsis.context.manager import ContextManager
 from canopsis.pbehavior.manager import PBehaviorManager
 from canopsis.event.downtime import Downtime
+from canopsis.task.core import register_task
 
 from datetime import datetime, timedelta
 from icalendar import Event as vEvent
 
 
+@register_task
 def event_processing(
     engine,
     event,

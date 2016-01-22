@@ -24,7 +24,7 @@ from canopsis.configuration.configurable.decorator import add_category
 from canopsis.configuration.model import Parameter
 
 from canopsis.check.base import Check
-from canopsis.task import get_task
+from canopsis.task.core import get_task
 
 from time import time, sleep
 from itertools import cycle
@@ -36,6 +36,7 @@ CATEGORY = 'ENGINE'
 CONTENT = [
     Parameter('event_processing'),
     Parameter('beat_processing'),
+    Parameter('extra_conf'),
     Parameter('beat_interval', int),
     Parameter('chain_to', Parameter.array()),
     Parameter('balanced_chaining', Parameter.bool),
@@ -231,6 +232,40 @@ class Engine(MiddlewareRegistry):
         # set _beat_processing and work
         self._beat_processing = value
 
+    @property
+    def extra_conf(self):
+        """
+        Task used to add extra configuration parameters to engine.
+        """
+
+        return self._extra_conf
+
+    @extra_conf.setter
+    def extra_conf(self, value):
+        """
+        Change of extra_conf.
+
+        :param value: new extra_conf to use. If None or wrong value,
+            extra_conf is used
+        :type value: NoneType, str or function
+        """
+
+        # by default, load default extra_conf
+        if value is None:
+            value = extra_conf
+
+        # if str, load the related function
+        elif isinstance(value, basestring):
+            try:
+                value = get_task(value)
+
+            except ImportError:
+                self.logger.error('Impossible to load %s' % value)
+                value = extra_conf
+
+        # set _extra_conf and work
+        self._extra_conf = value
+
     def __new__(cls, *args, **kwargs):
         if cls is Engine:
             raise TypeError('Engine may not be instantiated')
@@ -243,6 +278,7 @@ class Engine(MiddlewareRegistry):
         worker=0,
         event_processing=None,
         beat_processing=None,
+        extra_conf=None,
         beat_interval=None,
         chain_to=None,
         balanced_chaining=None,
@@ -262,6 +298,9 @@ class Engine(MiddlewareRegistry):
 
         if beat_processing is not None:
             self.beat_processing = beat_processing
+
+        if extra_conf is not None:
+            self.extra_conf = extra_conf
 
         if beat_interval is not None:
             self.beat_interval = beat_interval
@@ -423,8 +462,8 @@ class Engine(MiddlewareRegistry):
         try:
             result = self.event_processing(
                 engine=self,
+                event=message,
                 logger=self.logger,
-                message=message,
                 *args, **kwargs
             )
 
@@ -475,6 +514,9 @@ class Engine(MiddlewareRegistry):
         )
 
     def run(self):
+        conf = self.extra_conf(engine=self, conf=self.conf)
+        self.apply_configuration(conf=conf)
+
         mom = self[Engine.MOM]
 
         consumer = mom.get_consumer(self.work)
@@ -538,3 +580,17 @@ def beat_processing(engine, timestep, **params):
     """
 
     pass
+
+
+def extra_conf(engine, conf, **params):
+    """
+    Extra conf signature to respect in order to configure extra parameters
+    to engine.
+
+    :param Engine engine: engine which executes this task.
+    :param Configuration conf: default engine configuration.
+    :param dict params: extra conf additional parameters.
+    :returns: conf
+    """
+
+    return conf
