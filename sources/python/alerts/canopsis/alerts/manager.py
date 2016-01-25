@@ -27,7 +27,7 @@ from canopsis.timeserie.timewindow import get_offset_timewindow
 from canopsis.common.utils import ensure_iterable
 from canopsis.task.core import get_task
 
-from canopsis.event.manager import Event
+from canopsis.event.base import Event
 from canopsis.event.check import Check
 
 from canopsis.alerts.status import get_last_state, get_last_status, OFF
@@ -332,7 +332,7 @@ class Alerts(MiddlewareRegistry):
 
             if step['_t'] in check_referer_types:
                 event[Check.EVENT_TYPE] = Check.DEFAULT_EVENT_TYPE
-                event['ref_rk'] = Event.get_routing_keyk(event)
+                event['ref_rk'] = Event.get_routing_key(event)
 
             if Check.STATE not in event:
                 event[Check.STATE] = get_last_state(alarm)
