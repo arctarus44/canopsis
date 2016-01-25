@@ -24,7 +24,7 @@ from canopsis.configuration.configurable.decorator import (
 from canopsis.configuration.model import Parameter
 
 from canopsis.middleware.registry import MiddlewareRegistry
-from canopsis.event import Event, forger
+from canopsis.event.base import Event
 from canopsis.storage.composite import CompositeStorage
 
 CONF_RESOURCE = 'context/context.conf'  #: last context conf resource
@@ -69,7 +69,7 @@ class Context(MiddlewareRegistry):
         TYPE, 'connector', 'connector_name', 'component', 'resource'
     ]
 
-    ENTITY = Event.ENTITY  #: entity id in event
+    ENTITY = 'entity'  #: entity id in event
 
     def __init__(
         self, context=DEFAULT_CONTEXT, ctx_storage=None, *args, **kwargs
@@ -307,7 +307,7 @@ class Context(MiddlewareRegistry):
         for field in entity:
             kwargs[field] = entity[field]
         # forge the event
-        result = forger(**kwargs)
+        result = Event.create(**kwargs)
 
         return result
 
