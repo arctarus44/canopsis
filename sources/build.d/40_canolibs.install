@@ -41,6 +41,7 @@ PROJECTS[38]='router'
 PROJECTS[39]='scheduledjobs'
 PROJECTS[40]='outputtasks'
 PROJECTS[41]='collectd'
+PROJECTS[42]='pyloader'
 
 function build(){
 	true
