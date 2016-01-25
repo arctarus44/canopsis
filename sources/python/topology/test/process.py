@@ -27,7 +27,7 @@ from canopsis.topology.manager import TopologyManager
 from canopsis.topology.process import event_processing
 from canopsis.topology.rule.action import change_state
 from canopsis.task.core import new_conf
-from canopsis.check import Check
+from canopsis.event.check import Check
 
 
 class ProcessingTest(TestCase):

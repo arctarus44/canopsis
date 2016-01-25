@@ -28,7 +28,7 @@ from canopsis.graph.elements import Vertice, Edge, Graph
 from canopsis.graph.manager import GraphManager
 from canopsis.context.manager import Context
 from canopsis.task.core import register_task, run_task
-from canopsis.check.base import Check
+from canopsis.event.check import Check
 from canopsis.common.utils import singleton_per_scope
 
 

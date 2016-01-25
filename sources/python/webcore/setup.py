@@ -29,7 +29,6 @@ install_requires = [
     'canopsis.ctxprop',
     'canopsis.graph',
     'canopsis.event',
-    'canopsis.check',
     'canopsis.ccalendar',
     'canopsis.linklist',
     'canopsis.pbehavior',

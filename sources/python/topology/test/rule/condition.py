@@ -21,7 +21,7 @@
 
 from unittest import TestCase, main
 
-from canopsis.check import Check
+from canopsis.event.check import Check
 from canopsis.topology.manager import TopologyManager
 from canopsis.topology.elements import TopoNode, TopoEdge
 from canopsis.topology.rule.condition import new_state, at_least, _all, nok

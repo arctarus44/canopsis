@@ -30,7 +30,7 @@ install_requires = [
     'canopsis.graph',
     'canopsis.old',
     'canopsis.context',
-    'canopsis.check',
+    'canopsis.alerts',
     'canopsis.engines',
     'canopsis.configuration',
     'canopsis.event',

@@ -35,7 +35,7 @@ from canopsis.common.init import basestring
 from canopsis.common.utils import lookup
 from canopsis.topology.manager import TopologyManager
 from canopsis.topology.rule.condition import SOURCES_BY_EDGES
-from canopsis.check import Check
+from canopsis.event.check import Check
 from canopsis.check.manager import CheckManager
 
 #: default topology manager

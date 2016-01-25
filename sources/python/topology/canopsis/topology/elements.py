@@ -71,7 +71,7 @@ __all__ = ['Topology', 'TopoEdge', 'TopoNode', 'TopoVertice']
 
 from canopsis.graph.elements import Graph, Vertice, Edge
 from canopsis.task.core import new_conf
-from canopsis.check import Check
+from canopsis.event.check import Check
 from canopsis.check.manager import CheckManager
 from canopsis.context.manager import Context
 from canopsis.topology.manager import TopologyManager

@@ -27,7 +27,7 @@ install_requires = [
     'canopsis.storage',
     'canopsis.task',
     'canopsis.event',
-    'canopsis.check',
+    'canopsis.alerts',
     'canopsis.context',
     'canopsis.configuration',
     'canopsis.middleware'

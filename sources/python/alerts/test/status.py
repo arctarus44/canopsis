@@ -22,7 +22,7 @@
 from unittest import TestCase, main
 
 from canopsis.middleware.core import Middleware
-from canopsis.check.base import Check
+from canopsis.event.check import Check
 
 from canopsis.alerts.manager import Alerts
 from canopsis.alerts.status import (

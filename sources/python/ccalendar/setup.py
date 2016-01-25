@@ -27,8 +27,7 @@ install_requires = [
     'canopsis.vevent',
     'canopsis.topology',
     'canopsis.task',
-    'canopsis.event',
-    'canopsis.check'
+    'canopsis.event'
 ]
 
 setup(

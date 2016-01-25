@@ -19,7 +19,7 @@
 # ---------------------------------
 
 from canopsis.common.utils import ensure_iterable
-from canopsis.check.base import Check
+from canopsis.event.check import Check
 
 OFF = 0
 ONGOING = 1

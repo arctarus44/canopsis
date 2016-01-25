@@ -23,7 +23,7 @@ from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.configurable.decorator import add_category
 from canopsis.configuration.model import Parameter
 
-from canopsis.check.base import Check
+from canopsis.event.check import Check
 from canopsis.task.core import get_task
 
 from time import time, sleep

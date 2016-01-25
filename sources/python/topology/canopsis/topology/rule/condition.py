@@ -41,7 +41,7 @@ Related rule actions are defined in ``canopsis.topology.rule.action`` module.
 from canopsis.common.init import basestring
 from canopsis.common.utils import lookup, singleton_per_scope
 from canopsis.topology.manager import TopologyManager
-from canopsis.check import Check
+from canopsis.event.check import Check
 from canopsis.task.core import register_task
 
 #: parameter name which contain sources by edges

@@ -22,7 +22,7 @@ from canopsis.common.utils import get_first
 from canopsis.common.ws import route
 from canopsis.topology.manager import TopologyManager
 from canopsis.old.rabbitmq import Amqp
-from canopsis.check import Check
+from canopsis.event.check import Check
 
 
 def exports(ws):
