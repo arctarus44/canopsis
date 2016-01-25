@@ -77,7 +77,6 @@ from canopsis.alerts.status import get_last_state
 from canopsis.context.manager import Context
 from canopsis.topology.manager import TopologyManager
 from canopsis.graph.event import BaseTaskedVertice
-from canopsis.engines.core import publish
 from canopsis.common.utils import singleton_per_scope
 
 
@@ -185,7 +184,7 @@ class TopoVertice(BaseTaskedVertice):
             new_event = self.get_event(state=self.state, source=source)
             # publish a new event
             if publisher is not None:
-                publish(event=new_event, publisher=publisher)
+                publisher(new_event)
             # save self
             self.save(manager=manager)
 

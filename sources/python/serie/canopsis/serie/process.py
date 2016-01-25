@@ -22,7 +22,6 @@
 
 from canopsis.common.utils import singleton_per_scope
 from canopsis.task.core import register_task
-from canopsis.engines.core import publish
 
 from canopsis.serie.manager import Serie
 
@@ -36,16 +35,13 @@ def beat_processing(engine, manager=None, logger=None, **_):
     if manager is None:
         manager = singleton_per_scope(Serie)
 
+    mom = engine[engine.MOM]
+    publisher = mom.get_publisher(mom.name)
+
     with engine.Lock(engine, 'serie_fetching') as lock:
         if lock.own():
             for serie in manager.get_series(time()):
-                publish(
-                    publisher=engine.amqp,
-                    event=serie,
-                    rk=engine.amqp_queue,
-                    exchange='amq.direct',
-                    logger=logger
-                )
+                publisher(serie)
 
 
 @register_task

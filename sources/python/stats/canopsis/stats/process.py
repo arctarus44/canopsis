@@ -20,7 +20,6 @@
 
 from canopsis.common.utils import singleton_per_scope
 from canopsis.task.core import register_task
-from canopsis.engines.core import publish
 
 from canopsis.stats.producers.user import UserMetricProducer
 from canopsis.stats.producers.event import EventMetricProducer
@@ -131,5 +130,6 @@ def beat_processing(
                         tags='stats'
                     )
 
-    for event in events:
-        publish(publisher=engine.amqp, event=event, logger=logger)
+    mom = engine[engine.MOM]
+    publisher = mom.get_publisher()
+    map(publisher, events)
