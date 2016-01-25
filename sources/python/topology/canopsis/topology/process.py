@@ -39,8 +39,8 @@ from canopsis.topology.elements import Topology, TopoNode
 from canopsis.topology.manager import TopologyManager
 from canopsis.context.manager import Context
 from canopsis.task.core import register_task
-from canopsis.event import Event
-from canopsis.check.manager import CheckManager
+from canopsis.event.base import Event
+from canopsis.event.check import Check
 from canopsis.common.utils import singleton_per_scope
 
 SOURCE = 'source'
@@ -49,7 +49,7 @@ PUBLISHER = 'publisher'
 
 @register_task
 def event_processing(
-        engine, event, manager=None, logger=None, ctx=None, tm=None, cm=None,
+        engine, event, manager=None, logger=None, ctx=None, tm=None,
         **kwargs
 ):
     """Process input event in getting topology nodes bound to input event
@@ -63,7 +63,6 @@ def event_processing(
     :param Logger logger: logger to use in this task.
     :param Context ctx:
     :param TopologManager tm:
-    :param CheckManager cm:
     """
 
     # initialize ctx
@@ -73,13 +72,10 @@ def event_processing(
     if tm is None:
         tm = singleton_per_scope(TopologyManager)
 
-    if cm is None:
-        cm = singleton_per_scope(CheckManager)
-
-    event_type = event[Event.TYPE]
+    event_type = event[Event.EVENT_TYPE]
 
     # apply processing only in case of check event
-    if event_type in cm.types:
+    if event_type == Check.DEFAULT_EVENT_TYPE:
         # get source type
         source_type = event[Event.SOURCE_TYPE]
         # in case of topology node

@@ -72,7 +72,8 @@ __all__ = ['Topology', 'TopoEdge', 'TopoNode', 'TopoVertice']
 from canopsis.graph.elements import Graph, Vertice, Edge
 from canopsis.task.core import new_conf
 from canopsis.event.check import Check
-from canopsis.check.manager import CheckManager
+from canopsis.alerts.manager import Alerts
+from canopsis.alerts.status import get_last_state
 from canopsis.context.manager import Context
 from canopsis.topology.manager import TopologyManager
 from canopsis.graph.event import BaseTaskedVertice
@@ -104,10 +105,14 @@ class TopoVertice(BaseTaskedVertice):
         )
         # update entity state
         if entity_id is not None:
-            cm = singleton_per_scope(CheckManager)
-            state = cm.state(ids=entity_id)
-            if state is None:
-                state = TopoVertice.DEFAULT_STATE
+            am = singleton_per_scope(Alerts)
+
+            alarm = am.get_current_alarm(entity_id)
+            state = TopoVertice.DEFAULT_STATE
+
+            if alarm is not None:
+                state = get_last_state(alarm[am[Alerts.ALARM_STORAGE].VALUE])
+
             self.info[TopoVertice.STATE] = state
 
     @property

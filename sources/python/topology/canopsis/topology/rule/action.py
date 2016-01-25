@@ -30,6 +30,7 @@ of state::
     - ``worst_state``: change of state related to the worst source node state.
 """
 
+from canopsis.common.utils import singleton_per_scope
 from canopsis.task.core import register_task
 from canopsis.common.init import basestring
 from canopsis.common.utils import lookup
@@ -38,16 +39,11 @@ from canopsis.topology.rule.condition import SOURCES_BY_EDGES
 from canopsis.event.check import Check
 from canopsis.check.manager import CheckManager
 
-#: default topology manager
-tm = TopologyManager()
-#: default check manager
-check = CheckManager()
-
 
 @register_task
 def change_state(
     event, vertice,
-    state=None, update_entity=False, criticity=CheckManager.HARD,
+    state=None, criticity=CheckManager.HARD,
     check_manager=None,
     **kwargs
 ):
@@ -59,8 +55,6 @@ def change_state(
     :param vertice: vertice to change of state.
     :param state: new state to apply on input vertice. If None, get state from
         input event.
-    :param bool update_entity: update entity state if True (False by default).
-        The topology graph may have this flag to True.
     :param int criticity: criticity level. Default HARD.
     """
 
@@ -69,15 +63,6 @@ def change_state(
         state = event.get(Check.STATE, Check.OK)
     # update vertice state from ctx
     vertice.state = state
-
-    # update entity if necessary
-    if update_entity:
-        entity = vertice.entity
-        if entity is not None:
-            # init check manager
-            if check_manager is None:
-                check_manager = check
-            check_manager.state(ids=entity, state=state, criticity=criticity)
 
 
 @register_task
@@ -91,7 +76,7 @@ def state_from_sources(event, vertice, ctx, f, manager=None, *args, **kwargs):
         f = lookup(f)
     # init manager
     if manager is None:
-        manager = tm
+        manager = singleton_per_scope(TopologyManager)
 
     # if sources are in ctx, get them
     if SOURCES_BY_EDGES in ctx:
