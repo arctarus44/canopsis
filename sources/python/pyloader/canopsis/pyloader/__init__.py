@@ -46,8 +46,10 @@ class StorageLoader(MiddlewareRegistry):
             self[StorageLoader.CODE_STORAGE] = code_storage
 
     def load_module(self, fullname):
-        self.logger.debug('load_module(fullname={0})'.format(fullname))
-        doc = self[StorageLoader.CODE_STORAGE].get_elements(ids=fullname)
+        modname = fullname[len(__name__) + 1:]
+
+        self.logger.debug('load_module(modname={0})'.format(modname))
+        doc = self[StorageLoader.CODE_STORAGE].get_elements(ids=modname)
         module = imp.new_module(fullname)
 
         if sys.version < '3':
@@ -74,7 +76,7 @@ class StorageFinder(MiddlewareRegistry):
 
     def find_module(self, module_name, package_name):
         if module_name.startswith(__name__):
-            modname = module_name[len(__name__):]
+            modname = module_name[len(__name__) + 1:]
 
             self.logger.debug(
                 'find_module(module_name={0}, package_name={1}'.format(
