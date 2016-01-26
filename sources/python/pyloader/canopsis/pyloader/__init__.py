@@ -67,7 +67,7 @@ class StorageFinder(MiddlewareRegistry):
     CODE_STORAGE = 'code_storage'
 
     def __init__(self, code_storage=None, *args, **kwargs):
-        super(StorageLoader, self).__init__(*args, **kwargs)
+        super(StorageFinder, self).__init__(*args, **kwargs)
 
         if code_storage is not None:
             self[StorageFinder.CODE_STORAGE] = code_storage
