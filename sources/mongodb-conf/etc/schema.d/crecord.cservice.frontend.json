@@ -2,7 +2,7 @@
 	"type": "object",
 	"categories": [{
 		"title": "General",
-		"keys":["title", "cfilter_allow_only_optimized_filters", "defaultview", "safe_mode"]
+		"keys":["title", "cfilter_allow_only_optimized_filters", "defaultview", "safe_mode", "ui_language"]
 	},{
 		"title": "Login",
 		"keys": ["login_footer"]
@@ -15,6 +15,7 @@
 	}],
 	"properties": {
 		"title": {
+			"role": "color",
 			"type": "string"
 		},
 		"cfilter_allow_only_optimized_filters": {
@@ -56,6 +57,12 @@
 				"type": "object",
 				"role": "stringpair"
 			}
+		},
+		"ui_language": {
+			"type": "string",
+			"title": "UI Default language",
+			"enum": ["en", "fr"],
+			"role": "simplelist"
 		}
 	}
 }
