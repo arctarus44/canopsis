@@ -7,7 +7,7 @@ Context
 This document describes the Context requirements of Canopsis.
 
 .. contents::
-   :depth: 2
+   :depth: 3
 
 References
 ==========
@@ -101,25 +101,179 @@ Each query can possess one or more conditions:
 
 For example (pseudo-code):
 
-```
-q = Query(type=CREATE)
-q += SystemCondition(unique_id == 'pbehavior')
-q += EntityCondition(unique_id = :entity_id)
-q.execute(pbehavior = :data)
+.. code-block:: python
 
-q = Query(type=UPDATE)
-q += SystemCondition(unique_id == 'pbehavior')
-q += EntityCondition(unique_id = :entity_id)
-q.execute(pbehavior = :data)
+    q = Query(type=CREATE)
+    q += SystemCondition(unique_id == 'pbehavior')
+    q += EntityCondition(unique_id == :entity_id)
+    q.execute(pbehavior = :data)
 
-q = Query(type=READ)
-q += TimeCondition(last_modified <= :timestamp)
-q += EntityCondition(name == 'foo')
-result = q.execute()
-# result.entities is a list containing all matching entities
-# result.systems is a dict containing key:data with key being the system's name, and data being the related data
+    q = Query(type=UPDATE)
+    q += SystemCondition(unique_id == 'pbehavior')
+    q += EntityCondition(unique_id == :entity_id)
+    q.execute(pbehavior = :data)
 
-q = Query(type=DELETE)
-q += TimeCondition(last_modified >= :timestamp)
-q.execute()
-```
+    q = Query(type=READ)
+    q += TimeCondition(last_modified >= :timestamp)
+    q += EntityCondition(name == 'foo')
+    result = q.execute()
+    # result.entities is a list containing all matching entities
+    # result.systems is a dict containing key:data with:
+    #  - key being the system's name
+    #  - data being the related data
+
+    q = Query(type=DELETE)
+    q += TimeCondition(last_modified <= :timestamp)
+    q.execute()
+
+.. _FR__Context__WebService:
+
+Context WebService
+------------------
+
+Requesting over HTTP
+~~~~~~~~~~~~~~~~~~~~
+
+Requesting the context via HTTP is done with ``POST`` verbs with a JSON formatted body:
+
+.. code-block:: javascript
+
+    POST /context/<request type>
+    {
+        "system": [...],
+        "entity": [...],
+        "time": [...],
+        "data": {
+            ...
+        }
+    }
+
+The response is also formatted in JSON:
+
+.. code-block:: javascript
+
+    {
+        "entities": [...],
+        "systems": {
+            ...
+        }
+    }
+
+Filters
+~~~~~~~
+
+A filter is built as a dictionary where each keys correspond to a criteria and each
+values is a dictionary containing the operators and conditions:
+
+Example for a ``system`` filter:
+
+.. code-block:: javascript
+
+    {
+        "unique_id": {"==": "pbehavior"}
+    }
+
+Example for an ``entity`` filter:
+
+.. code-block:: javascript
+
+    {
+        "name": {"regex": "cpu-*"}
+    }
+
+
+Example for a ``time`` filter:
+
+.. code-block:: javascript
+
+    {
+        "last_modified": {">=": ":timestamp"}
+    }
+
+
+The complete request
+~~~~~~~~~~~~~~~~~~~~
+
+Examples used for API translated to HTTP:
+
+.. code-block:: javascript
+
+    Request:
+        POST /context/create
+        {
+            "system": [
+                {
+                    "unique_id": {"==": "pbehavior"}
+                }
+            ],
+            "entity": [
+                {
+                    "unique_id": {"==": ":entity_id"}
+                }
+            ],
+            "data": {
+                "pbehavior": ...
+            }
+        }
+
+    Response:
+
+.. code-block:: javascript
+
+    Request:
+        POST /context/update
+        {
+            "system": [
+                {
+                    "unique_id": {"==": "pbehavior"}
+                }
+            ],
+            "entity": [
+                {
+                    "unique_id": {"==": ":entity_id"}
+                }
+            ],
+            "data": {
+                "pbehavior": ...
+            }
+        }
+
+    Response:
+
+.. code-block:: javascript
+
+    Request:
+        POST /context/read
+        {
+            "entity": [
+                {
+                    "name": {"==": "foo"}
+                }
+            ],
+            "time": [
+                {
+                    "last_modified": {">=": ":timestamp"}
+                }
+            ]
+        }
+
+    Response:
+        {
+            "entities": [
+                {"name": "foo", ...}
+            ]
+        }
+
+.. code-block:: javascript
+
+    Request:
+        POST /context/delete
+        {
+            "time": [
+                {
+                    "last_modified": {"<=": ":timestamp"}
+                }
+            ]
+        }
+
+    Response:
