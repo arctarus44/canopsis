@@ -22,6 +22,8 @@ from canopsis.migration.manager import MigrationModule
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.configurable.decorator import add_category
 
+from six import string_types
+
 
 CONF_PATH = 'migration/mongo_oids.conf'
 CATEGORY = 'MONGO_OIDS'
@@ -65,7 +67,7 @@ class MongoOIDsModule(MigrationModule):
             docs = [
                 doc
                 for doc in cursor
-                if not isinstance(doc[self.storage.ID], basestring)
+                if not isinstance(doc[self.storage.ID], string_types)
             ]
 
             self.logger.info(

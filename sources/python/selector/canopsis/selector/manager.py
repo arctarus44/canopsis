@@ -41,6 +41,7 @@ class SelectorManager(MiddlewareRegistry):
     ALERTS_MANAGER = 'alerts_manager'
     CONTEXT_MANAGER = 'context_manager'
     PBEHAVIOR_MANAGER = 'pbehavior_manager'
+    SLA_MANAGER = 'sla_manager'
 
     def __init__(
         self,
@@ -48,6 +49,7 @@ class SelectorManager(MiddlewareRegistry):
         alerts_manager=None,
         context_manager=None,
         pbehavior_manager=None,
+        sla_manager=None,
         *args, **kwargs
     ):
         super(SelectorManager, self).__init__(*args, **kwargs)
@@ -63,6 +65,9 @@ class SelectorManager(MiddlewareRegistry):
 
         if pbehavior_manager is not None:
             self[SelectorManager.PBEHAVIOR_MANAGER] = pbehavior_manager
+
+        if sla_manager is not None:
+            self[SelectorManager.SLA_MANAGER] = sla_manager
 
     def get_selectors(self):
         return self[SelectorManager.CONFIG_STORAGE].find_elements()
@@ -183,3 +188,16 @@ class SelectorManager(MiddlewareRegistry):
         )
 
         return event
+
+    def get_event_sla_from_selector(self, selector):
+        if selector['dosla']:
+            manager = self[SelectorManager.SLA_MANAGER]
+
+            event = manager.get_event(
+                timewindow=selector['sla_timewindow'],
+                template=selector['sla_output_tpl'],
+                warn=selector['sla_warning'],
+                crit=selector['sla_critical']
+            )
+
+            return event

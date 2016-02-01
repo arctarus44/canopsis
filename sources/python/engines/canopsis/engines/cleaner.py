@@ -24,7 +24,7 @@ from bson import BSON
 from json import loads
 from time import time
 
-from canopsis.common.init import basestring, PYVER
+from six import PY2, string_types
 from canopsis.common.utils import ensure_unicode, forceUTF8
 
 
@@ -42,12 +42,12 @@ class engine(Engine):
         if isinstance(body, dict):
             event = body
             # force utf8 only if python version is 2
-            if PYVER < '3':
+            if PY2:
                 event = forceUTF8(event)
         else:
             self.logger.debug(" + Decode JSON")
             try:
-                if isinstance(body, basestring):
+                if isinstance(body, string_types):
                     try:
                         event = loads(body)
                         self.logger.debug("   + Ok")
@@ -75,7 +75,7 @@ class engine(Engine):
         event['rk'] = ensure_unicode(rk)
 
         if "resource" in event:
-            if not isinstance(event['resource'], basestring):
+            if not isinstance(event['resource'], string_types):
                 event['resource'] = ''
             else:
                 event['resource'] = ensure_unicode(event['resource'])
@@ -87,7 +87,7 @@ class engine(Engine):
 
         tags = event['tags']
 
-        if isinstance(tags, basestring) and tags != "":
+        if isinstance(tags, string_types) and tags != "":
             event['tags'] = [event['tags']]
 
         elif not isinstance(tags, list):

@@ -20,7 +20,7 @@
 
 from time import time
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.monitoring.parser import PerfDataParser
 from canopsis.configuration.configurable.decorator import (
     add_category, conf_paths
@@ -212,7 +212,7 @@ class PerfData(MiddlewareRegistry):
         if points:
             first_point = points[0]
             # if first_point is a timestamp, points is one point
-            if isinstance(first_point, (Number, basestring)):
+            if isinstance(first_point, (Number, string_types)):
                 # transform points into a tuple
                 points = (points,)
 

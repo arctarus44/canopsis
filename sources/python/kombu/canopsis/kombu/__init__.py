@@ -23,7 +23,7 @@ __version__ = "0.1"
 from kombu import \
     Connection, Exchange, Queue, Producer, Consumer
 
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 from canopsis.mom import MOM
 

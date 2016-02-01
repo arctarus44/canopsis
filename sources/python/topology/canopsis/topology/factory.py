@@ -19,6 +19,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+from six import text_type
 from canopsis.context.manager import Context
 from canopsis.topology.format import formatter
 from canopsis.topology.elements import Topology, TopoEdge, TopoNode
@@ -144,10 +145,10 @@ class Factory(object):
         if comp_check is not None:
             for c in comp_check:
             	if c.values()[0].get('resource') :
-            		entity = {'component': unicode(c.values()[0].get('component')),'resource': unicode(None),'connector': unicode(c.values()[0].get('connector')),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode('resource')}
+            		entity = {'component': text_type(c.values()[0].get('component')),'resource': text_type(None),'connector': text_type(c.values()[0].get('connector')),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type('resource')}
             	else:
-            		entity = {'component': unicode(c.values()[0].get('component')),'resource': unicode(None),'connector': unicode(c.values()[0].get('connector')),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode('component')}
-                #entity = {'component': unicode(c.values()[0].get('component')),'resource': unicode(c.values()[0].get('resource')),'connector': unicode(c.values()[0].get('connector')),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode(c.values()[0].get('type'))}
+            		entity = {'component': text_type(c.values()[0].get('component')),'resource': text_type(None),'connector': text_type(c.values()[0].get('connector')),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type('component')}
+                #entity = {'component': text_type(c.values()[0].get('component')),'resource': text_type(c.values()[0].get('resource')),'connector': text_type(c.values()[0].get('connector')),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type(c.values()[0].get('type'))}
                 src_type_value = c.values()[0].get('source_type')
                 entity[Context.NAME] = c.values()[0].get(src_type_value)
                 entity = self.track_nonetype(entity)
@@ -161,7 +162,7 @@ class Factory(object):
         comp_selct = components.get(f.EVENT_TYPE[2])
         if comp_selct is not None:
             for c in comp_selct:
-                entity = {'component': unicode(None),'resource': unicode(c.values()[0].get('resource')),'connector': unicode('canopsis'),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode(c.values()[0].get('type'))}
+                entity = {'component': text_type(None),'resource': text_type(c.values()[0].get('resource')),'connector': text_type('canopsis'),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type(c.values()[0].get('type'))}
                 src_type_value = c.values()[0].get('source_type')
                 entity[Context.NAME] = c.values()[0].get('display_name')
                 entity = self.track_nonetype(entity)
@@ -175,8 +176,8 @@ class Factory(object):
         comp_topo = components.get(f.EVENT_TYPE[3])
         if comp_topo is not None:
             for c in comp_topo:
-            	entity = {'component': unicode(None),'resource': unicode(None),'connector': unicode('canopsis'),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode('topo')}
-                #entity = {'component': unicode(c.values()[0].get('component')),'resource': unicode(c.values()[0].get('resource')),'connector': unicode(c.values()[0].get('connector')),'connector_name':unicode(c.values()[0].get('connector_name')),'type':unicode(c.values()[0].get('type'))}
+            	entity = {'component': text_type(None),'resource': text_type(None),'connector': text_type('canopsis'),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type('topo')}
+                #entity = {'component': text_type(c.values()[0].get('component')),'resource': text_type(c.values()[0].get('resource')),'connector': text_type(c.values()[0].get('connector')),'connector_name':text_type(c.values()[0].get('connector_name')),'type':text_type(c.values()[0].get('type'))}
                 src_type_value = c.values()[0].get('source_type')
                 entity[Context.NAME] = c.values()[0].get(src_type_value)
                 entity = self.track_nonetype(entity)
@@ -245,7 +246,7 @@ class Factory(object):
                 stat_value = value[1].get('value')
                 else_value = value[2].get('value')
 
-                entity = {'component': unicode(mydict.get('component')),'resource': unicode(mydict.get('resource')),'connector': unicode(mydict.get('connector')),'connector_name':unicode(mydict.get('connector_name')),'type':unicode(mydict.get('type'))}
+                entity = {'component': text_type(mydict.get('component')),'resource': text_type(mydict.get('resource')),'connector': text_type(mydict.get('connector')),'connector_name':text_type(mydict.get('connector_name')),'type':text_type(mydict.get('type'))}
                 entity[Context.NAME] = mydict.get(mydict.get('source_type'))
                 entity = self.track_nonetype(entity)
                 dict_and = {}
@@ -286,7 +287,7 @@ class Factory(object):
                 dict_or = {}
                 dict_or['state'] = int(cond_value)
 
-                entity = {'component': unicode(mydict.get('component')),'resource': unicode(mydict.get('resource')),'connector': unicode(mydict.get('connector')),'connector_name':unicode(mydict.get('connector_name')),'type':unicode(mydict.get('type'))}
+                entity = {'component': text_type(mydict.get('component')),'resource': text_type(mydict.get('resource')),'connector': text_type(mydict.get('connector')),'connector_name':text_type(mydict.get('connector_name')),'type':text_type(mydict.get('type'))}
                 entity[Context.NAME] = mydict.get(mydict.get('source_type'))
                 entity = self.track_nonetype(entity)
 

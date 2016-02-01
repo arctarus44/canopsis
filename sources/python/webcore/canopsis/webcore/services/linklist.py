@@ -4,11 +4,10 @@ from canopsis.common.ws import route
 from canopsis.linklist.manager import Linklist
 from canopsis.entitylink.manager import Entitylink
 
-link_list_manager = Linklist()
-entity_link_manager = Entitylink()
-
 
 def exports(ws):
+    link_list_manager = Linklist()
+    entity_link_manager = Entitylink()
 
     @route(ws.application.delete, payload=['ids'])
     def linklist(ids):

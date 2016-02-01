@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import lookup, path
 
 from inspect import isroutine
@@ -189,7 +189,7 @@ def get_task_with_params(conf, cache=True):
     task, params = None, {}
 
     # get dedicated callable task without params
-    if isinstance(conf, basestring):
+    if isinstance(conf, string_types):
         task = get_task(_id=conf, cache=cache)
 
     # get dedicated callable task with params
@@ -309,7 +309,7 @@ def tasks(confs=None, raiseerror=False, **kwargs):
 
     if confs is not None:
         # ensure confs is a list
-        if isinstance(confs, (basestring, dict)):
+        if isinstance(confs, string_types + (dict,)):
             confs = [confs]
         for conf in confs:
             task, params = get_task_with_params(conf)

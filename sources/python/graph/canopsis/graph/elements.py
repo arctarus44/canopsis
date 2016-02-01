@@ -105,7 +105,7 @@ from uuid import uuid4 as uuid
 
 from collections import Iterable
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.storage.core import Storage
 from canopsis.common.utils import lookup, path
 
@@ -349,7 +349,7 @@ class Edge(Vertice):
             self.sources = []
         else:
             # ensure sources and targets are list if they are string
-            if isinstance(sources, (basestring, GraphElement)):
+            if isinstance(sources, string_types + (GraphElement,)):
                 sources = [sources]
             self.sources = list(
                 source.id if isinstance(source, GraphElement) else source
@@ -359,7 +359,7 @@ class Edge(Vertice):
         if targets is None:
             self.targets = []
         else:
-            if isinstance(targets, (basestring, GraphElement)):
+            if isinstance(targets, string_types + (GraphElement,)):
                 targets = [targets]
             self.targets = list(
                 target.id if isinstance(target, GraphElement) else target
@@ -407,26 +407,26 @@ class Edge(Vertice):
         # init params
         if ids is not None:
             # if ids exist, add it to sources and targets
-            if isinstance(ids, basestring):
+            if isinstance(ids, string_types):
                 ids = [ids]
             if sources is None:
                 sources = ids
             else:
-                if isinstance(sources, basestring):
+                if isinstance(sources, string_types):
                     sources = [sources] + ids
                 else:
                     sources += ids
             if targets is None:
                 targets = ids
             else:
-                if isinstance(targets, basestring):
+                if isinstance(targets, string_types):
                     targets = [targets] + ids
                 else:
                     targets += ids
 
         # remove sources from self.sources
         if sources is not None:
-            if isinstance(sources, basestring):
+            if isinstance(sources, string_types):
                 sources = [sources]
             for source in sources:
                 while source in self.sources:
@@ -441,7 +441,7 @@ class Edge(Vertice):
 
         # remove targets from self.targets
         if targets is not None:
-            if isinstance(targets, basestring):
+            if isinstance(targets, string_types):
                 targets = [targets]
             for target in targets:
                 while target in self.targets:
@@ -498,7 +498,7 @@ class Graph(Vertice):
         if elts is None:
             self.elts = []
         else:
-            if isinstance(elts, basestring):
+            if isinstance(elts, string_types):
                 elts = [elts]
             self.elts = list(
                 elt.id if isinstance(elt, GraphElement) else elt
@@ -521,7 +521,7 @@ class Graph(Vertice):
         # by default, result is False
         result = False
 
-        if isinstance(other, basestring):
+        if isinstance(other, string_types):
             result = other in self.elts
         elif isinstance(other, dict):
             result = other[GraphElement.ID] in self.elts
@@ -533,7 +533,7 @@ class Graph(Vertice):
             # quick access to the field name GraphElement ID
             geid = GraphElement.ID
             for item in other:
-                if isinstance(item, basestring):
+                if isinstance(item, string_types):
                     ids.add(item)
                 elif isinstance(item, dict):
                     ids.add(item[geid])
@@ -619,7 +619,7 @@ class Graph(Vertice):
         """
 
         for elt in elts:
-            if isinstance(elt, basestring):
+            if isinstance(elt, string_types):
                 if elt not in self.elts:
                     self.elts.append(elt)
             elif isinstance(elt, dict):
@@ -647,7 +647,7 @@ class Graph(Vertice):
         """
 
         for elt in elts:
-            if isinstance(elt, basestring):
+            if isinstance(elt, string_types):
                 if elt in self.elts:
                     self.elts.remove(elt)
             elif isinstance(elt, dict):

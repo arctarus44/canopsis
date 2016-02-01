@@ -22,7 +22,7 @@ from canopsis.configuration.configurable.decorator import (
     add_category, conf_paths
 )
 from canopsis.vevent.manager import VEventManager
-from canopsis.common.init import basestring
+from six import string_types
 
 from json import loads
 
@@ -81,7 +81,7 @@ class PBehaviorManager(VEventManager):
         """
         behavior = element[PBehaviorManager.BEHAVIORS]
 
-        if isinstance(behavior, basestring):
+        if isinstance(behavior, string_types):
             element[PBehaviorManager.BEHAVIORS] = [behavior]
 
     @staticmethod
@@ -121,7 +121,7 @@ class PBehaviorManager(VEventManager):
         dtts = datetime.fromtimestamp(ts)
 
         # check if behaviors is unique and ensure it is a set
-        isunique = isinstance(behaviors, basestring)
+        isunique = isinstance(behaviors, string_types)
         _behaviors = [behaviors] if isunique else behaviors
         # prepare query
         if _behaviors is None:

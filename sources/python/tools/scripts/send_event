@@ -27,17 +27,16 @@ from os.path import splitext, exists
 
 from getopt import getopt, GetoptError
 
-from urllib2 import build_opener, HTTPCookieProcessor, Request
-
-from urllib import urlencode
+from six.moves.urllib.request import build_opener, HTTPCookieProcessor, Request
+from six.moves.urllib.parse import urlencode
+from six import string_types
 
 from cookielib import CookieJar
-
 from traceback import print_exc
 
 try:
     from json import loads, dumps
-except:
+except ImportError:
     from simplejson import loads, dumps
 
 
@@ -175,7 +174,7 @@ def send_event(
     for k in event:
         v = event[k]
 
-        if isinstance(v, basestring):
+        if isinstance(v, string_types):
             clean_event[k] = str(v).encode('utf-8')
 
         else:

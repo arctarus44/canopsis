@@ -32,7 +32,7 @@ of state::
 
 from canopsis.common.utils import singleton_per_scope
 from canopsis.task.core import register_task
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import lookup
 from canopsis.topology.manager import TopologyManager
 from canopsis.topology.rule.condition import SOURCES_BY_EDGES
@@ -72,7 +72,7 @@ def state_from_sources(event, vertice, ctx, f, manager=None, *args, **kwargs):
     """
 
     # get function f
-    if isinstance(f, basestring):
+    if isinstance(f, string_types):
         f = lookup(f)
     # init manager
     if manager is None:

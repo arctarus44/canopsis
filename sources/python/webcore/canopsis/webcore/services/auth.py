@@ -98,7 +98,7 @@ def autoLogin(key):
 
 def exports(ws):
     session = ws.require('session')
-    rights = ws.require('rights').get_manager()
+    rightsmgr = ws.require('rights').get_manager()
 
     @route(
         ws.application.post,
@@ -131,7 +131,7 @@ def exports(ws):
             mode = 'crypted'
 
         # Try to find user in database
-        user = rights.get_user(username)
+        user = rightsmgr.get_user(username)
 
         # No such user, or it's an external one
         if not user or user.get('external', False):

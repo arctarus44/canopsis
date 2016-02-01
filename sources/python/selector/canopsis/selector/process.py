@@ -32,7 +32,7 @@ def beat_processing(engine, manager=None, **kwargs):
     with Locker('get_selectors') as l:
         if l.own():
             mom = engine[engine.MOM]
-            publisher = mom.get_publisher(destination=mom.name)
+            publisher = mom.get_publisher(mom.name)
             map(publisher, manager.get_selectors())
 
 
@@ -47,3 +47,8 @@ def selector_processing(engine, event, manager=None, **kwargs):
     mom = engine[engine.MOM]
     publisher = mom.get_publisher()
     publisher(event)
+
+    event = manager.get_event_sla_from_selector(selector)
+
+    if event is not None:
+        publisher(event)

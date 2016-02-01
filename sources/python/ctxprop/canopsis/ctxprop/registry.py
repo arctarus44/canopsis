@@ -24,7 +24,7 @@ It aims to execute ctxprop manager read and delete methods related to its own
 property managers such as the perfdata manager for example.
 """
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.middleware.core import Middleware
 from canopsis.configuration.configurable.decorator import (
     conf_paths, add_category
@@ -213,7 +213,7 @@ class CTXPropRegistry(Middleware):
         :rtype: tuple
         """
 
-        unique = isinstance(ids, basestring)
+        unique = isinstance(ids, string_types)
 
         if unique:
             ids = [ids]

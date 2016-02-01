@@ -47,7 +47,7 @@ which correspond to their properties.
 """
 
 from canopsis.common.utils import ensure_iterable
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.configuration.configurable.decorator import (
     conf_paths, add_category
 )
@@ -99,7 +99,7 @@ class GraphManager(MiddlewareRegistry):
         """
 
         # check if only one element is asked
-        unique = isinstance(ids, basestring)
+        unique = isinstance(ids, string_types)
         # init query
         if query is None:
             query = {}
@@ -108,7 +108,7 @@ class GraphManager(MiddlewareRegistry):
             query[GraphElement.BASE_TYPE] = base_type
         # put types in query if not None
         if types is not None:
-            if not isinstance(types, basestring):
+            if not isinstance(types, string_types):
                 types = {'$in': types}
             query[GraphElement.TYPE] = types
         # put info if not None
@@ -137,7 +137,7 @@ class GraphManager(MiddlewareRegistry):
                 if ids is None:
                     ids = list(elt_ids)
                 else:  # else use jonction of elt_ids and ids
-                    if isinstance(ids, basestring):
+                    if isinstance(ids, string_types):
                         ids = [ids]
                     ids = list(elt_ids & set(ids))
         # get elements with ids and query
@@ -236,7 +236,7 @@ class GraphManager(MiddlewareRegistry):
         if graph_ids is not None:
             # eliminate doublons of elts
             elt_ids = set([gelt.id for gelt in result])
-            # ensure graph_ids is a basestring
+            # ensure graph_ids is a string_types
             graph_ids = ensure_iterable(graph_ids)
             graphs = self[GraphManager.STORAGE].get_elements(ids=graph_ids)
             # add elt ids in elts of graphs
@@ -268,7 +268,7 @@ class GraphManager(MiddlewareRegistry):
             if isinstance(graphs, Graph):
                 graphs = [graphs]
             # ensure ids is a list
-            if isinstance(ids, basestring):
+            if isinstance(ids, string_types):
                 ids = [ids]
             # if del orphans
             if del_orphans:
@@ -357,7 +357,7 @@ class GraphManager(MiddlewareRegistry):
         :param types: graph types to retrieve.
         :type types: list or str
         :param elts: graph elt ids.
-        :type elts: basestring or list
+        :type elts: string_types or list
         :param graph_ids: graph ids from where get graphs.
         :type graph_ids: list or str
         :param info: info to find among graphs.
@@ -378,7 +378,7 @@ class GraphManager(MiddlewareRegistry):
             query = {}
         # put elts in query
         if elts is not None:
-            if not isinstance(elts, basestring):
+            if not isinstance(elts, string_types):
                 elts = {'$in': elts}
             query[Graph.ELTS] = elts
         # get graphs with ids and query
@@ -551,7 +551,7 @@ class GraphManager(MiddlewareRegistry):
         result = {} if add_edges else []
 
         # init types
-        if isinstance(types, basestring):
+        if isinstance(types, string_types):
             types = [types]
 
         # init edges
@@ -561,7 +561,7 @@ class GraphManager(MiddlewareRegistry):
         # edges can be not directed
         # init source_types
         if source_types is not None:
-            if isinstance(source_types, basestring):
+            if isinstance(source_types, string_types):
                 source_types = [source_types]
         if types is not None:
             source_types += types
@@ -573,10 +573,10 @@ class GraphManager(MiddlewareRegistry):
             source_query = query
         # init source edge types
         if source_edge_types is not None:
-            if isinstance(source_edge_types, basestring):
+            if isinstance(source_edge_types, string_types):
                 source_edge_types = [source_edge_types]
             if edge_types is not None:
-                if isinstance(edge_types, basestring):
+                if isinstance(edge_types, string_types):
                     source_edge_types.append(edge_types)
                 else:
                     source_edge_types += edge_types
@@ -621,7 +621,7 @@ class GraphManager(MiddlewareRegistry):
         # search among target edges
         # init target types
         if target_types is not None:
-            if isinstance(target_types, basestring):
+            if isinstance(target_types, string_types):
                 target_types = [target_types]
         if types is not None:
             target_types += types
@@ -633,10 +633,10 @@ class GraphManager(MiddlewareRegistry):
             target_query = query
         # init target edge types
         if target_edge_types is not None:
-            if isinstance(target_edge_types, basestring):
+            if isinstance(target_edge_types, string_types):
                 target_edge_types = [target_edge_types]
             if edge_types is not None:
-                if isinstance(edge_types, basestring):
+                if isinstance(edge_types, string_types):
                     target_edge_types.append(edge_types)
                 else:
                     target_edge_types += edge_types
@@ -895,12 +895,12 @@ class GraphManager(MiddlewareRegistry):
             query = {}
 
         if sources is not None:
-            if not isinstance(sources, basestring):
+            if not isinstance(sources, string_types):
                 sources = {'$in': sources}
             query[Edge.SOURCES] = sources
 
         if targets is not None:
-            if not isinstance(targets, basestring):
+            if not isinstance(targets, string_types):
                 targets = {'$in': targets}
             query[Edge.TARGETS] = targets
 

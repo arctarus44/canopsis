@@ -23,21 +23,14 @@ Python utility library.
 """
 
 from importlib import import_module
-from imp import load_source
-
 from inspect import ismodule
-
 from collections import Iterable
 
 from sys import version as PYVER
+from os.path import expanduser
 
-from os.path import expanduser, splitext
-from os.path import join as joinpath
-from os import listdir
+from six import PY2, string_types, text_type
 
-from re import search as regsearch
-
-from .init import basestring
 
 __RESOLVED_ELEMENTS = {}  #: dictionary of resolved elements by name
 
@@ -239,7 +232,7 @@ def isiterable(element, is_str=True):
     :type is_str: bool
     """
     result = isinstance(element, Iterable) \
-        and (is_str or not isinstance(element, basestring))
+        and (is_str or not isinstance(element, string_types))
 
     return result
 
@@ -255,7 +248,7 @@ def isunicode(s):
     """
 
     if PYVER < '3':
-        return isinstance(s, unicode)
+        return isinstance(s, text_type)
 
     else:
         return True
@@ -272,9 +265,9 @@ def ensure_unicode(s):
 
     result = s
 
-    if PYVER < '3':
-        if isinstance(s, basestring):
-            if not isinstance(s, unicode):
+    if PY2:
+        if isinstance(s, string_types):
+            if not isinstance(s, text_type):
                 result = s.decode()
         else:
             raise TypeError('Expecting a string as argument')
@@ -292,7 +285,7 @@ def forceUTF8(data, _memory=None):
     # by default, result is data
     result = data
     # do something only if python version is 2
-    if PYVER < '3':
+    if PY2:
         # initialize memory
         if _memory is None:
             _memory = {}
@@ -303,8 +296,8 @@ def forceUTF8(data, _memory=None):
             result = _memory[data_id]
         else:  # else process data
             # if data is a basestring, decode it to an utf8
-            if isinstance(data, basestring):
-                if not isinstance(data, unicode):
+            if isinstance(data, string_types):
+                if not isinstance(data, text_type):
                     result = data.decode('utf-8', 'ignore')
             # if data is a dict
             elif isinstance(data, dict):
@@ -475,7 +468,9 @@ class dictproperty(object):
 
         def __setitem__(self, key, value):
             if self._fset is None:
-                raise TypeError("Impossible to set key: {0} = {1}".format(key, value))
+                raise TypeError(
+                    "Impossible to set key: {0} = {1}".format(key, value)
+                )
 
             self._fset(self._obj, key, value)
 
@@ -485,7 +480,14 @@ class dictproperty(object):
 
             self._fdel(self._obj, key)
 
-    def __init__(self, fget=None, fset=None, fdel=None, doc=None, *args, **kwargs):
+    def __init__(
+        self,
+        fget=None,
+        fset=None,
+        fdel=None,
+        doc=None,
+        *args, **kwargs
+    ):
         super(dictproperty, self).__init__(*args, **kwargs)
 
         self._fget = fget

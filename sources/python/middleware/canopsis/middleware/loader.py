@@ -19,11 +19,13 @@
 # ---------------------------------
 
 from importlib import import_module
+from six import string_types
 
 from canopsis.configuration.model import Parameter
 from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import (
     add_category, conf_paths)
+
 
 LOADER_CONF_PATH = 'middleware/loader.conf'  #: loader library conf path
 LOADER_CATEGORY = 'LOADER'  #: loader category
@@ -51,7 +53,7 @@ class Loader(Configurable):
     def libraries(self, value):
         self._libraries = value
         if value is not None:
-            if isinstance(value, basestring):
+            if isinstance(value, string_types):
                 value = value.split(',')
             for library in value:
                 import_module(library)

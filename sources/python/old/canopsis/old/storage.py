@@ -23,7 +23,7 @@ import time
 import sys
 import os
 import ConfigParser
-
+from six import string_types
 import gridfs
 
 from bson import objectid
@@ -38,7 +38,7 @@ from canopsis.old.record import Record
 
 from operator import itemgetter
 
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 CONFIG = ConfigParser.RawConfigParser()
 CONFIG.read(os.path.join(sys.prefix, 'etc', 'cstorage.conf'))
@@ -427,7 +427,7 @@ class Storage(object):
         if not account:
             account = self.account
 
-        if isinstance(sort, basestring):
+        if isinstance(sort, string_types):
             sort = [(sort, 1)]
 
         # Clean Id

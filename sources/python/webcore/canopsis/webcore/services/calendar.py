@@ -109,7 +109,7 @@ def exports(ws):
         :return: True if the remove is ok
         :rtype: boolean
         """
-        result = cm.remove(uids=ids)
+        cm.remove(uids=ids)
         ws.logger.info('Delete : {}'.format(ids))
         return True
 

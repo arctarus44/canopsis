@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.init import basestring
+from six import string_types
 from time import time
 from logging import getLogger
 from canopsis.event import forger
@@ -332,7 +332,7 @@ class Sla(object):
             h, m = divmod(m, 60)
             return "%dh%02dm%02ds" % (h, m, s)
 
-        if isinstance(template, basestring):
+        if isinstance(template, string_types):
             # Embed sla measures percents in the output
             output = template.replace('[OFF]', to_percent(sla_measures[0]))
             output = output.replace('[MINOR]', to_percent(sla_measures[1]))

@@ -20,14 +20,11 @@
 # ---------------------------------
 
 from argparse import ArgumentParser, FileType
-
+from six import string_types
 from sys import stdout
-
 from pprint import pprint
-
 from json import loads
 
-from canopsis.common.init import basestring
 from canopsis.ctxprop.manager import CTXPropManager
 
 # build argument parser
@@ -120,9 +117,9 @@ def apply_args(actions, nargs):
     """
 
     # initialize actions and nargs
-    if isinstance(actions, basestring):
+    if isinstance(actions, string_types):
         actions = [actions]
-    if isinstance(nargs, basestring):
+    if isinstance(nargs, string_types):
         nargs = [nargs]
     # if actions match with args
     if args.action in actions:

@@ -24,6 +24,7 @@ from canopsis.configuration.configurable import add_category
 
 from dateutil.rrule import rrulestr
 from datetime import datetime
+from six import string_types
 from time import time
 
 
@@ -53,7 +54,7 @@ class JobManager(MiddlewareRegistry):
     def execute(self, job, context=None):
         storage = self[JobManager.JOB_STORAGE]
 
-        if isinstance(job, basestring):
+        if isinstance(job, string_types):
             job = storage.get_elements(ids=job)
 
         if job is None:

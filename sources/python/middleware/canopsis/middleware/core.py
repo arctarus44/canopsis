@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 from canopsis.middleware.loader import Loader
 from canopsis.common.utils import ensure_iterable

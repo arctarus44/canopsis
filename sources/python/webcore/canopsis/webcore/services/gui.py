@@ -102,8 +102,6 @@ def exports(ws):
                 namespace='object'
             )
 
-            prefix = len('cservice.')
-
             ws.logger.info('found {} cservices'.format(len(records)))
 
             for cservice in records:

@@ -19,6 +19,7 @@
 # ---------------------------------
 
 from collections import Iterable
+from six import string_types
 
 
 class Filter(dict):
@@ -45,7 +46,7 @@ class Filter(dict):
 
     def __iand__(self, value):
 
-        if not isinstance(value, Iterable) or isinstance(value, basestring):
+        if not isinstance(value, Iterable) or isinstance(value, string_types):
             value = [value]
 
         value.append(self.copy())
@@ -66,7 +67,7 @@ class Filter(dict):
 
     def __ior__(self, value):
 
-        if not isinstance(value, Iterable) or isinstance(value, basestring):
+        if not isinstance(value, Iterable) or isinstance(value, string_types):
             value = [value]
 
         value.append(self.copy())

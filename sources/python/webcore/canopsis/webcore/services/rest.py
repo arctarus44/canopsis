@@ -25,6 +25,7 @@ from canopsis.common.utils import ensure_iterable
 from canopsis.context.manager import Context
 from canopsis.old.record import Record
 
+from six import string_types
 from base64 import b64decode
 import json
 
@@ -56,7 +57,7 @@ def get_records(ws, namespace, ctype=None, _id=None, **params):
     else:
         sort = ensure_iterable(sort)
 
-    if isinstance(sort, basestring):
+    if isinstance(sort, string_types):
         try:
             sort = json.loads(sort)
         except ValueError as json_error:
@@ -222,7 +223,7 @@ def delete_records(ws, namespace, ctype, _id, data):
             ids = []
 
             for item in data:
-                if isinstance(item, basestring):
+                if isinstance(item, string_types):
                     ids.append(item)
 
                 elif isinstance(item, dict):
@@ -231,7 +232,7 @@ def delete_records(ws, namespace, ctype, _id, data):
                     if item_id:
                         ids.append(item_id)
 
-        elif isinstance(data, str):
+        elif isinstance(data, string_types):
             ids = data
 
         elif isinstance(data, dict):

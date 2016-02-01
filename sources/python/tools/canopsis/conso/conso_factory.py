@@ -23,6 +23,7 @@ from canopsis.old.storage import Storage
 from canopsis.old.record import Record
 
 import json
+from six import text_type
 from bson.json_util import dumps
 from logging import DEBUG, basicConfig
 
@@ -135,7 +136,7 @@ class ConsoFactory(object):
 
         # Set the static keys
         for k in self.STATIC_KEYS:
-            serie[k] = unicode(None)
+            serie[k] = text_type(None)
 
         # Set the aggregate_interval
         try:
@@ -175,7 +176,7 @@ class ConsoFactory(object):
             else:
                 regex = self.clean_regex(str(component))
                 components = self.run_regex(regex, self.COMP)
-        elif isinstance(component, unicode):
+        elif isinstance(component, text_type):
             components = component
         if isinstance(resource, dict):
             if 'regex' in resource:
@@ -183,7 +184,7 @@ class ConsoFactory(object):
             else:
                 regex = self.clean_regex(str(resource['in']))
                 resources = self.run_regex(regex, self.RESR)
-        elif isinstance(resource, unicode):
+        elif isinstance(resource, text_type):
             resources = resource
         if isinstance(metric, dict):
             if 'regex' in metric:
@@ -191,7 +192,7 @@ class ConsoFactory(object):
             else:
                 regex = self.clean_regex(str(metric['in']))
                 metrics = self.run_regex(regex, self.METR)
-        elif isinstance(metric, unicode):
+        elif isinstance(metric, text_type):
             metrics = metric
 
         all_metrics = self.build_metrics(components, resources, metrics)

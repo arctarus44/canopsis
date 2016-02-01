@@ -23,6 +23,7 @@ from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.configurable.decorator import add_category
 from canopsis.organisation.rights import Rights
 
+from six import string_types
 from time import time
 import json
 import sys
@@ -121,7 +122,7 @@ class ViewsModule(MigrationModule):
         while event_selection:
             value = event_selection.pop()
 
-            if isinstance(value, basestring):
+            if isinstance(value, string_types):
                 value = {
                     'label': 'label',
                     'rk': value

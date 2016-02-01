@@ -24,8 +24,7 @@ operations.
 In such way, all methods execution are delegated to its registries.
 """
 
-from canopsis.common.init import basestring
-from canopsis.common.utils import lookup
+from six import string_types
 from canopsis.configuration.configurable.decorator import (
     conf_paths, add_category
 )
@@ -219,7 +218,7 @@ class CTXPropManager(MiddlewareRegistry):
         :rtype: tuple
         """
 
-        unique = isinstance(registries, basestring)
+        unique = isinstance(registries, string_types)
 
         if unique:
             registries = [registries]
@@ -242,7 +241,7 @@ class CTXPropManager(MiddlewareRegistry):
         result = pctx_ids  # by default, result is pctx_ids
 
         if pctx_ids is not None and children:  # if children are requested
-            if isinstance(pctx_ids, basestring):
+            if isinstance(pctx_ids, string_types):
                 pctx_ids = [pctx_ids]
             result = pctx_ids[:]  # set result with a copy of pctx ids
             for pctx_id in pctx_ids:

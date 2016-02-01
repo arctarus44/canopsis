@@ -19,6 +19,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+from __future__ import print_function
+
 from ConfigParser import ConfigParser, NoOptionError, ParsingError
 
 from subprocess import call
@@ -190,8 +192,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     elif len(sys.argv) != 3:
-        print >>sys.stderr, "Usage: service <name> <action>"
-        print >>sys.stderr, "       service --status-all"
+        print("Usage: service <name> <action>", file=sys.stderr)
+        print("       service --status-all", file=sys.stderr)
         sys.exit(1)
 
     try:
@@ -199,5 +201,5 @@ if __name__ == '__main__':
         sv.action(sys.argv[2])
 
     except RuntimeError as err:
-        print >>sys.stderr, err
+        print(err, file=sys.stderr)
         sys.exit(1)

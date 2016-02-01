@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.storage.core import Storage, DataBase, Cursor
 from canopsis.common.utils import isiterable
 
@@ -79,7 +79,7 @@ class MongoDataBase(DataBase):
     @read_preference.setter
     def read_preference(self, value):
 
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             value = getattr(ReadPreference, value, ReadPreference.NEAREST)
         else:
             value = int(value)
@@ -198,7 +198,7 @@ class MongoDataBase(DataBase):
         If input backend is None, self.backend is used.
 
         :param backend: backend name. If None, self.backend is used.
-        :type backend: basestring
+        :type backend: string_types
 
         :returns: backend reference.
 
@@ -299,7 +299,7 @@ class MongoStorage(MongoDataBase, Storage):
 
         _query = {} if query is None else query.copy()
 
-        one_element = isinstance(ids, basestring)
+        one_element = isinstance(ids, string_types)
 
         if ids is not None:
             if one_element:
@@ -378,7 +378,7 @@ class MongoStorage(MongoDataBase, Storage):
                 # construct the right hint
                 result = []
                 for item in index:
-                    if isinstance(item, basestring):
+                    if isinstance(item, string_types):
                         result.append((item, 1))
                     elif isinstance(item, tuple):
                         result.append(item)

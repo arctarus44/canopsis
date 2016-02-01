@@ -19,8 +19,8 @@
 # ---------------------------------
 
 from collections import OrderedDict, Iterable
+from six import string_types
 
-from canopsis.common.init import basestring
 from canopsis.common.utils import lookup
 
 
@@ -408,7 +408,7 @@ class Parameter(object):
 
     @value.setter
     def value(self, value):
-        if isinstance(value, basestring) and self.parser is not None:
+        if isinstance(value, string_types) and self.parser is not None:
             # parse value if str and if parser exists
             try:
                 self._value = self.parser(value)

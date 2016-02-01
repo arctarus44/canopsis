@@ -19,7 +19,7 @@
 # ---------------------------------
 
 from canopsis.common.utils import isiterable
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.mongo.core import MongoStorage
 from canopsis.storage.timed import TimedStorage
 from canopsis.timeserie.timewindow import get_offset_timewindow
@@ -153,7 +153,7 @@ class MongoTimedStorage(MongoStorage, TimedStorage):
         result = self._cursor2periods(cursor=cursor, timewindow=timewindow)
 
         # if one element has been requested, returns it
-        if isinstance(data_ids, basestring):
+        if isinstance(data_ids, string_types):
             result = result[data_ids] if result else None
 
         return result

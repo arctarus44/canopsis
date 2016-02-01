@@ -22,7 +22,7 @@ from uuid import uuid4 as uuid
 
 from canopsis.storage.file import FileStorage, FileStream
 from canopsis.mongo.core import MongoStorage
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import ensure_iterable
 
 from gridfs import GridFS, NoFile
@@ -162,7 +162,7 @@ class MongoFileStorage(MongoStorage, FileStorage):
         request = {}
 
         if names is not None:
-            if isinstance(names, basestring):
+            if isinstance(names, string_types):
                 request[MongoFileStorage.FILENAME] = names
             else:
                 request[MongoFileStorage.FILENAME] = {'$in': names}

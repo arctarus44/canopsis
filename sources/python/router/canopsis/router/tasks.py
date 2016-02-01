@@ -21,6 +21,7 @@
 from cnaopsis.router.filter import Mangle
 from canopsis.task.core import register_task
 
+from six import string_types
 import json
 
 
@@ -40,7 +41,7 @@ def action_mangle(manager, event, mangle=None, **kwargs):
         manager.logger.error('No mangle rule provided')
         return event
 
-    if isinstance(mangle, basestring):
+    if isinstance(mangle, string_types):
         try:
             mangle = json.loads(mangle)
 

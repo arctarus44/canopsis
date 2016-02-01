@@ -25,6 +25,7 @@ from bson.json_util import dumps
 from canopsis.old.storage import get_storage
 from canopsis.old.account import Account
 import logging
+from six import text_type
 
 
 class Formatter(object):
@@ -381,9 +382,9 @@ class Formatter(object):
             if len(res) != 0:
                 for d in lst:
                     if self.iequal(d, 'type'):
-                        comps.get(c)[unicode(d)] = unicode(comps.get(c).get(self.TYPE[0]))
+                        comps.get(c)[text_type(d)] = text_type(comps.get(c).get(self.TYPE[0]))
                     else:
-                        comps.get(c)[unicode(d)] = res.get(unicode(d))
+                        comps.get(c)[text_type(d)] = res.get(text_type(d))
             if len(res) == 0:
                 self.logger.info('Component whithout event data {}'.format(c))
                 #print res
@@ -421,6 +422,3 @@ class Formatter(object):
             return a.lower() == b.lower()
         except AttributeError, e:
             return a == b
-
-if __name__ == '__main__':
-	pass

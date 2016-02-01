@@ -28,6 +28,7 @@ from canopsis.configuration.model import Parameter
 from canopsis.common.utils import lookup
 
 from logging import StreamHandler
+from six.moves import input
 import signal
 import json
 import os
@@ -206,7 +207,7 @@ class MigrationModule(MiddlewareRegistry):
             signal.alarm(self.ask_timeout)
 
             try:
-                user_input = raw_input(
+                user_input = input(
                     '{0} Y/N (default={1})'.format(
                         prompt,
                         default_val

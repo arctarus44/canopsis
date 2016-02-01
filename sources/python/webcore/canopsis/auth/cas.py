@@ -20,18 +20,12 @@
 # ---------------------------------
 
 from bottle import request, response, HTTPError, redirect
+from six import string_types
+from six.moves.urllib.parse import quote_plus
 import xml.etree.ElementTree
 import requests
 
 from canopsis.auth.base import BaseBackend
-
-from sys import version as PYVER
-
-if PYVER < '3':
-    from urllib import quote_plus
-
-else:
-    from urllib.parse import quote_plus
 
 
 class CASBackend(BaseBackend):
@@ -67,7 +61,7 @@ class CASBackend(BaseBackend):
             if not s.get('auth_on', False):
                 res = self.do_auth(s, server, service, default_role)
 
-                if isinstance(res, basestring):
+                if isinstance(res, string_types):
                     return res
 
                 elif not res:

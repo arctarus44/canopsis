@@ -21,7 +21,7 @@
 """
 """
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.configuration.configurable.decorator import (
     conf_paths, add_category
 )
@@ -313,7 +313,7 @@ class VEventManager(MiddlewareRegistry):
             # if document has to be generated ...
             else:
                 # ensure vevent is an ical format
-                if isinstance(vevent, basestring):
+                if isinstance(vevent, string_types):
                     vevent = Event.from_ical(vevent)
                 # prepare the document with specific properties
                 document = self._get_vevent_properties(vevent=vevent)

@@ -22,6 +22,7 @@
 # MongoDB Operators:
 # http://docs.mongodb.org/manual/reference/operator/
 
+from six import string_types
 from re import I, search
 from operator import lt, le, gt, ge, ne, eq
 
@@ -265,7 +266,7 @@ def check(mfilter, event):
 
 
 def regex_computeoptions(options):
-    if isinstance(options, basestring):
+    if isinstance(options, string_types):
         if "i" in options:
             return I
 

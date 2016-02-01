@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import isiterable
 from canopsis.mongo.core import MongoStorage
 from canopsis.storage.core import Storage
@@ -59,7 +59,7 @@ class MongoCompositeStorage(MongoStorage, CompositeStorage):
         if _filter is not None:
             query.update(_filter)
         # check if only one element is asked
-        one_result = isinstance(names, basestring)
+        one_result = isinstance(names, string_types)
         # if names is given
         if names is not None:
             # if one element is asked

@@ -22,7 +22,7 @@
 Task condition functions such as duration/rrule condition, switch, all and any.
 """
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.task.core import register_task, run_task
 
 from time import time
@@ -48,7 +48,7 @@ def during(rrule, duration=None, timestamp=None, **kwargs):
     result = False
 
     # if rrule is a string expression
-    if isinstance(rrule, basestring):
+    if isinstance(rrule, string_types):
         rrule_object = rrule_class.rrulestr(rrule)
     else:
         rrule_object = rrule_class(**rrule)
@@ -94,7 +94,7 @@ def _any(confs=None, **kwargs):
 
     if confs is not None:
         # ensure confs is a list
-        if isinstance(confs, (basestring, dict)):
+        if isinstance(confs, string_types + (dict,)):
             confs = [confs]
         for conf in confs:
             result = run_task(conf, **kwargs)
@@ -121,7 +121,7 @@ def _all(confs=None, **kwargs):
 
     if confs is not None:
         # ensure confs is a list
-        if isinstance(confs, (basestring, dict)):
+        if isinstance(confs, string_types + (dict,)):
             confs = [confs]
         # if at least one conf exists, result is True by default
         result = True
@@ -218,7 +218,7 @@ def switch(
     remaining = False
 
     if confs is not None:
-        if isinstance(confs, (basestring, dict)):
+        if isinstance(confs, string_types + (dict,)):
             confs = [confs]
         for conf in confs:
             # check if task has to be checked or not

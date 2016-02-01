@@ -1,6 +1,8 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import ConfigParser
 import sys
 
@@ -40,7 +42,13 @@ def set_confopt(confpath, section, name=None, value=None):
 
 if __name__ == '__main__':
     if len(sys.argv) < 4 or sys.argv[1] not in ['get', 'set']:
-        print >>sys.stderr, "Usage:", sys.argv[0], "get|set confpath section [name (value)]"
+        print(
+            "Usage:",
+            sys.argv[0],
+            "get|set confpath section [name (value)]",
+            file=sys.stderr
+        )
+
         sys.exit(1)
 
     elif sys.argv[1] == 'get':
@@ -59,13 +67,18 @@ if __name__ == '__main__':
             success, error = set_confopt(*sys.argv[2:4])
 
         elif len(sys.argv) < 6:
-            print >>sys.stderr, "Usage:", sys.argv[0], "get|set confpath section [name (value)]"
+            print(
+                "Usage:",
+                sys.argv[0],
+                "get|set confpath section [name (value)]",
+                file=sys.stderr
+            )
+
             sys.exit(1)
 
         else:
             success, error = set_confopt(*sys.argv[2:6])
 
         if not success:
-            print >>sys.stderr, error
+            print(error, file=sys.stderr)
             sys.exit(1)
-

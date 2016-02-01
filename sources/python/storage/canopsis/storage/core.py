@@ -33,7 +33,7 @@ except ImportError:
 
 from collections import Iterable
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import isiterable
 from canopsis.configuration.model import Parameter
 from canopsis.middleware.core import Middleware
@@ -47,7 +47,7 @@ class DataBase(Middleware):
     depending on several parameters like.
 
     :param host: db host name
-    :type host: basestring
+    :type host: string_types
     """
 
     CATEGORY = 'DATABASE'
@@ -322,7 +322,7 @@ class Storage(DataBase):
         indexes = []
 
         # if value is a name, transform it into a list
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             indexes = [[(value, Storage.ASC)]]
         elif isinstance(value, tuple):  # if value is a tuple
             indexes = [[value]]
@@ -575,13 +575,13 @@ class Storage(DataBase):
 
         result = []
 
-        if isinstance(index, basestring):  # one value
+        if isinstance(index, string_types):  # one value
             result = [(index, Storage.ASC)]
         elif isinstance(index, tuple):  # one value with order
             result = [index]
         elif isinstance(index, list) and index:  # not empty list of indexes
             for idx in index:  # convert
-                if isinstance(idx, basestring):
+                if isinstance(idx, string_types):
                     idx = (idx, Storage.ASC)
                 result.append(idx)
 
@@ -936,7 +936,7 @@ Storage types must be of the same type.'.format(self, target))
         """
 
         result = []
-        if isinstance(sort, basestring):
+        if isinstance(sort, string_types):
 
             result.append((sort, Storage.ASC))
 
@@ -947,7 +947,7 @@ Storage types must be of the same type.'.format(self, target))
 
             if field is not None:
                 direction = sort.get('direction', Storage.ASC)
-                if isinstance(direction, basestring):
+                if isinstance(direction, string_types):
                     direction = getattr(Storage, direction.upper())
                     # Need field property filled in the sort document
                     sort_tuple = (field, direction)
@@ -958,7 +958,7 @@ Storage types must be of the same type.'.format(self, target))
         elif isinstance(sort, tuple):
 
             direction = sort[1]
-            if isinstance(direction, basestring):
+            if isinstance(direction, string_types):
                 direction = getattr(Storage, direction.upper())
             result.append((sort[0], direction))
 

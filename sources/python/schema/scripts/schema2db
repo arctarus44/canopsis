@@ -19,14 +19,23 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.common.init import Init
-from canopsis.old.storage import get_storage
-from canopsis.old.account import Account
-from canopsis.old.record import Record
+from __future__ import print_function
+
+from canopsis.middleware.registry import MiddlewareRegistry
+from canopsis.configuration.configurable.decorator import conf_paths
+from canopsis.configuration.configurable.decorator import add_category
+from canopsis.configuration.model import Parameter
 
 import sys
 import os
 import json
+
+
+CONF_PATH = 'schema/manager.conf'
+CATEGORY = 'SCHEMAMANAGER'
+CONTENT = [
+    Parameter('schemadir')
+]
 
 
 class ModelRecursionError(Exception):
@@ -42,7 +51,12 @@ class ModelRecursionError(Exception):
         return u'Model {0} contains a recursion'.format(self.schema)
 
 
-class Schema2MongoDB(object):
+@conf_paths(CONF_PATH)
+@add_category(CATEGORY, content=CATEGORY)
+class Schema2MongoDB(MiddlewareRegistry):
+
+    SCHEMA_STORAGE = 'schema_storage'
+
     stdtypes = [
         'object',
         'array',
@@ -54,21 +68,35 @@ class Schema2MongoDB(object):
         'any'
     ]
 
-    def __init__(self, *args, **kwargs):
+    @property
+    def schemadir(self):
+        if not hasattr(self, '_schemadir'):
+            self.schemadir = None
+
+        return self._schemadir
+
+    @schemadir.setter
+    def schemadir(self, value):
+        if value is None:
+            value = os.path.join(sys.prefix, 'etc', 'schema.d')
+
+        self._schemadir = os.path.expanduser(value)
+
+    def __init__(self, schemadir=None, *args, **kwargs):
         super(Schema2MongoDB, self).__init__(*args, **kwargs)
 
-        self.handler = Init()
-        self.logger = self.handler.getLogger('schema2db')
+        if schemadir is not None:
+            self.schemadir = schemadir
+
         self.files_in_error = []
 
     def load(self):
         # Load schemas
 
-        schema_dir = os.path.join(sys.prefix, 'etc', 'schema.d')
         self.schemas = {}
 
-        for filepath in os.listdir(schema_dir):
-            abspath = os.path.join(schema_dir, filepath)
+        for filepath in os.listdir(self.schema_dir):
+            abspath = os.path.join(self.schema_dir, filepath)
             schema_id = os.path.splitext(filepath)[0]
 
             with open(abspath) as f:
@@ -174,26 +202,21 @@ class Schema2MongoDB(object):
                     keep_going = True
 
     def save(self):
-        storage = get_storage(
-            'schemas',
-            account=Account(user='root', group='root')
-        ).get_backend()
+        storage = self[Schema2MongoDB.SCHEMA_STORAGE]
 
-        storage.remove()
+        storage.remove_elements()
 
         for schema_id in self.schemas:
             self.logger.info('Saving: {0}'.format(schema_id))
 
             crecord_name = schema_id.split(".")[-1]
 
-            schema = Record({
-                '_id': schema_id,
+            schema = {
+                'crecord_name': crecord_name,
                 'schema': self.schemas[schema_id]
-            }, name=crecord_name)
+            }
 
-            storage.update({'_id': schema_id}, schema.dump(), upsert=True)
-
-        del storage
+            storage.put_element(element=schema, _id=schema_id)
 
     def show(self):
         if self.files_in_error:
@@ -221,5 +244,5 @@ if __name__ == '__main__':
         app()
 
     except ModelRecursionError as err:
-        print >>sys.stderr, "Error in model:", err
+        print("Error in model:", err, file=sys.stderr)
         sys.exit(1)

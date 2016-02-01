@@ -21,7 +21,7 @@
 
 from sys import exit, argv
 
-from urllib2 import build_opener, HTTPCookieProcessor, Request
+from six.moves.urllib.request import build_opener, HTTPCookieProcessor, Request
 
 from cookielib import CookieJar
 
@@ -170,7 +170,7 @@ if not args.nofile:
         request.get_method = lambda: 'DELETE'
         r = opener.open(request)
         try:
-            json.output = loads(r.read())
+            json_output = loads(r.read())
             if json_output['success']:
                 print(' + File successfuly removed from canopsis briefcase')
         except Exception as err:

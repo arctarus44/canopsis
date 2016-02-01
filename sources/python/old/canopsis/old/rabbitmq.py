@@ -21,7 +21,7 @@
 
 from sys import stdout
 from sys import prefix as sys_prefix
-
+from six import string_types
 from kombu import Connection, Exchange, Queue, pools, __version__
 
 try:
@@ -315,7 +315,7 @@ class Amqp(Thread):
         c_routing_keys = []
 
         if not isinstance(routing_keys, list):
-            if isinstance(routing_keys, basestring):
+            if isinstance(routing_keys, string_types):
                 c_routing_keys = [routing_keys]
         else:
             c_routing_keys = routing_keys

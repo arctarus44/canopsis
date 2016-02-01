@@ -23,7 +23,7 @@
 # provide only TimeSerie
 __all__ = ['TimeSerie']
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.timeserie.timewindow import Period, TimeWindow
 from canopsis.timeserie.aggregation import get_aggregations
 from canopsis.configuration.configurable import Configurable
@@ -124,7 +124,7 @@ class TimeSerie(Configurable):
     def period(self, value):
         """Change of period."""
 
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             value = Period.from_str(value)
 
         self._period = value

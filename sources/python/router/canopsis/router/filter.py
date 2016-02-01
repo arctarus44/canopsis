@@ -19,6 +19,7 @@
 # ---------------------------------
 
 from operator import lt, le, gt, ge, ne, eq
+from six import string_types
 from deepcopy import copy
 from re import I, search
 
@@ -163,7 +164,7 @@ class Filter(object):
             return not found
 
     def handle_field_regex(self, key, pattern, obj, opts=None):
-        opts = I if isinstance(opts, basestring) and 'i' in opts else 0
+        opts = I if isinstance(opts, string_types) and 'i' in opts else 0
         field = get_field(key, obj)
 
         if None in (field, pattern):

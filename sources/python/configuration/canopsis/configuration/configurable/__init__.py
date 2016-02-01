@@ -21,12 +21,10 @@
 from logging import Formatter, getLogger, FileHandler, Filter
 
 from os.path import join, sep
-
 from sys import prefix as sys_prefix
-
+from six import string_types
 from inspect import isclass
 
-from canopsis.common.init import basestring
 from canopsis.configuration.model import Configuration, Category, Parameter
 from canopsis.configuration.driver import ConfigurationDriver
 
@@ -474,7 +472,7 @@ class Configurable(object):
         if conf_paths is None:
             conf_paths = self._conf_paths
 
-        if isinstance(conf_paths, basestring):
+        if isinstance(conf_paths, string_types):
             conf_paths = [conf_paths]
 
         if drivers is None:

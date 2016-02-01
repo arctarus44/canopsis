@@ -22,15 +22,17 @@
 # http://docs.mongodb.org/manual/reference/operator/
 
 from re import I, search
-
+from six import string_types
 from operator import lt, le, gt, ge, ne, eq
+
 OPERATORS = {
     '$lt': lt,
     '$lte': le,
     '$gt': gt,
     '$gte': ge,
     '$ne': ne,
-    '$eq': eq}
+    '$eq': eq
+}
 
 
 def field_check(condition, event, key):
@@ -203,7 +205,7 @@ def check(event, ctx, condition, **params):
 
 
 def regex_computeoptions(options):
-    if isinstance(options, basestring):
+    if isinstance(options, string_types):
         if "i" in options:
             return I
 

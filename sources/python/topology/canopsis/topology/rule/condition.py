@@ -38,7 +38,7 @@ update such nodes when the entity change of state.
 Related rule actions are defined in ``canopsis.topology.rule.action`` module.
 """
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.common.utils import lookup, singleton_per_scope
 from canopsis.topology.manager import TopologyManager
 from canopsis.event.check import Check
@@ -118,7 +118,7 @@ def at_least(
         # if edges & checking all nodes is required, result is True by default
         result = True
 
-    if isinstance(f, basestring):
+    if isinstance(f, string_types):
         f = lookup(f)
 
     # for all edges

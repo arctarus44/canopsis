@@ -25,6 +25,8 @@ from canopsis.configuration.model import Parameter
 
 from canopsis.graph.elements import Vertice, Edge, Graph
 from canopsis.event.base import Event
+
+from six import string_types
 from hashlib import sha1
 
 
@@ -149,7 +151,7 @@ class ContextManager(ConfigurableRegistry):
         edge_id = '/{0}/{1}'.format(type, source.id)
 
         targets = [
-            target if isinstance(target, basestring) else target.id
+            target if isinstance(target, string_types) else target.id
             for target in targets
         ]
 

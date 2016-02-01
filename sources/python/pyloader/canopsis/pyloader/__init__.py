@@ -24,6 +24,7 @@ from canopsis.middleware.registry import MiddlewareRegistry
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.configurable.decorator import add_category
 
+from six import PY2
 import sys
 import imp
 
@@ -52,7 +53,7 @@ class StorageLoader(MiddlewareRegistry):
         doc = self[StorageLoader.CODE_STORAGE].get_elements(ids=modname)
         module = imp.new_module(fullname)
 
-        if sys.version < '3':
+        if PY2:
             exec doc['src'] in module.__dict__
 
         else:

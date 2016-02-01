@@ -19,10 +19,10 @@
 # ---------------------------------
 
 from . import Configurable
-from canopsis.common.init import basestring
 from canopsis.configuration.model import Configuration, Category
 from canopsis.common.utils import lookup
 
+from six import string_types
 from inspect import isclass
 
 
@@ -73,7 +73,7 @@ class Configurables(dict):
         configurable = value
 
         # if value is a path
-        if isinstance(configurable, basestring):
+        if isinstance(configurable, string_types):
             # get related python object
             configurable = lookup(configurable)
 
@@ -135,7 +135,7 @@ class ConfigurableTypes(dict):
         configurable_type = value
 
         # if configurable_type is a path
-        if isinstance(configurable_type, basestring):
+        if isinstance(configurable_type, string_types):
             # get related python object
             configurable_type = lookup(configurable_type)
 
@@ -403,7 +403,7 @@ class ConfigurableRegistry(Configurable):
 
         result = configurable
 
-        if isinstance(configurable, basestring):
+        if isinstance(configurable, string_types):
             result = lookup(configurable)
 
         if issubclass(result, Configurable):

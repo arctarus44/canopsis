@@ -26,6 +26,7 @@ from canopsis.configuration.model import Parameter
 from canopsis.event.check import Check
 from canopsis.task.core import get_task
 
+from six import string_types
 from time import time, sleep
 from itertools import cycle
 import multiprocessing
@@ -187,7 +188,7 @@ class Engine(MiddlewareRegistry):
             value = event_processing
 
         # if str, load the related function
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             try:
                 value = get_task(value)
 
@@ -221,7 +222,7 @@ class Engine(MiddlewareRegistry):
             value = beat_processing
 
         # if str, load the related function
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             try:
                 value = get_task(value)
 
@@ -255,7 +256,7 @@ class Engine(MiddlewareRegistry):
             value = extra_conf
 
         # if str, load the related function
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             try:
                 value = get_task(value)
 

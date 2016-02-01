@@ -25,8 +25,8 @@ from canopsis.middleware.core import Middleware
 from canopsis.configuration.model import Category, Parameter
 from canopsis.common.utils import lookup
 
-from urlparse import urlparse
-
+from six.moves.urllib.parse import urlparse
+from six import string_types
 from functools import reduce
 
 SR_SEPARATOR = ':'
@@ -342,7 +342,7 @@ class MOM(Middleware):
 
             senders = None
 
-            if isinstance(sender, basestring):
+            if isinstance(sender, string_types):
                 sender = self._senders_by_name.get(sender)
 
                 if sender is None:

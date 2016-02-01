@@ -21,6 +21,7 @@
 from canopsis.configuration.model import Parameter, Configuration
 from canopsis.common.utils import lookup
 from canopsis.middleware.registry import MiddlewareRegistry
+from six import string_types
 
 
 class Benchmark(MiddlewareRegistry):
@@ -70,7 +71,7 @@ class Benchmark(MiddlewareRegistry):
             scenarios = self.scenarios.split(',')
 
         # convert strings to callable objects if required
-        _scenarios = [lookup(scenario) if isinstance(scenario, basestring)
+        _scenarios = [lookup(scenario) if isinstance(scenario, string_types)
         else scenario for scenario in scenarios]
 
         for index, scenario in enumerate(_scenarios):

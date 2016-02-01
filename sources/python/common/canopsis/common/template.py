@@ -23,6 +23,7 @@ from pybars import Compiler, _compiler
 from datetime import datetime
 from time import time
 
+
 class Template(Compiler):
     def __init__(self, source, *args, **kwargs):
         super(Template, self).__init__(*args, **kwargs)
@@ -119,8 +120,14 @@ class Template(Compiler):
     def _helper_today(self, this, dtformat='%Y%m%d'):
         return self._helper_formatdate(None, dtformat, time())
 
-    def _helper_state2text(self, this, value, state="OK,WARNING,WARNING,CRITICAL,UNKNOW"):
-	if len(state.split(','))-1 < int(value):
-		return "UNKNOW"
-	else:
-		return state.split(',')[int(value)]	
+    def _helper_state2text(
+        self,
+        this,
+        value,
+        state="OK,WARNING,WARNING,CRITICAL,UNKNOW"
+    ):
+        if len(state.split(','))-1 < int(value):
+            return "UNKNOW"
+
+        else:
+            return state.split(',')[int(value)]

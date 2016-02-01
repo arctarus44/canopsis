@@ -34,7 +34,7 @@ A topology manager inherits from a GraphManager in order to play with topology
 elements such as graph elements.
 """
 
-from canopsis.common.init import basestring
+from six import string_types
 from canopsis.configuration.configurable.decorator import (
     conf_paths, add_category
 )
@@ -127,7 +127,7 @@ class TopologyManager(GraphManager):
 
         vid, state = None, None
 
-        if isinstance(vertice, basestring):
+        if isinstance(vertice, string_types):
             vid = vertice
             vertice = self.get_vertices(ids=vid)
             if vertice is not None:
