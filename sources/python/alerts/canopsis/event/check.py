@@ -39,6 +39,13 @@ class Check(Event):
     MAJOR = 2  #: major state value
     CRITICAL = 3  #: critical state value
 
+    STATEMAP = {
+        OK: 'info',
+        MINOR: 'minor',
+        MAJOR: 'major',
+        CRITICAL: 'critical'
+    }
+
     DEFAULT_STATE = OK
     DEFAULT_EVENT_TYPE = 'check'  #: check event type
 
@@ -55,6 +62,10 @@ class Check(Event):
             value = self.DEFAULT_STATE
 
         self[Check.STATE] = value
+
+    @classmethod
+    def get_state_str(cls, state):
+        return cls.STATEMAP.get(state, 'unknown')
 
     @classmethod
     def get_configurable(cls):

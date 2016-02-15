@@ -18,24 +18,6 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.event.check import Check
-from canopsis.configuration.configurable.decorator import conf_paths
-from canopsis.configuration.configurable.decorator import add_category
-
-
-CONF_PATH = 'event/selector.conf'
-CATEGORY = 'SELECTOR'
-CONTENT = []
-
-
-class Selector(Check):
-    DEFAULT_EVENT_TYPE = 'selector'
-
-    @classmethod
-    def get_configurable(cls):
-        confcls = Check.get_configurable()
-
-        conf_decorator = conf_paths(CONF_PATH)
-        cat_decorator = add_category(CATEGORY, content=CONTENT)
-
-        return conf_decorator(cat_decorator(confcls))
+# attach this project to canopsis package
+from pkgutil import extend_path
+__path__ = extend_path(__path__, __name__)

@@ -163,7 +163,8 @@ class Alerts(MiddlewareRegistry):
         resolved=True,
         tags=None,
         exclude_tags=None,
-        timewindow=None
+        timewindow=None,
+        all_alarms=False
     ):
         """
         Get alarms from TimedStorage.
@@ -180,16 +181,20 @@ class Alerts(MiddlewareRegistry):
         :param timewindow: Time Window used for fetching (optional)
         :type timewindow: canopsis.timeserie.timewindow.TimeWindow
 
+        :param all_alarms: ignore param resolved and returns all alarms
+        :type all_alarms: bool
+
         :returns: Iterable of alarms matching
         """
 
         query = {}
 
-        if resolved:
-            query['resolved'] = {'$ne': None}
+        if not all_alarms:
+            if resolved:
+                query['resolved'] = {'$ne': None}
 
-        else:
-            query['resolved'] = None
+            else:
+                query['resolved'] = None
 
         tags_cond = None
 
@@ -214,6 +219,20 @@ class Alerts(MiddlewareRegistry):
             _filter=query,
             timewindow=timewindow
         )
+
+    def get_alarm_history(self, alarm_id, timewindow):
+        """
+        Get history of alarms.
+
+        :param alarm_id: Alarm entity ID
+        :type alarm_id: str
+
+        :returns: list of alarms
+        """
+
+        storage = self[Alerts.ALARM_STORAGE]
+
+        return storage.get(alarm_id, timewindow=timewindow)
 
     def get_current_alarm(self, alarm_id):
         """

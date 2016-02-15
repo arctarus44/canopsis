@@ -18,35 +18,24 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.task.core import register_task
 from canopsis.event.check import Check
+from canopsis.configuration.configurable.decorator import conf_paths
+from canopsis.configuration.configurable.decorator import add_category
 
 
-def task_handler(func):
-    @register_task
-    def event_processing(engine, event, **params):
-        try:
-            func(engine=engine, job=event, **params)
+CONF_PATH = 'event/sla.conf'
+CATEGORY = 'SLA'
+CONTENT = []
 
-        except Exception as err:
-            event = Check.create(
-                source_type='resource',
-                component=engine.name,
-                resource=event['jobid'],
-                output='An error occured: {0}'.format(err),
-                state=Check.CRITICAL
-            )
 
-        else:
-            event = Check.create(
-                source_type='resource',
-                component=engine.name,
-                resource=event['jobid'],
-                output='OK',
-                state=Check.OK
-            )
+class Selector(Check):
+    DEFAULT_EVENT_TYPE = 'sla'
 
-        publisher = engine[engine.MOM].get_publisher()
-        publisher(event)
+    @classmethod
+    def get_configurable(cls):
+        confcls = Check.get_configurable()
 
-    return event_processing
+        conf_decorator = conf_paths(CONF_PATH)
+        cat_decorator = add_category(CATEGORY, content=CONTENT)
+
+        return conf_decorator(cat_decorator(confcls))

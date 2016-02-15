@@ -150,7 +150,9 @@ class SelectorManager(MiddlewareRegistry):
 
         return task(selector, states)
 
-    def get_event_from_selector(self, selector):
+    def get_events_from_selector(self, selector):
+        result = []
+
         entities = self.get_entities_by_selector(selector)
         alarms = self.get_alarms_by_entities(entities)
         states = self.get_states_from_alarms(entities, alarms)
@@ -186,18 +188,20 @@ class SelectorManager(MiddlewareRegistry):
             output=output,
             metrics=metrics
         )
+        result.append(event)
 
-        return event
-
-    def get_event_sla_from_selector(self, selector):
         if selector['dosla']:
-            manager = self[SelectorManager.SLA_MANAGER]
+            contextmgr = self[SelectorManager.CONTEXT_MANAGER]
+            slamgr = self[SelectorManager.SLA_MANAGER]
 
-            event = manager.get_event(
-                timewindow=selector['sla_timewindow'],
+            entity, _ = contextmgr.entities_from_event(event)
+
+            event = slamgr.get_event(
+                entity,
                 template=selector['sla_output_tpl'],
+                timewindow=selector['sla_timewindow'],
                 warn=selector['sla_warning'],
                 crit=selector['sla_critical']
             )
 
-            return event
+        return result

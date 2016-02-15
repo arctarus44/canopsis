@@ -41,14 +41,9 @@ def selector_processing(engine, event, manager=None, **kwargs):
     if manager is None:
         manager = singleton_per_scope(SelectorManager)
 
-    selector = event
-    event = manager.get_event_from_selector(selector)
-
     mom = engine[engine.MOM]
     publisher = mom.get_publisher()
-    publisher(event)
+    selector = event
 
-    event = manager.get_event_sla_from_selector(selector)
-
-    if event is not None:
+    for event in manager.get_events_from_selector(selector):
         publisher(event)
