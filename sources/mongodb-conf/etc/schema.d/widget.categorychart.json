@@ -83,11 +83,11 @@
             "multiselect": true
         },
         "metrics": {
-            "type": "array",
+            "type": "string",
             "items": {
                 "type": "string"
             },
-            "role": "cmetric",
+            "role": "querybuilder",
             "title": "Metrics"
         },
         "show_legend": {
