@@ -10,12 +10,12 @@ Base
    :maxdepth: 1
    :titlesonly:
 
-   fr__architecture
-   fr__schema
-   fr__configuration
-   fr__context
-   fr__event
-   fr__metric
+   base/fr__architecture
+   base/fr__schema
+   base/fr__configurable
+   base/fr__context
+   base/fr__event
+   base/fr__metric
 
 Systems
 -------
@@ -24,13 +24,13 @@ Systems
    :maxdepth: 1
    :titlesonly:
 
-   fr__middleware
-   fr__storage
-   fr__engine
-   fr__task
-   fr__output
-   fr__graph
-   fr__topology
+   systems/fr__middleware
+   systems/fr__storage
+   systems/fr__engine
+   systems/fr__task
+   systems/fr__output
+   systems/fr__graph
+   systems/fr__topology
 
 High-Level features
 -------------------
@@ -39,11 +39,11 @@ High-Level features
    :maxdepth: 1
    :titlesonly:
 
-   fr__alarm
-   fr__selector
-   fr__serie
-   fr__category-chart
-   fr__statistics
+   highlevel/fr__alarm
+   highlevel/fr__selector
+   highlevel/fr__serie
+   highlevel/fr__statistics
+   highlevel/fr__sla
 
 Front-end
 ---------
@@ -52,5 +52,5 @@ Front-end
    :maxdepth: 1
    :titlesonly:
 
-   fr__mixins
-
+   frontend/fr__mixins
+   frontend/fr__category-chart
