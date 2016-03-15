@@ -6,11 +6,15 @@ CONF_PATh = 'bench/manager.conf'
 CATEGORY = 'BENCH'
 
 
-class Bench(MiddlewareRegistery):
+class BenchManager(MiddlewareRegistery):
+
     """
     bench storage
     """
 
     NAME = 'bench'
-
     STORAGE = 'bench_storage'
+
+    def __init__(self, *args, **kwargs):
+        super(BenchManager, self).__init__(*args, **kwargs)
+
