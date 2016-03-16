@@ -1,72 +1,130 @@
-from time import time
+# -*- coding: utf-8 -*-
+# --------------------------------
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
+#
+# This file is part of Canopsis.
+#
+# Canopsis is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Canopsis is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------
 
+from time import sleep, time
+from threading import Thread, Event
 from psutil import Process
-
-from canopsis.middleware.registry import MiddlewareRegistry
-
-from threading import Thread
-
 import os
+from functools import wraps
+from Canopsis.engine.core import publish
 
-
-class Manager(MiddlewareRegistry):
-
-	def monitoring(function, *args, **kwargs):
-		def montitor():
-
-			func_thread =  FuncThread(function, *args, **kwargs)
-			monito = MonitoThread(func_thread)
-
-			monito.start()
-			func_thread.start()
-
-			result = func_thread.get_func_result()
-
-			return result
-
-		return monitor
-
-	def worker(function, *args, **kwargs):
-		now = time()
-		res = function(*args, **kwargs)
-		elapsed = time() - now
-		return res
-
-
-	def monitoring():
 
 class FuncThread(Thread):
-	def __init__self(self, func, *args, **kwargs):
-		super(FuncThread, self).__init__(*args, **kwargs)
-		self.func_result = None
-		self.func = func
-		self.now = time()
-		self.elapsed = 0
 
-	def run(self):
-		self.func_result = self.func(
-		self.elapsed = time() - now
+    def __init__(self, func, *args, **kwargs):
+        super(FuncThread, self).__init__(*args, **kwargs)
 
-	def get_func_result():
-		return func_result
+        self.func_result = None
+        self.func = func
+        self.now = time()
+        self.elapsed = 0
 
-	def get_elapsed():
-		return self.elapsed
+    def get_pid(self):
+        return os.getpid()
+
+    def run(self):
+        self.func_result = self.func()
+        self.elapsed = time() - self.now
+
+    def get_func_result(self):
+        return self.func_result
+
+    def get_elapsed(self):
+        return self.elapsed
 
 
-class MonitoThread(Thread):
-	def __init__(self, functhread):
-		super(MonitoThread, self).__init__(*args, **kwargs)
-		self.ram_at_beginning = psutil.virtual_memory().used
-		self.ram_while_running = 0
-		self.ram_used = 0
+class ThreadCPU(Thread):
 
-	def run(self):
-		while functhread.isAlive:
-			print('true')
-			ram_while_running = psutil.virtual_memory().used
-		print(dead)
-		self.ram_used = ram_while_running - ram_at_beginning
+    def __init__(self, pid, *args, **kwargs):
+        super(ThreadCPU, self).__init__(*args, **kwargs)
 
-		def get_ram_used():
-			return self.ram_used
+        self.process = Process(pid)
+        self.loop = Event()
+        self.memory_percent = 0
+        self.average_cpu_percent = 0
+
+    def run(self):
+        cpt = 0
+        total_cpu_percent = 0
+
+        self.loop.set()
+        while self.loop.is_set():
+            total_cpu_percent += self.process.cpu_percent()
+            self.memory_percent = self.process.memory_percent()
+            cpt += 1
+            self.average_cpu_percent = total_cpu_percent / cpt
+            print cpt
+            sleep(0.001)
+
+    def stop(self):
+        self.loop.clear()
+
+    def get_average_cpu_percent(self):
+        return self.average_cpu_percent
+
+    def get_memory_percent(self):
+        return self.memory_percent
+
+
+def monitoring(func):
+    @wraps(func)
+    def monitor(engine, *args, **kwargs):
+
+        pid = os.getpid()
+
+        cpu_thread = ThreadCPU(pid)
+
+        cpu_thread.start()
+
+        now = time()
+        result = func(*args, **kwargs)
+        elapsed_time = time() - now
+
+        cpu_thread.stop()
+        cpu_thread.join()
+
+        memory_percent = cpu_thread.get_memory_percent()
+        average_cpu_percent = cpu_thread.get_average_cpu_percent()
+
+        print('result: {0}'.format(result))
+        print('elapsed time: {0}'.format(elapsed_time))
+        print('memory percent: {0}'.format(memory_percent))
+        print('average cpu percent: {0}'.format(average_cpu_percent))
+
+        perf_data_array = [
+            {
+                'retention': self.perfdata_retention,
+                'metric': 'sec_per_evt',
+                'value': round(elapsed_time, 3), 'unit': 's'},
+            {
+                'retention': self.perfdata_retention,
+                'metric': 'memory_percent',
+                'value': round(memory_percent, 2), 'unit': 'percent'},
+            {
+                'retention', self.perfdata_retention,
+                'metric': 'cpu_percent',
+                'value': round(cpu_percent, 1), 'unit': 'percent'}
+        ]
+
+        publish(event=event, publisher=engine.amqp)
+
+        return result
+
+    return monitor

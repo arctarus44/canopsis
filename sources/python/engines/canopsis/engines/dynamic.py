@@ -24,6 +24,7 @@ from canopsis.engines.core import Engine
 from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.model import Parameter
+from canopsis.bench.monitoring import monitoring
 
 CONF_PATH = 'engines/engines.conf'  #: dynamic engine configuration path
 CATEGORY = 'ENGINE'  #: dynamic engine configuration category
@@ -67,6 +68,7 @@ class engine(Engine, Configurable):
         self.params = params
 
     @property
+    @monitoring(self)
     def event_processing(self):
         """
         Event processing event_processing executed in the work
@@ -75,6 +77,7 @@ class engine(Engine, Configurable):
         return self._event_processing
 
     @event_processing.setter
+    @monitoring(self)
     def event_processing(self, value):
         """
         Change of event_processing.
@@ -99,6 +102,7 @@ class engine(Engine, Configurable):
         self._event_processing = value
 
     @property
+    @monitoring(self)
     def beat_processing(self):
         """
         Task executed in the beat
@@ -107,6 +111,7 @@ class engine(Engine, Configurable):
         return self._beat_processing
 
     @beat_processing.setter
+    @monitoring(self)
     def beat_processing(self, value):
         """
         Change of beat_processing.
@@ -215,7 +220,7 @@ def load_dynamic_engine(name, *args, **kwargs):
     # and returns it
     return result
 
-
+@monitoring(self)
 def event_processing(engine, event, ctx=None, **params):
     """
     Event processing signature to respect in order to process an event.
@@ -230,7 +235,7 @@ def event_processing(engine, event, ctx=None, **params):
 
     return event
 
-
+@monitoring(self)
 def beat_processing(engine, **params):
     """
     Beat processing signature to respect in order to execute a periodic task.

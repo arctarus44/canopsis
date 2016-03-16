@@ -18,3 +18,7 @@ class BenchManager(MiddlewareRegistery):
     def __init__(self, *args, **kwargs):
         super(BenchManager, self).__init__(*args, **kwargs)
 
+    def put(self):
+        self.[BenchManager.bench_storage].put(
+        	
+        )
