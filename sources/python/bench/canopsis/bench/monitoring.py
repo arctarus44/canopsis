@@ -23,31 +23,8 @@ from threading import Thread, Event
 from psutil import Process
 import os
 from functools import wraps
-from Canopsis.engine.core import publish
-
-
-class FuncThread(Thread):
-
-    def __init__(self, func, *args, **kwargs):
-        super(FuncThread, self).__init__(*args, **kwargs)
-
-        self.func_result = None
-        self.func = func
-        self.now = time()
-        self.elapsed = 0
-
-    def get_pid(self):
-        return os.getpid()
-
-    def run(self):
-        self.func_result = self.func()
-        self.elapsed = time() - self.now
-
-    def get_func_result(self):
-        return self.func_result
-
-    def get_elapsed(self):
-        return self.elapsed
+from canopsis.engines.core import publish
+from canopsis.event import forger
 
 
 class ThreadCPU(Thread):
@@ -110,18 +87,45 @@ def monitoring(func):
 
         perf_data_array = [
             {
-                'retention': self.perfdata_retention,
+                'retention': engine.perfdata_retention,
+                'metric': 'name',
+                'value': engine.name,
+            },
+            {
+                'retention': engine.perfdata_retention,
                 'metric': 'sec_per_evt',
-                'value': round(elapsed_time, 3), 'unit': 's'},
+                'value': round(elapsed_time, 3),
+                'unit': 's'},
             {
-                'retention': self.perfdata_retention,
+                'retention': engine.perfdata_retention,
                 'metric': 'memory_percent',
-                'value': round(memory_percent, 2), 'unit': 'percent'},
+                'value': round(memory_percent, 2),
+                'unit': 'percent'},
             {
-                'retention', self.perfdata_retention,
+                'retention': engine.perfdata_retention,
                 'metric': 'cpu_percent',
-                'value': round(cpu_percent, 1), 'unit': 'percent'}
+                'value': round(average_cpu_percent, 1),
+                'unit': 'percent'}
         ]
+
+        msg = 'name: {0}, time :{1} s, memo"ry: {2} %%, cpu {3} %%'.format(
+            engine.name,
+            elapsed_time,
+            memory_percent,
+            average_cpu_percent
+        )
+
+        event = forger(
+            connector='Engine',
+            connector_name='engine',
+            event_type='check',
+            source_type='resource',
+            resource=engine.amqp_queue,
+            state=0,
+            state_type=1,
+            output=msg,
+            perf_data_array=perf_data_array
+        )
 
         publish(event=event, publisher=engine.amqp)
 

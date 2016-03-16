@@ -68,7 +68,6 @@ class engine(Engine, Configurable):
         self.params = params
 
     @property
-    @monitoring(self)
     def event_processing(self):
         """
         Event processing event_processing executed in the work
@@ -77,7 +76,6 @@ class engine(Engine, Configurable):
         return self._event_processing
 
     @event_processing.setter
-    @monitoring(self)
     def event_processing(self, value):
         """
         Change of event_processing.
@@ -102,7 +100,6 @@ class engine(Engine, Configurable):
         self._event_processing = value
 
     @property
-    @monitoring(self)
     def beat_processing(self):
         """
         Task executed in the beat
@@ -111,7 +108,6 @@ class engine(Engine, Configurable):
         return self._beat_processing
 
     @beat_processing.setter
-    @monitoring(self)
     def beat_processing(self, value):
         """
         Change of beat_processing.
@@ -135,6 +131,7 @@ class engine(Engine, Configurable):
         # set _beat_processing and work
         self._beat_processing = value
 
+    @monitoring
     def work(self, event, msg, *args, **kwargs):
 
         result = self._event_processing(
@@ -144,6 +141,7 @@ class engine(Engine, Configurable):
 
         return result
 
+    @monitoring
     def beat(self, *args, **kwargs):
         self._beat_processing(
             engine=self, logger=self.logger,
@@ -220,7 +218,6 @@ def load_dynamic_engine(name, *args, **kwargs):
     # and returns it
     return result
 
-@monitoring(self)
 def event_processing(engine, event, ctx=None, **params):
     """
     Event processing signature to respect in order to process an event.
@@ -235,7 +232,6 @@ def event_processing(engine, event, ctx=None, **params):
 
     return event
 
-@monitoring(self)
 def beat_processing(engine, **params):
     """
     Beat processing signature to respect in order to execute a periodic task.
