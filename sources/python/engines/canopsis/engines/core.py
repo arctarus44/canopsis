@@ -350,6 +350,7 @@ class Engine(object):
         self.logger.debug(" + Stopped")
 
     class Lock(object):
+
         def __init__(self, engine, name, *args, **kwargs):
             super(Engine.Lock, self).__init__()
 

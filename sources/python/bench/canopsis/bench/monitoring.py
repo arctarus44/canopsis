@@ -43,11 +43,10 @@ class ThreadCPU(Thread):
 
         self.loop.set()
         while self.loop.is_set():
-            total_cpu_percent += self.process.cpu_percent()
+            total_cpu_percent += self.process.cpu_percent(interval=0.001)
             self.memory_percent = self.process.memory_percent()
             cpt += 1
             self.average_cpu_percent = total_cpu_percent / cpt
-            print cpt
             sleep(0.001)
 
     def stop(self):

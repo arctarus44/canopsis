@@ -32,6 +32,7 @@ CATEGORY = 'ENGINE'  #: dynamic engine configuration category
 
 @conf_paths(CONF_PATH)
 class engine(Engine, Configurable):
+
     """
     Engine which is able to load dynamically its event processing through
     configuration properties.
@@ -218,6 +219,7 @@ def load_dynamic_engine(name, *args, **kwargs):
     # and returns it
     return result
 
+
 def event_processing(engine, event, ctx=None, **params):
     """
     Event processing signature to respect in order to process an event.
@@ -231,6 +233,7 @@ def event_processing(engine, event, ctx=None, **params):
     """
 
     return event
+
 
 def beat_processing(engine, **params):
     """

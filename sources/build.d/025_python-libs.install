@@ -27,7 +27,7 @@ function easy_install_all_libs() {
 	easy_install_pylib polib
 	easy_install_pylib python-ldap
 	easy_install_pylib validictory
-	easy_install_pylib psutil==1.0.1
+	easy_install_pylib psutil
 	easy_install_pylib pybars
 	easy_install_pylib PyMeta
 	easy_install_pylib greenlet
