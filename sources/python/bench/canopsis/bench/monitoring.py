@@ -89,8 +89,7 @@ def monitoring(func):
             {
                 'retention': engine.perfdata_retention,
                 'metric': 'name',
-                'value': engine.name,
-            },
+                'value': engine.name},
             {
                 'retention': engine.perfdata_retention,
                 'metric': 'sec_per_evt',
