@@ -70,7 +70,9 @@ def monitoring(func):
         cpu_thread.start()
 
         now = time()
-        result = func(*args, **kwargs)
+
+        result = func(engine, *args, **kwargs)
+
         elapsed_time = time() - now
 
         cpu_thread.stop()
