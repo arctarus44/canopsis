@@ -36,10 +36,13 @@ class ThreadCPU(Thread):
         self.loop = Event()
         self.memory_percent = 0
         self.average_cpu_percent = 0
+        self.now = time
 
     def run(self):
         cpt = 0
         total_cpu_percent = 0
+
+        now = time()
 
         self.loop.set()
         while self.loop.is_set():
@@ -48,6 +51,8 @@ class ThreadCPU(Thread):
             cpt += 1
             self.average_cpu_percent = total_cpu_percent / cpt
             sleep(0.001)
+            if time() - now > 3:
+                break
 
     def stop(self):
         self.loop.clear()
