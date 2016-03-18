@@ -40,38 +40,48 @@ class ThreadCPU(Thread):
         self.problem = False
 
     def run(self):
+
         cpt = 0
         total_cpu_percent = 0
 
         now = time()
 
         self.loop.set()
+
         while self.loop.is_set():
+
             total_cpu_percent += self.process.cpu_percent(interval=0.001)
             self.memory_percent = self.process.memory_percent()
             cpt += 1
             self.average_cpu_percent = total_cpu_percent / cpt
             sleep(0.001)
+
             if time() - now > 3:
                 self.problem = True
                 break
 
     def stop(self):
+
         self.loop.clear()
 
     def get_average_cpu_percent(self):
+
         return self.average_cpu_percent
 
     def get_memory_percent(self):
+
         return self.memory_percent
 
     def get_problem(self):
+
         return self.problem
 
 
 def monitoring(func):
     @wraps(func)
     def monitor(engine, *args, **kwargs):
+
+        result = None
 
         pid = os.getpid()
 
@@ -81,66 +91,65 @@ def monitoring(func):
 
         now = time()
 
-        result = func(engine, *args, **kwargs)
+        try:
+            result = func(engine, *args, **kwargs)
 
-        elapsed_time = time() - now
+        except Exception:
+            cpu_thread.stop()
 
-        if cpu_thread.get_problem():
-            engine.logger.warning('function not executed problem')
+        else:
+            elapsed_time = time() - now
 
-        cpu_thread.stop()
-        cpu_thread.join()
+            if cpu_thread.get_problem():
+                engine.logger.warning('function not executed problem')
 
-        memory_percent = cpu_thread.get_memory_percent()
-        average_cpu_percent = cpu_thread.get_average_cpu_percent()
+            cpu_thread.stop()
+            cpu_thread.join()
 
-        print('result: {0}'.format(result))
-        print('elapsed time: {0}'.format(elapsed_time))
-        print('memory percent: {0}'.format(memory_percent))
-        print('average cpu percent: {0}'.format(average_cpu_percent))
+            memory_percent = cpu_thread.get_memory_percent()
+            average_cpu_percent = cpu_thread.get_average_cpu_percent()
 
-        perf_data_array = [
-            {
-                'retention': engine.perfdata_retention,
-                'metric': 'name',
-                'value': engine.name},
-            {
-                'retention': engine.perfdata_retention,
-                'metric': 'sec_per_evt',
-                'value': round(elapsed_time, 3),
-                'unit': 's'},
-            {
-                'retention': engine.perfdata_retention,
-                'metric': 'memory_percent',
-                'value': round(memory_percent, 2),
-                'unit': 'percent'},
-            {
-                'retention': engine.perfdata_retention,
-                'metric': 'cpu_percent',
-                'value': round(average_cpu_percent, 1),
-                'unit': 'percent'}
-        ]
+            print('result: {0}'.format(result))
+            print('elapsed time: {0}'.format(elapsed_time))
+            print('memory percent: {0}'.format(memory_percent))
+            print('average cpu percent: {0}'.format(average_cpu_percent))
 
-        msg = 'name: {0}, time :{1} s, memo"ry: {2} %%, cpu {3} %%'.format(
-            engine.name,
-            elapsed_time,
-            memory_percent,
-            average_cpu_percent
-        )
+            perf_data_array = [
+                {
+                    'metric': 'elapsed_time',
+                    'value': round(elapsed_time, 3),
+                    'unit': 's'
+                }, {
+                    'metric': 'memory_percent',
+                    'value': round(memory_percent, 2),
+                    'unit': 'percent'
+                }, {
+                    'metric': 'cpu_percent',
+                    'value': round(average_cpu_percent, 1),
+                    'unit': 'percent'
+                }
+            ]
 
-        event = forger(
-            connector='Engine',
-            connector_name='engine',
-            event_type='check',
-            source_type='resource',
-            resource=engine.amqp_queue,
-            state=0,
-            state_type=1,
-            output=msg,
-            perf_data_array=perf_data_array
-        )
+            msg = 'name: {0}, time :{1} s, memory: {2} %, cpu {3} %'.format(
+                engine.name,
+                elapsed_time,
+                memory_percent,
+                average_cpu_percent
+            )
 
-        publish(event=event, publisher=engine.amqp)
+            event = forger(
+                connector='Engine',
+                connector_name='engine',
+                event_type='check',
+                source_type='resource',
+                resource='{0}-{1}'.format(engine.name, cpu_thread.process.pid),
+                state=0,
+                state_type=1,
+                output=msg,
+                perf_data_array=perf_data_array
+            )
+
+            publish(event=event, publisher=engine.amqp)
 
         return result
 
