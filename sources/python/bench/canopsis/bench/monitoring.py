@@ -144,10 +144,10 @@ def monitoring(func):
 class Info(object):
 
     def __init__(self):
-        self.file_info = open('../../etc/bench/architecture.conf', 'r')
-        self.memory = sub(r'[a-z     :A-Z]', '', self.fileinfo.readline())
-        self.number_of_core = int(self.fileinfo.readline.split(':')[1])
-        self.cadence = sub(r'[a-z    :A-Z]', '', self.fileinfo.readline())
+        self.file_info = open('/opt/canopsis/etc/bench/architecture.conf', 'r')
+        self.memory = sub(r'[a-z     :A-Z]', '', self.file_info.readline())
+        self.number_of_core = int(self.file_info.readline().split(':')[1])
+        self.cadence = sub(r'[a-z    :A-Z]', '', self.file_info.readline())
 
     def get_memory(self):
         return int(self.memory)
