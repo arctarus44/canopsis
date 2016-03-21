@@ -25,6 +25,7 @@ import os
 from functools import wraps
 from canopsis.engines.core import publish
 from canopsis.event import forger
+from re import sub
 
 
 class ThreadCPU(Thread):
@@ -37,12 +38,14 @@ class ThreadCPU(Thread):
         self.memory_percent = 0
         self.average_cpu_percent = 0
 
+        infos = Info()
+        self.cadence = infos.get_cadence()
+        self.memory = infos.get_memory()
+
     def run(self):
 
         cpt = 0
         total_cpu_percent = 0
-
-        now = time()
 
         self.loop.set()
 
@@ -58,13 +61,13 @@ class ThreadCPU(Thread):
 
         self.loop.clear()
 
-    def get_average_cpu_percent(self):
+    def get_average_cpu(self):
 
-        return self.average_cpu_percent
+        return ((self.average_cpu_percent * self.cadence) / 100)
 
-    def get_memory_percent(self):
+    def get_memory(self):
 
-        return self.memory_percent
+        return ((self.memory_percent * self.memory) / 100)
 
 
 def monitoring(func):
@@ -93,13 +96,8 @@ def monitoring(func):
             cpu_thread.stop()
             cpu_thread.join()
 
-            memory_percent = cpu_thread.get_memory_percent()
-            average_cpu_percent = cpu_thread.get_average_cpu_percent()
-
-            print('result: {0}'.format(result))
-            print('elapsed time: {0}'.format(elapsed_time))
-            print('memory percent: {0}'.format(memory_percent))
-            print('average cpu percent: {0}'.format(average_cpu_percent))
+            memory = cpu_thread.get_memory()
+            average_cpu = cpu_thread.get_average_cpu()
 
             perf_data_array = [
                 {
@@ -108,20 +106,20 @@ def monitoring(func):
                     'unit': 's'
                 }, {
                     'metric': 'memory_percent',
-                    'value': round(memory_percent, 2),
-                    'unit': 'percent'
+                    'value': memory,
+                    'unit': 'kb'
                 }, {
-                    'metric': 'cpu_percent',
-                    'value': round(average_cpu_percent, 1),
-                    'unit': 'percent'
+                    'metric': 'cpu',
+                    'value': average_cpu,
+                    'unit': 'Ghz'
                 }
             ]
 
-            msg = 'name: {0}, time :{1} s, memory: {2} %, cpu {3} %'.format(
+            msg = 'name: {0}, time :{1} s, memory: {2} kb, cpu {3} Ghz'.format(
                 engine.name,
                 elapsed_time,
-                memory_percent,
-                average_cpu_percent
+                memory,
+                average_cpu
             )
 
             event = forger(
@@ -141,3 +139,21 @@ def monitoring(func):
         return result
 
     return monitor
+
+
+class Info(object):
+
+    def __init__(self):
+        self.file_info = open('../../etc/bench/architecture.conf', 'r')
+        self.memory = sub(r'[a-z     :A-Z]', '', self.fileinfo.readline())
+        self.number_of_core = int(self.fileinfo.readline.split(':')[1])
+        self.cadence = sub(r'[a-z    :A-Z]', '', self.fileinfo.readline())
+
+    def get_memory(self):
+        return int(self.memory)
+
+    def get_number_of_core(self):
+        return self.number_of_core
+
+    def get_cadence(self):
+        return float(self.cadence)
