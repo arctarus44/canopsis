@@ -36,8 +36,6 @@ class ThreadCPU(Thread):
         self.loop = Event()
         self.memory_percent = 0
         self.average_cpu_percent = 0
-        self.now = time
-        self.problem = False
 
     def run(self):
 
@@ -56,10 +54,6 @@ class ThreadCPU(Thread):
             self.average_cpu_percent = total_cpu_percent / cpt
             sleep(0.001)
 
-            if time() - now > 3:
-                self.problem = True
-                break
-
     def stop(self):
 
         self.loop.clear()
@@ -71,10 +65,6 @@ class ThreadCPU(Thread):
     def get_memory_percent(self):
 
         return self.memory_percent
-
-    def get_problem(self):
-
-        return self.problem
 
 
 def monitoring(func):
@@ -99,9 +89,6 @@ def monitoring(func):
 
         else:
             elapsed_time = time() - now
-
-            if cpu_thread.get_problem():
-                engine.logger.warning('function not executed problem')
 
             cpu_thread.stop()
             cpu_thread.join()
