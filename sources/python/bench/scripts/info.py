@@ -20,7 +20,7 @@
 
 file_meminfo = open('/proc/meminfo', 'r')
 file_cpuinfo = open('/proc/cpuinfo', 'r')
-file_conf = open('../../etc/bench/architecture.conf', 'w')
+file_conf = open('../etc/bench/architecture.conf', 'w')
 
 memory = ''
 number_of_core = 0

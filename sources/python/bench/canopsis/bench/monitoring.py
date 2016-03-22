@@ -105,7 +105,7 @@ def monitoring(func):
                     'value': round(elapsed_time, 3),
                     'unit': 's'
                 }, {
-                    'metric': 'memory_percent',
+                    'metric': 'memory',
                     'value': memory,
                     'unit': 'kb'
                 }, {
