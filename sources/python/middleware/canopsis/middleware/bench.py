@@ -24,6 +24,7 @@ from canopsis.middleware.registry import MiddlewareRegistry
 
 
 class Benchmark(MiddlewareRegistry):
+
     """
     Aims to run benchmark scenarios
     """
@@ -71,7 +72,7 @@ class Benchmark(MiddlewareRegistry):
 
         # convert strings to callable objects if required
         _scenarios = [lookup(scenario) if isinstance(scenario, basestring)
-        else scenario for scenario in scenarios]
+                      else scenario for scenario in scenarios]
 
         for index, scenario in enumerate(_scenarios):
             result[scenarios[index]] = scenario(self, *args, **kwargs)

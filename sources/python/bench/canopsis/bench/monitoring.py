@@ -29,6 +29,9 @@ from re import sub
 
 
 class ThreadCPU(Thread):
+    """
+    cpu and memory analysis while an engine's function is running
+    """
 
     def __init__(self, pid, *args, **kwargs):
         super(ThreadCPU, self).__init__(*args, **kwargs)
@@ -51,11 +54,12 @@ class ThreadCPU(Thread):
 
         while self.loop.is_set():
 
-            total_cpu_percent += self.process.cpu_percent(interval=0.001)
+            total_cpu_percent += self.process.cpu_percent()
+
             self.memory_percent = self.process.memory_percent()
             cpt += 1
             self.average_cpu_percent = total_cpu_percent / cpt
-            sleep(0.001)
+            sleep(0.0001)
 
     def stop(self):
 
@@ -71,6 +75,9 @@ class ThreadCPU(Thread):
 
 
 def monitoring(func):
+    """
+    engine's function decorator to analyze execution time.
+    """
     @wraps(func)
     def monitor(engine, *args, **kwargs):
 
@@ -142,6 +149,9 @@ def monitoring(func):
 
 
 class Info(object):
+    """
+    file parser to get architecture's informations
+    """
 
     def __init__(self):
         self.file_info = open('/opt/canopsis/etc/bench/architecture.conf', 'r')

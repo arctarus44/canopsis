@@ -18,6 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+"""
+script to get architecture's informations
+"""
+
 file_meminfo = open('/proc/meminfo', 'r')
 file_cpuinfo = open('/proc/cpuinfo', 'r')
 file_conf = open('../etc/bench/architecture.conf', 'w')
