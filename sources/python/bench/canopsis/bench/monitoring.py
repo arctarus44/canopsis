@@ -29,45 +29,37 @@ from re import sub
 
 
 class ThreadCPU(Thread):
+
     """
     cpu and memory analysis while an engine's function is running
+
+    Parameters
+    ----------
+    process: the psutil Process
     """
 
-    def __init__(self, pid, *args, **kwargs):
+    def __init__(self, process, *args, **kwargs):
         super(ThreadCPU, self).__init__(*args, **kwargs)
 
-        self.process = Process(pid)
+        self.process = process
         self.loop = Event()
         self.memory_percent = 0
-        self.average_cpu_percent = 0
 
         infos = Info()
-        self.cadence = infos.get_cadence()
         self.memory = infos.get_memory()
 
     def run(self):
-
-        cpt = 0
-        total_cpu_percent = 0
 
         self.loop.set()
 
         while self.loop.is_set():
 
-            total_cpu_percent += self.process.cpu_percent()
-
             self.memory_percent = self.process.memory_percent()
-            cpt += 1
-            self.average_cpu_percent = total_cpu_percent / cpt
             sleep(0.0001)
 
     def stop(self):
 
         self.loop.clear()
-
-    def get_average_cpu(self):
-
-        return ((self.average_cpu_percent * self.cadence) / 100)
 
     def get_memory(self):
 
@@ -77,6 +69,10 @@ class ThreadCPU(Thread):
 def monitoring(func):
     """
     engine's function decorator to analyze execution time.
+
+    Parameters
+    ----------
+    func: the decorated function
     """
     @wraps(func)
     def monitor(engine, *args, **kwargs):
@@ -84,10 +80,14 @@ def monitoring(func):
         result = None
 
         pid = os.getpid()
+        process = Process(pid)
 
-        cpu_thread = ThreadCPU(pid)
+        cpu_thread = ThreadCPU(process)
 
         cpu_thread.start()
+
+        infos = Info()
+        cadence = infos.get_cadence()
 
         now = time()
 
@@ -100,11 +100,13 @@ def monitoring(func):
         else:
             elapsed_time = time() - now
 
+            cpu_time = process.cpu_times()
+
             cpu_thread.stop()
             cpu_thread.join()
 
             memory = cpu_thread.get_memory()
-            average_cpu = cpu_thread.get_average_cpu()
+            cpu = (cpu_time.user + cpu_time.system) * cadence
 
             perf_data_array = [
                 {
@@ -117,7 +119,7 @@ def monitoring(func):
                     'unit': 'kb'
                 }, {
                     'metric': 'cpu',
-                    'value': average_cpu,
+                    'value': cpu,
                     'unit': 'Ghz'
                 }
             ]
@@ -126,7 +128,7 @@ def monitoring(func):
                 engine.name,
                 elapsed_time,
                 memory,
-                average_cpu
+                cpu
             )
 
             event = forger(
@@ -149,6 +151,7 @@ def monitoring(func):
 
 
 class Info(object):
+
     """
     file parser to get architecture's informations
     """
