@@ -5,6 +5,7 @@ function build(){
 }
 
 function easy_install_all_libs() {
+	easy_install_pylib b3j0f.aop
 	easy_install_pylib b3j0f.utils
 	easy_install_pylib b3j0f.annotation
     easy_install_pylib b3j0f.conf
