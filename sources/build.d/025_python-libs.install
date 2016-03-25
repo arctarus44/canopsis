@@ -5,7 +5,8 @@ function build(){
 }
 
 function easy_install_all_libs() {
-	easy_install_pylib simplejson
+        easy_install_pylib b3j0f.conf
+        easy_install_pylib simplejson
 	easy_install_pylib pymongo
 	easy_install_pylib pycurl
 	easy_install_pylib tornado
@@ -52,7 +53,6 @@ function easy_install_all_libs() {
 	easy_install_pylib testtools
 	easy_install_pylib traceback2
 	easy_install_pylib unittest2
-        easy_install_pylib b3j0f.conf
 }
 
 function install(){

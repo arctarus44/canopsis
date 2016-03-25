@@ -21,13 +21,15 @@
 from time import sleep, time
 from threading import Thread, Event
 from psutil import Process
-import os
+from os import getpid
 from functools import wraps
-from canopsis.engines.core import publish
-from canopsis.event import forger
-from re import sub
+from math import pow
+
+from b3j0f.conf import Configurable, Category
 
 from publisher import Publisher
+
+from canopsis.common.utils import singleton_per_scope
 
 
 class ThreadCPU(Thread):
@@ -47,8 +49,8 @@ class ThreadCPU(Thread):
         self.loop = Event()
         self.memory_percent = 0
 
-        infos = Info()
-        self.memory = infos.get_memory()
+        info = Info()
+        self.memory = info.get_memory()
 
     def run(self):
 
@@ -81,15 +83,15 @@ def monitoring(func):
 
         result = None
 
-        pid = os.getpid()
+        info = Info()
+        cadence = info.get_cadence()
+
+        pid = getpid()
         process = Process(pid)
 
         cpu_thread = ThreadCPU(process)
 
         cpu_thread.start()
-
-        infos = Info()
-        cadence = infos.get_cadence()
 
         now = time()
 
@@ -108,53 +110,28 @@ def monitoring(func):
             cpu_thread.join()
 
             memory = cpu_thread.get_memory()
-            cpu = (cpu_time.user + cpu_time.system) * cadence
+            statements = (cpu_time.user + cpu_time.system) * cadence
 
-            perf_data_array = [
-                {
-                    'engine': '{0}-{1}'.format(
-                        engine.name,
-                        cpu_thread.process.pid)
-                }, {
-                    'metric': 'elapsed_time',
-                    'value': round(elapsed_time, 3),
-                    'unit': 's'
-                }, {
-                    'metric': 'memory',
-                    'value': memory,
-                    'unit': 'kb'
-                }, {
-                    'metric': 'cpu',
-                    'value': cpu,
-                    'unit': 'Ghz'
-                }
-            ]
+            metric_array = [elapsed_time, memory, statements]
 
-            publisher = Publisher()
-            publisher.addList(perf_data_array)
+            publisher = singleton_per_scope(
+                Publisher,
+                scope='{0}-{1}'.format(engine.name, pid),
+                engine=engine,
+                pid=pid)
+
+            publisher.addList(metric_array)
 
         return result
 
     return monitor
 
 
+@Configurable(paths='bench/architecture.conf', conf=Category('BENCH'))
 class Info(object):
 
-    """
-    file parser to get architecture's informations
-    """
-
-    def __init__(self):
-        self.file_info = open('/opt/canopsis/etc/bench/architecture.conf', 'r')
-        self.memory = sub(r'[a-z     :A-Z]', '', self.file_info.readline())
-        self.number_of_core = int(self.file_info.readline().split(':')[1])
-        self.cadence = sub(r'[a-z    :A-Z]', '', self.file_info.readline())
+    def get_cadence(self):
+        return float(self.cadence) * pow(10, 9)
 
     def get_memory(self):
         return int(self.memory)
-
-    def get_number_of_core(self):
-        return self.number_of_core
-
-    def get_cadence(self):
-        return float(self.cadence)

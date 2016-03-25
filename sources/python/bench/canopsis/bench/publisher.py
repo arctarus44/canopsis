@@ -18,9 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from utils import Singleton
 from time import sleep
 from threading import Thread
+from event import forger
+from canopsis.engine.core import publish
 
 
 class Publisher(object):
@@ -28,47 +29,77 @@ class Publisher(object):
     """
     this class publish engine's benchs results
     """
-    __metaclass__ = Singleton
 
-    def __init__(self):
-        self.list = []
+    def __init__(self, engine, pid):
+        self.metrics_array = []
+        self.engine = engine
+        self.pid = pid
         timer = ThreadTimer(self)
         timer.start()
 
-    def addList(self, list):
-        inList = self.inList(list)
-        if inList != -1:
-            self.list[inList] = self.average(inList, list)
-        else:
-            self.list.append(list)
+    def addmetrics_array(self, metrics_array):
+        self.metrics_array.append(metrics_array)
 
-    def inList(self, list):
-        for i in list:
-            if list[0] == self.list[i][0]:
-                return i
-        return -1
+    def cleanmetrics_array(self):
+        self.metrics_array = []
 
-    def averageValues(self, dic1, dic2):
-        newValue = (dic1.get('value') + dic2.get('value')) / 2
-        new = {
-            'value': newValue
-        }
-        return dic1.update(new)
+    def average(self):
 
-    def average(self, i, list):
-        newList = []
-        newList.append(list[0])
-        newList.append(self.averageValues(self.list[1], list[1]))
-        newList.append(self.averageValues(self.list[2], list[2]))
-        newList.append(self.averageValues(self.list[3], list[3]))
-        return newList
+        statements = 0
+        memory = 0
+        elapsed_time = 0
+        cpt = 0
 
-    def cleanList(self):
-        self.list = []
+        for item in self.metrics_array:
+            elapsed_time += item[0]
+            memory += item[1]
+            statements += item[2]
+            cpt += 1
 
-    def publish(self):
-        # publish list
-        pass
+        return [elapsed_time / cpt, memory / cpt, statements / cpt]
+
+    def publish_metrics(self):
+        values = self.average()
+
+        perf_data_array = [
+            {
+                'metric': 'elapsed_time',
+                'value': values[0],
+                'unit': 's'
+            }, {
+                'metric': 'memory',
+                'value': values[1],
+                'unit': 'kb'
+            }, {
+                'metric': 'cpu',
+                'value': values[2],
+                'unit': 'statements'
+            }
+        ]
+
+        msg = 'engine: {0}-{1}, time :{2} s, memory: {3} kb, cpu {4} statements'.format(
+            self.engine.name,
+            self.pid,
+            values[0],
+            values[1],
+            values[2]
+        )
+
+        event = forger(
+            connector='Engine',
+            connector_name='engine',
+            event_type='check',
+            source_type='resource',
+            resource='{0}-{1}'.format(
+                self.engine.name,
+                self.pid),
+            state=0,
+            state_type=1,
+            output=msg,
+            perf_data_array=perf_data_array
+        )
+
+        publish(event=event, publisher=self.engine.amqp)
 
 
 class ThreadTimer(Thread):
@@ -80,5 +111,5 @@ class ThreadTimer(Thread):
     def run(self):
         while True:
             sleep(60)
-            self.publisher.publish()
-            self.publisher.cleanList()
+            self.publisher.publish_metrics()
+            self.publisher.cleanmetrics_array()
