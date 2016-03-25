@@ -27,6 +27,8 @@ from canopsis.engines.core import publish
 from canopsis.event import forger
 from re import sub
 
+from publisher import Publisher
+
 
 class ThreadCPU(Thread):
 
@@ -110,6 +112,10 @@ def monitoring(func):
 
             perf_data_array = [
                 {
+                    'engine': '{0}-{1}'.format(
+                        engine.name,
+                        cpu_thread.process.pid)
+                }, {
                     'metric': 'elapsed_time',
                     'value': round(elapsed_time, 3),
                     'unit': 's'
@@ -124,26 +130,8 @@ def monitoring(func):
                 }
             ]
 
-            msg = 'name: {0}, time :{1} s, memory: {2} kb, cpu {3} Ghz'.format(
-                engine.name,
-                elapsed_time,
-                memory,
-                cpu
-            )
-
-            event = forger(
-                connector='Engine',
-                connector_name='engine',
-                event_type='check',
-                source_type='resource',
-                resource='{0}-{1}'.format(engine.name, cpu_thread.process.pid),
-                state=0,
-                state_type=1,
-                output=msg,
-                perf_data_array=perf_data_array
-            )
-
-            publish(event=event, publisher=engine.amqp)
+            publisher = Publisher()
+            publisher.addList(perf_data_array)
 
         return result
 
