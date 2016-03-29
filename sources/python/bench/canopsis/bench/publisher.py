@@ -20,8 +20,8 @@
 
 from time import sleep
 from threading import Thread
-from event import forger
-from canopsis.engine.core import publish
+from canopsis.event import forger
+from canopsis.engines.core import publish
 
 
 class Publisher(object):
@@ -30,7 +30,9 @@ class Publisher(object):
     this class publish engine's benchs results
     """
 
-    def __init__(self, engine, pid):
+    def __init__(self, engine=None, pid=None, *args, **kwargs):
+        super(Publisher, self).__init__(*args, **kwargs)
+
         self.metrics_array = []
         self.engine = engine
         self.pid = pid

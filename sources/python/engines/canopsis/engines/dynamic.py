@@ -132,6 +132,7 @@ class engine(Engine, Configurable):
         # set _beat_processing and work
         self._beat_processing = value
 
+    @monitoring
     def work(self, event, msg, *args, **kwargs):
 
         result = self._event_processing(
@@ -141,6 +142,7 @@ class engine(Engine, Configurable):
 
         return result
 
+    @monitoring
     def beat(self, *args, **kwargs):
         self._beat_processing(
             engine=self, logger=self.logger,

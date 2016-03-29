@@ -111,8 +111,7 @@ def monitoring(func):
             publisher = singleton_per_scope(
                 Publisher,
                 scope='{0}-{1}'.format(engine.name, pid),
-                engine=engine,
-                pid=pid)
+                kwargs={'engine': engine, 'pid': pid})
 
             publisher.addList(metric_array)
 
