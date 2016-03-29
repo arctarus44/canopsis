@@ -36,10 +36,6 @@ class ThreadCPU(Thread):
 
     """
     cpu and memory analysis while an engine's function is running
-
-    Parameters
-    ----------
-    process: the psutil Process
     """
 
     def __init__(self, process, *args, **kwargs):
@@ -74,9 +70,7 @@ def monitoring(func):
     """
     engine's function decorator to analyze execution time.
 
-    Parameters
-    ----------
-    func: the decorated function
+    :param function: the decorated function
     """
     @wraps(func)
     def monitor(engine, *args, **kwargs):
