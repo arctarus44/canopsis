@@ -45,6 +45,9 @@ class Publisher(object):
     def cleanmetrics_array(self):
         self.metrics_array = []
 
+    def addList(self, metrics):
+        self.metrics_array.append(metrics)
+
     def average(self):
 
         statements = 0
@@ -61,47 +64,48 @@ class Publisher(object):
         return [elapsed_time / cpt, memory / cpt, statements / cpt]
 
     def publish_metrics(self):
-        values = self.average()
+        if len(self.metrics_array) > 0:
+            values = self.average()
 
-        perf_data_array = [
-            {
-                'metric': 'elapsed_time',
-                'value': values[0],
-                'unit': 's'
-            }, {
-                'metric': 'memory',
-                'value': values[1],
-                'unit': 'kb'
-            }, {
-                'metric': 'cpu',
-                'value': values[2],
-                'unit': 'statements'
-            }
-        ]
+            perf_data_array = [
+                {
+                    'metric': 'elapsed_time',
+                    'value': values[0],
+                    'unit': 's'
+                }, {
+                    'metric': 'memory',
+                    'value': values[1],
+                    'unit': 'kb'
+                }, {
+                    'metric': 'cpu',
+                    'value': values[2],
+                    'unit': 'statements'
+                }
+            ]
 
-        msg = 'engine: {0}-{1}, time :{2} s, memory: {3} kb, cpu {4} statements'.format(
-            self.engine.name,
-            self.pid,
-            values[0],
-            values[1],
-            values[2]
-        )
-
-        event = forger(
-            connector='Engine',
-            connector_name='engine',
-            event_type='check',
-            source_type='resource',
-            resource='{0}-{1}'.format(
+            msg = 'engine: {0}-{1}, time :{2} s, memory: {3} kb, cpu {4} statements'.format(
                 self.engine.name,
-                self.pid),
-            state=0,
-            state_type=1,
-            output=msg,
-            perf_data_array=perf_data_array
-        )
+                self.pid,
+                values[0],
+                values[1],
+                values[2]
+            )
 
-        publish(event=event, publisher=self.engine.amqp)
+            event = forger(
+                connector='Engine',
+                connector_name='engine',
+                event_type='check',
+                source_type='resource',
+                resource='{0}-{1}'.format(
+                    self.engine.name,
+                    self.pid),
+                state=0,
+                state_type=1,
+                output=msg,
+                perf_data_array=perf_data_array
+            )
+
+            publish(event=event, publisher=self.engine.amqp)
 
 
 class ThreadTimer(Thread):
