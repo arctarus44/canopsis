@@ -104,9 +104,14 @@ def monitoring(func):
             cpu_thread.join()
 
             memory = cpu_thread.get_memory()
+
+            io_count = process.io_counters()
+            io_in_size = io_count.read_bytes
+            io_out_size = io_count.write_bytes
+
             statements = (cpu_time.user + cpu_time.system) * cadence
 
-            metric_array = [elapsed_time, memory, statements]
+            metric_array = [elapsed_time, memory, statements, io_in_size, io_out_size]
 
             publisher = singleton_per_scope(
                 Publisher,

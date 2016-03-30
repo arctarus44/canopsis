@@ -18,6 +18,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+from __future__ import unicode_literals
+
 from time import sleep
 from threading import Thread
 from canopsis.event import forger
@@ -53,15 +55,23 @@ class Publisher(object):
         statements = 0
         memory = 0
         elapsed_time = 0
+        io_in = 0
+        io_out = 0
         cpt = 0
 
         for item in self.metrics_array:
             elapsed_time += item[0]
             memory += item[1]
             statements += item[2]
+            io_in += item[3]
+            io_out += item[4]
             cpt += 1
 
-        return [elapsed_time / cpt, memory / cpt, statements / cpt]
+        return [elapsed_time / cpt,
+                memory / cpt,
+                statements / cpt,
+                io_in / cpt,
+                io_out / cpt]
 
     def publish_metrics(self):
         if len(self.metrics_array) > 0:
@@ -80,16 +90,19 @@ class Publisher(object):
                     'metric': 'cpu',
                     'value': values[2],
                     'unit': 'statements'
+                }, {
+                    'metric': 'in',
+                    'value': values[3],
+                    'unit': 'bytes'
+                }, {
+                    'metric': 'out',
+                    'value': values[4],
+                    'unit': 'bytes'
                 }
             ]
 
-            msg = 'engine: {0}-{1}, time :{2} s, memory: {3} kb, cpu {4} statements'.format(
-                self.engine.name,
-                self.pid,
-                values[0],
-                values[1],
-                values[2]
-            )
+            template = 'Time: {}s, RAM: {}kb, CPU: {} stmts, in: {}B, out: {}B'
+            msg = template.format(*values)
 
             event = forger(
                 connector='Engine',
@@ -98,7 +111,8 @@ class Publisher(object):
                 source_type='resource',
                 resource='{0}-{1}'.format(
                     self.engine.name,
-                    self.pid),
+                    self.pid
+                ),
                 state=0,
                 state_type=1,
                 output=msg,
@@ -110,8 +124,8 @@ class Publisher(object):
 
 class ThreadTimer(Thread):
 
-    def __init__(self, publisher):
-        super(ThreadTimer, self).__init__()
+    def __init__(self, publisher, *args, **kwargs):
+        super(ThreadTimer, self).__init__(*args, **kwargs)
         self.publisher = publisher
 
     def run(self):
