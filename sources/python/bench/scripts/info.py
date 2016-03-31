@@ -18,6 +18,9 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+
+from re import sub
+
 """
 script to get architecture's informations
 """
@@ -27,7 +30,6 @@ file_cpuinfo = open('/proc/cpuinfo', 'r')
 file_conf = open('../etc/bench/architecture.conf', 'w')
 
 memory = ''
-number_of_core = 0
 cpu_name = []
 cadence = ''
 
@@ -38,15 +40,15 @@ for line in file_meminfo:
 
 for line in file_cpuinfo:
     linesplitted = line.split(':')
-    if linesplitted[0] == 'processor\t':
-        number_of_core += 1
     if linesplitted[0] == 'model name\t':
         cpu_name = linesplitted[1].split(' ')
 
 cadence = cpu_name[len(cpu_name) - 1]
 
-file_conf.write('memory: {0}number of core: {1}\ncadence: {2}'.format(
+memory = sub(r'[a-z     :A-Z\n]', '', memory)
+cadence = sub(r'[a-z     :A-Z\n]', '', cadence)
+
+file_conf.write('[BENCH]\n\nmemory={0}\ncadence={1}'.format(
                 memory,
-                number_of_core,
                 cadence
                 ))

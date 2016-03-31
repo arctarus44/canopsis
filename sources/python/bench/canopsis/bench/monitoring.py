@@ -20,54 +20,46 @@
 
 from time import sleep, time
 from threading import Thread, Event
-from psutil import Process
-import os
+from psutil import Process, net_io_counters
+from os import getpid
 from functools import wraps
-from canopsis.engines.core import publish
-from canopsis.event import forger
-from re import sub
+from math import pow
+
+from b3j0f.conf import Configurable, Category
+
+from publisher import Publisher
+
+from canopsis.common.utils import singleton_per_scope
 
 
 class ThreadCPU(Thread):
+
     """
     cpu and memory analysis while an engine's function is running
     """
 
-    def __init__(self, pid, *args, **kwargs):
+    def __init__(self, process, *args, **kwargs):
         super(ThreadCPU, self).__init__(*args, **kwargs)
 
-        self.process = Process(pid)
+        self.process = process
         self.loop = Event()
         self.memory_percent = 0
-        self.average_cpu_percent = 0
 
-        infos = Info()
-        self.cadence = infos.get_cadence()
-        self.memory = infos.get_memory()
+        info = Info()
+        self.memory = info.get_memory()
 
     def run(self):
-
-        cpt = 0
-        total_cpu_percent = 0
 
         self.loop.set()
 
         while self.loop.is_set():
 
-            total_cpu_percent += self.process.cpu_percent()
-
             self.memory_percent = self.process.memory_percent()
-            cpt += 1
-            self.average_cpu_percent = total_cpu_percent / cpt
             sleep(0.0001)
 
     def stop(self):
 
         self.loop.clear()
-
-    def get_average_cpu(self):
-
-        return ((self.average_cpu_percent * self.cadence) / 100)
 
     def get_memory(self):
 
@@ -77,15 +69,21 @@ class ThreadCPU(Thread):
 def monitoring(func):
     """
     engine's function decorator to analyze execution time.
+
+    :param function: the decorated function
     """
     @wraps(func)
     def monitor(engine, *args, **kwargs):
 
         result = None
 
-        pid = os.getpid()
+        info = Info()
+        cadence = info.get_cadence()
 
-        cpu_thread = ThreadCPU(pid)
+        pid = getpid()
+        process = Process(pid)
+
+        cpu_thread = ThreadCPU(process)
 
         cpu_thread.start()
 
@@ -98,72 +96,44 @@ def monitoring(func):
             cpu_thread.stop()
 
         else:
+
+            io_count_before = net_io_counters()
+
             elapsed_time = time() - now
+
+            cpu_time = process.cpu_times()
 
             cpu_thread.stop()
             cpu_thread.join()
 
             memory = cpu_thread.get_memory()
-            average_cpu = cpu_thread.get_average_cpu()
 
-            perf_data_array = [
-                {
-                    'metric': 'elapsed_time',
-                    'value': round(elapsed_time, 3),
-                    'unit': 's'
-                }, {
-                    'metric': 'memory',
-                    'value': memory,
-                    'unit': 'kb'
-                }, {
-                    'metric': 'cpu',
-                    'value': average_cpu,
-                    'unit': 'Ghz'
-                }
-            ]
+            io_count_after = net_io_counters()
 
-            msg = 'name: {0}, time :{1} s, memory: {2} kb, cpu {3} Ghz'.format(
-                engine.name,
-                elapsed_time,
-                memory,
-                average_cpu
-            )
+            io_in = io_count_after.bytes_sent - io_count_before.bytes_sent
+            io_out = io_count_after.bytes_recv - io_count_before.bytes_recv
 
-            event = forger(
-                connector='Engine',
-                connector_name='engine',
-                event_type='check',
-                source_type='resource',
-                resource='{0}-{1}'.format(engine.name, cpu_thread.process.pid),
-                state=0,
-                state_type=1,
-                output=msg,
-                perf_data_array=perf_data_array
-            )
+            statements = (cpu_time.user + cpu_time.system) * cadence
 
-            publish(event=event, publisher=engine.amqp)
+            metric_array = [elapsed_time, memory, statements, io_in, io_out]
+
+            publisher = singleton_per_scope(
+                Publisher,
+                scope='{0}-{1}'.format(engine.name, pid),
+                kwargs={'engine': engine, 'pid': pid})
+
+            publisher.addList(metric_array)
 
         return result
 
     return monitor
 
 
+@Configurable(paths='bench/architecture.conf', conf=Category('BENCH'))
 class Info(object):
-    """
-    file parser to get architecture's informations
-    """
 
-    def __init__(self):
-        self.file_info = open('/opt/canopsis/etc/bench/architecture.conf', 'r')
-        self.memory = sub(r'[a-z     :A-Z]', '', self.file_info.readline())
-        self.number_of_core = int(self.file_info.readline().split(':')[1])
-        self.cadence = sub(r'[a-z    :A-Z]', '', self.file_info.readline())
+    def get_cadence(self):
+        return float(self.cadence) * pow(10, 9)
 
     def get_memory(self):
         return int(self.memory)
-
-    def get_number_of_core(self):
-        return self.number_of_core
-
-    def get_cadence(self):
-        return float(self.cadence)
