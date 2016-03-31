@@ -35,9 +35,12 @@ class Publisher(object):
     def __init__(self, engine=None, pid=None, *args, **kwargs):
         super(Publisher, self).__init__(*args, **kwargs)
 
+        self.io_array = []
         self.metrics_array = []
+
         self.engine = engine
         self.pid = pid
+
         timer = ThreadTimer(self)
         timer.start()
 
@@ -47,35 +50,79 @@ class Publisher(object):
     def cleanmetrics_array(self):
         self.metrics_array = []
 
-    def addList(self, metrics):
-        self.metrics_array.append(metrics)
+    def addio_array(self, io_array):
+        self.io_array.append(io_array)
 
-    def average(self):
+    def cleanio_array(self):
+        self.io_array = []
+
+    def average_metrics(self):
 
         statements = 0
         memory = 0
         elapsed_time = 0
-        io_in = 0
-        io_out = 0
         cpt = 0
 
         for item in self.metrics_array:
             elapsed_time += item[0]
             memory += item[1]
             statements += item[2]
-            io_in += item[3]
-            io_out += item[4]
             cpt += 1
 
         return [elapsed_time / cpt,
                 memory / cpt,
-                (statements / cpt) / 1000,
-                io_in / cpt,
-                io_out / cpt]
+                (statements / cpt) / 1000]
+
+    def average_io(self):
+        io_in = 0
+        io_out = 0
+        cpt = 0
+
+        for item in self.io_array:
+            io_in += item[0]
+            io_out += item[1]
+            cpt += 1
+
+        return [io_in / cpt, io_out / cpt]
+
+    def publish_io(self):
+        if len(self.io_array) > 0:
+            values = self.average_io()
+
+            perf_data_array = [
+                {
+                    'metric': 'net_io_in',
+                    'value': values[0],
+                    'unit': 'bytes'
+                }, {
+                    'metric': 'net_io_out',
+                    'value': values[1],
+                    'unit': 'bytes'
+                }
+            ]
+
+            msg = 'GREP In: {}B, Out: {}B'.format(*values)
+
+            event = forger(
+                connector='Engine',
+                connector_name='engine',
+                event_type='check',
+                source_type='resource',
+                resource='{0}-{1}'.format(
+                    self.engine.name,
+                    self.pid
+                ),
+                state=0,
+                state_type=1,
+                output=msg,
+                perf_data_array=perf_data_array
+            )
+
+            publish(event=event, publisher=self.engine.amqp)
 
     def publish_metrics(self):
         if len(self.metrics_array) > 0:
-            values = self.average()
+            values = self.average_metrics()
 
             perf_data_array = [
                 {
@@ -90,19 +137,10 @@ class Publisher(object):
                     'metric': 'cpu',
                     'value': values[2],
                     'unit': 'statements'
-                }, {
-                    'metric': 'in',
-                    'value': values[3],
-                    'unit': 'bytes'
-                }, {
-                    'metric': 'out',
-                    'value': values[4],
-                    'unit': 'bytes'
                 }
             ]
 
-            template = 'Time: {}s, RAM: {}kb, CPU: {}kstmts, in: {}B, out: {}B'
-            msg = template.format(*values)
+            msg = 'GREP Time: {}s, RAM: {}kb, CPU: {}kstmts'.format(*values)
 
             event = forger(
                 connector='Engine',
@@ -131,5 +169,9 @@ class ThreadTimer(Thread):
     def run(self):
         while True:
             sleep(60)
+
             self.publisher.publish_metrics()
             self.publisher.cleanmetrics_array()
+
+            self.publisher.publish_io()
+            self.publisher.cleanio_array()

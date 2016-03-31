@@ -25,6 +25,10 @@ from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.model import Parameter
 from canopsis.bench.monitoring import monitoring
+from canopsis.bench.io_counter import IOCounter
+
+from os import getpid
+
 
 CONF_PATH = 'engines/engines.conf'  #: dynamic engine configuration path
 CATEGORY = 'ENGINE'  #: dynamic engine configuration category
@@ -67,6 +71,8 @@ class engine(Engine, Configurable):
         self.event_processing = event_processing
         self.beat_processing = beat_processing
         self.params = params
+
+        IOCounter(self, getpid())
 
     @property
     def event_processing(self):
