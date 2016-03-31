@@ -69,7 +69,7 @@ class Publisher(object):
 
         return [elapsed_time / cpt,
                 memory / cpt,
-                statements / cpt,
+                (statements / cpt) / 1000,
                 io_in / cpt,
                 io_out / cpt]
 
@@ -101,7 +101,7 @@ class Publisher(object):
                 }
             ]
 
-            template = 'Time: {}s, RAM: {}kb, CPU: {} stmts, in: {}B, out: {}B'
+            template = 'Time: {}s, RAM: {}kb, CPU: {}kstmts, in: {}B, out: {}B'
             msg = template.format(*values)
 
             event = forger(

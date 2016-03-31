@@ -20,7 +20,7 @@
 
 from time import sleep, time
 from threading import Thread, Event
-from psutil import Process
+from psutil import Process, net_io_counters
 from os import getpid
 from functools import wraps
 from math import pow
@@ -96,6 +96,9 @@ def monitoring(func):
             cpu_thread.stop()
 
         else:
+
+            io_count_before = net_io_counters()
+
             elapsed_time = time() - now
 
             cpu_time = process.cpu_times()
@@ -105,13 +108,14 @@ def monitoring(func):
 
             memory = cpu_thread.get_memory()
 
-            io_count = process.io_counters()
-            io_in_size = io_count.read_bytes
-            io_out_size = io_count.write_bytes
+            io_count_after = net_io_counters()
+
+            io_in = io_count_after.bytes_sent - io_count_before.bytes_sent
+            io_out = io_count_after.bytes_recv - io_count_before.bytes_recv
 
             statements = (cpu_time.user + cpu_time.system) * cadence
 
-            metric_array = [elapsed_time, memory, statements, io_in_size, io_out_size]
+            metric_array = [elapsed_time, memory, statements, io_in, io_out]
 
             publisher = singleton_per_scope(
                 Publisher,
