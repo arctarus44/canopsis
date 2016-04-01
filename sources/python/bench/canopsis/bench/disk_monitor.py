@@ -24,47 +24,57 @@ from threading import Thread
 from time import sleep
 from publisher import Publisher
 
-from psutil import net_io_counters
+from psutil import disk_io_counters
 from canopsis.common.utils import singleton_per_scope
 
 
-class IOCounter(object):
+class DiksMonitor(object):
 
     def __init__(self, engine, pid, *args, **kwargs):
-        super(IOCounter, self).__init__(*args, **kwargs)
+        super(DiksMonitor, self).__init__(*args, **kwargs)
+
+        self.engine = engine
 
         self.publisher = singleton_per_scope(
             Publisher,
-            scope='{0}-{1}'.format(engine.name, pid),
+            scope='{0}-{4}'.format(engine.name, pid),
             kwargs={'engine': engine, 'pid': pid})
 
-        self.io_in_before = net_io_counters().bytes_recv
-        self.io_out_before = net_io_counters().bytes_sent
+        self.read_before = disk_io_counters().read_bytes
+        self.write_before = disk_io_counters().write_bytes
+        self.read_time_before = disk_io_counters().read_time
+        self.write_time_before = disk_io_counters().write_time
 
         periodical_counter = Periodical_counter(self)
         periodical_counter.start()
 
     def check_io(self):
-        bytes_recv = net_io_counters().bytes_recv
-        bytes_sent = net_io_counters().bytes_sent
+        bytes_read = disk_io_counters().read_bytes
+        bytes_write = disk_io_counters().write_bytes
+        read_time = disk_io_counters().read_time
+        write_time = disk_io_counters().write_time
 
         values = [
-            bytes_recv - self.io_in_before,
-            bytes_sent - self.io_out_before
+            bytes_read - self.read_before,
+            bytes_write - self.write_before,
+            read_time - self.read_time_before,
+            write_time - self.write_time_before
         ]
 
-        self.publisher.addio_array(values)
-        
-        self.io_in_before = bytes_recv
-        self.io_out_before = bytes_sent
+        self.publisher.add_disk_info(values)
+
+        self.read_before = bytes_read
+        self.write_before = bytes_write
+        self.read_time_before = read_time
+        self.write_time_before = write_time
 
 
 class Periodical_counter(Thread):
 
-    def __init__(self, iocounter, *args, **kwargs):
+    def __init__(self, disk_monitor, *args, **kwargs):
         super(Periodical_counter, self).__init__(*args, **kwargs)
-        self.iocounter = iocounter
+        self.disk_monitor = disk_monitor
 
     def run(self):
         sleep(15)
-        self.iocounter.check_io()
+        self.disk_monitor.check_io()
