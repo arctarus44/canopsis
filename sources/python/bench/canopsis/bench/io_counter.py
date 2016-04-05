@@ -54,7 +54,7 @@ class IOCounter(object):
         ]
 
         self.publisher.addio_array(values)
-        
+
         self.io_in_before = bytes_recv
         self.io_out_before = bytes_sent
 
