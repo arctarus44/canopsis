@@ -8,7 +8,7 @@ from pass_object import Object_pass
 from b3j0f.conf import Configurable, Category
 
 
-@Configurable(paths='/home/tgosselin/Documents/test/testlatencreal/network/etc/network/network.conf')
+@Configurable(paths='network-bench/network-bench.conf')
 class Serv(Thread):
 
     def __init__(self, host=None, port=None, *args, **kwargs):
