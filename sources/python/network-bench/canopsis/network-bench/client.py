@@ -37,17 +37,20 @@ class Client(object):
 
     def send(self, message):
 
-        print('envoi')
+        print('envoi pour l\'envoi d\'un message')
         send_list = []
         send_list.append(message)
         send_list.append(time())
         self.zmq_socket.send_pyobj(send_list)
-        print('gone')
+        print('pour l\'envoi d\'un message gone')
 
 
     def receive(self, message):
+        print('envoi pour la reception d\'un message')
         receive_list=[]
         receive_list.append(message)
         receive_list.append(time())
         self.zmq_socket.send_pyobj(receive_list)
+        print('pour la reception d\'un message gone')
+
 

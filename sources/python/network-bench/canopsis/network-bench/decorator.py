@@ -17,12 +17,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
+from canopsis.network-bench import Client
+from functools import wraps
 
 
 def Netork_decorator(func):
     """
     decorator to send the object in the bench network system
     """
+
+    client = Client()
+
     @wraps(func)
     def monitor(*args, **kwargs):
 
@@ -32,17 +37,3 @@ def Netork_decorator(func):
 
     return monitor
 
-
-@Configurable(paths='network-bench/network-bench.conf')
-class Infos(object):
-
-    def __init__(self,host=None, port=None, *args, **kwargs):
-        super(Infos, self).__init__(*args, **kwargs)
-        self.host = host
-        self.port = port
-
-    def get_host(self):
-        return str(self.host)
-
-    def get_port(self):
-        return int(self.port)
