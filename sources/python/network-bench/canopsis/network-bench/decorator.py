@@ -17,19 +17,37 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
-from canopsis.network-bench import Client
+from client import Client
 from functools import wraps
 
 
-def Netork_decorator(func):
+def Network_decorator_out(func):
     """
     decorator to send the object in the bench network system
     """
-
     client = Client()
 
     @wraps(func)
-    def monitor(*args, **kwargs):
+    def monitor(event, *args, **kwargs):
+
+        client.send(event)
+
+        result = func(*args, **kwargs)
+
+        return result
+
+    return monitor
+
+def Network_decorator_in(func):
+    """
+    decorator to send the object in the bench network system
+    """
+    client = Client()
+
+    @wraps(func)
+    def monitor(event, *args, **kwargs):
+
+        client.receive(event)
 
         result = func(*args, **kwargs)
 

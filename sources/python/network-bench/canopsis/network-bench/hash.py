@@ -21,19 +21,22 @@
 from __future__ import unicode_literals
 from collections import Hashable, OrderedDict
 
-class HashGenerator(object):
 
+class HashGenerator(object):
     def __init__(self, *args, **kwargs):
         super(HashGenerator, self).__init__(*args, **kwargs)
 
-
     def get_hash(self, message):
-        if(isinstance(message, Hashable)):
+        if (isinstance(message, Hashable)):
             return hash(message)
-        elif(isinstance(message, dict())):
-            ordered_dict = OrderedDict(sorted(message.items(), key=lambda x: x[1]))
-            return(hash(str(ordered_dict)))
-        elif(isinstance(message, list)):
-            return(hash(str(message.sort())))
+        elif (isinstance(message, dict())):
+            listtosort = []
+            for name in message:
+                val = message[name]
+                listtosort.append(name, val)
+                result = str(listtosort.sort(lambda x: x[0]))
+            return (hash(result))
+        elif (isinstance(message, list)):
+            return (hash(str(message)))
         else:
             return message
