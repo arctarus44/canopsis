@@ -41,6 +41,7 @@ class Serv(Thread):
 
         self.tmp = []
 
+
     def run(self):
 
         self.loop.set()
