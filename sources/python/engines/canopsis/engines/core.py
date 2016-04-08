@@ -38,7 +38,7 @@ from os import getpid
 from os.path import join
 from sys import prefix as sys_prefix
 
-from canopsis.network-bench import Network_decorator_out, Network_decorator_in
+from canopsis.network_bench import Network_decorator_out, Network_decorator_in
 
 DROP = -1
 

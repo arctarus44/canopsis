@@ -24,7 +24,7 @@ from time import time
 from hash import HashGenerator
 
 
-@Configurable(paths='bench/architecture.conf')
+@Configurable(paths='network_bench/network_bench.conf')
 class Client(object):
     def __init__(self, host=None, port=None, *args, **kwargs):
         super(Client, self).__init__(*args, **kwargs)

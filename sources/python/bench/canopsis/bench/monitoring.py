@@ -18,18 +18,17 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from time import sleep, time
-from threading import Thread, Event
-from psutil import Process
-from os import getpid
 from functools import wraps
 from math import pow
+from os import getpid
+from threading import Thread, Event
+from time import sleep, time
 
 from b3j0f.conf import Configurable, Category
+from canopsis.common.utils import singleton_per_scope
+from psutil import Process
 
 from publisher import Publisher
-
-from canopsis.common.utils import singleton_per_scope
 
 
 class ThreadCPU(Thread):
@@ -73,7 +72,6 @@ def monitoring(func):
     :param function: the decorated function
     """
     @wraps(func)
-    def monitor(engine, *args, **kwargs):
 
         result = None
 

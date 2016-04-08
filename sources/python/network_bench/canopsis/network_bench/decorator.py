@@ -29,7 +29,6 @@ def Network_decorator_out(func):
 
     @wraps(func)
     def monitor(event, *args, **kwargs):
-
         client.send(event)
 
         result = func(*args, **kwargs)
@@ -37,6 +36,7 @@ def Network_decorator_out(func):
         return result
 
     return monitor
+
 
 def Network_decorator_in(func):
     """
@@ -46,7 +46,6 @@ def Network_decorator_in(func):
 
     @wraps(func)
     def monitor(event, *args, **kwargs):
-
         client.receive(event)
 
         result = func(*args, **kwargs)
@@ -54,4 +53,3 @@ def Network_decorator_in(func):
         return result
 
     return monitor
-

@@ -25,7 +25,7 @@ from time import time
 from b3j0f.conf import Configurable
 
 
-@Configurable(paths='network-bench/network-bench.conf')
+@Configurable(paths='network_bench/network_bench.conf')
 class Serv(Thread):
     def __init__(self, host=None, port=None, *args, **kwargs):
         super(Serv, self).__init__(*args, **kwargs)
