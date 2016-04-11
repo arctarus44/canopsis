@@ -25,8 +25,10 @@ from time import time
 from b3j0f.conf import Configurable
 from canopsis.network_bench.publisher import Publisher
 
+
 @Configurable(paths='network_bench/network_bench.conf')
 class Serv(Thread):
+
     def __init__(self, host=None, port=None, *args, **kwargs):
         super(Serv, self).__init__(*args, **kwargs)
 
@@ -42,7 +44,6 @@ class Serv(Thread):
         self.tmp = []
 
         self.publisher = Publisher()
-
 
     def run(self):
 
