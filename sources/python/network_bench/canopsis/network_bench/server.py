@@ -23,7 +23,7 @@ from threading import Thread, Event
 from zmq import Context
 from time import time
 from b3j0f.conf import Configurable
-
+from canopsis.network_bench.publisher import Publisher
 
 @Configurable(paths='network_bench/network_bench.conf')
 class Serv(Thread):
@@ -41,6 +41,8 @@ class Serv(Thread):
 
         self.tmp = []
 
+        self.publisher = Publisher()
+
 
     def run(self):
 
@@ -48,9 +50,7 @@ class Serv(Thread):
 
         while self.loop.is_set():
             now = time()
-            print('reception')
             result = self.receiver.recv_pyobj()
-            print('reçu {0}'.format(result))
             self.processing(result)
 
             if (time() - now) > 300:
@@ -61,7 +61,7 @@ class Serv(Thread):
         if (test == -1):
             self.tmp.append(result)
         else:
-            print('temps d\'envoi: {0}'.format(
+            self.publish('temps d\'envoi: {0}'.format(
                 float(result[1]) - float(test)))
 
     def already_in(self, obj):
@@ -87,3 +87,6 @@ class Serv(Thread):
                 self.tmp.pop(cpt)
             else:
                 cpt += 1
+
+    def publish(self, message):
+        self.publisher.publish(message)

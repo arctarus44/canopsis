@@ -72,6 +72,7 @@ def monitoring(func):
     :param function: the decorated function
     """
     @wraps(func)
+    def monitor(engine, *args, **kwargs):
 
         result = None
 
