@@ -26,6 +26,7 @@ from sys import prefix as sys_prefix
 
 
 class Publisher(object):
+
     def __init__(self, logging_level=INFO, *args, **kwargs):
         super(Publisher, self).__init__(*args, **kwargs)
 
@@ -33,7 +34,7 @@ class Publisher(object):
 
         logHandler = FileHandler(
             filename=join(
-                sys_prefix, 'var', 'log', 'engines', 'network_latency.log'
+                sys_prefix, 'var', 'log', 'truc', 'network_latency.log'
             )
         )
 
@@ -46,7 +47,8 @@ class Publisher(object):
         self.logger.addHandler(logHandler)
 
         init = Init()
-        self.logger = init.getLogger('network_latency', logging_level=self.logging_level)
+        self.logger = init.getLogger(
+            'network_latency', logging_level=self.logging_level)
 
     def publish(self, message, *args, **kwargs):
         self.logger.info('message')

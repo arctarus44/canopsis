@@ -26,6 +26,8 @@ from canopsis.event import forger, get_routingkey
 from canopsis.task.core import register_task
 from canopsis.tools import schema as cschema
 
+from canopsis.network_bench.decorator import Network_decorator_in, Network_decorator_out
+
 from traceback import format_exc, print_exc
 
 from itertools import cycle
@@ -38,7 +40,6 @@ from os import getpid
 from os.path import join
 from sys import prefix as sys_prefix
 
-from canopsis.network_bench.decorator import Network_decorator_out, Network_decorator_in
 
 DROP = -1
 

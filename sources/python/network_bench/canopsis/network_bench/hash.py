@@ -19,10 +19,11 @@
 # ---------------------------------
 
 from __future__ import unicode_literals
-from collections import Hashable, OrderedDict
+from collections import Hashable
 
 
 class HashGenerator(object):
+
     def __init__(self, *args, **kwargs):
         super(HashGenerator, self).__init__(*args, **kwargs)
 
