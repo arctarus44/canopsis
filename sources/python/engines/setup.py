@@ -32,7 +32,9 @@ install_requires = [
     'canopsis.schema',
     'canopsis.sla',
     'canopsis.tools',
-    'canopsis.old'
+    'canopsis.old',
+    'canopsis.network_bench',
+    'canopsis.bench'
 ]
 
 setup(
