@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -16,15 +17,39 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
+from client import Client
+from functools import wraps
 
-[ALERTS]
 
-config_storage_uri = mongodb-default://
-alarm_storage_uri = mongodb-periodical-alarm://
-context_value = canopsis.context.manager.Context
+def Network_decorator_out(func):
+    """
+    decorator to send the object in the bench network system
+    """
+    client = Client()
 
-extra_fields = domain,perimeter
+    @wraps(func)
+    def monitor(event, *args, **kwargs):
+        client.send(event)
 
-[CONFIG_STORAGE_CONF]
+        result = func(*args, **kwargs)
 
-table=object
+        return result
+
+    return monitor
+
+
+def Network_decorator_in(func):
+    """
+    decorator to send the object in the bench network system
+    """
+    client = Client()
+
+    @wraps(func)
+    def monitor(event, *args, **kwargs):
+        client.receive(event)
+
+        result = func(*args, **kwargs)
+
+        return result
+
+    return monitor

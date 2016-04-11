@@ -18,12 +18,16 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+from os import getpid
+
+from canopsis.bench.io_counter import IOCounter
+from canopsis.bench.monitoring import monitoring
 from canopsis.common.init import basestring
-from canopsis.task.core import get_task
-from canopsis.engines.core import Engine
 from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.model import Parameter
+from canopsis.engines.core import Engine
+from canopsis.task.core import get_task
 
 CONF_PATH = 'engines/engines.conf'  #: dynamic engine configuration path
 CATEGORY = 'ENGINE'  #: dynamic engine configuration category
@@ -65,6 +69,8 @@ class engine(Engine, Configurable):
         self.event_processing = event_processing
         self.beat_processing = beat_processing
         self.params = params
+
+        IOCounter(self, getpid())
 
     @property
     def event_processing(self):
@@ -130,6 +136,7 @@ class engine(Engine, Configurable):
         # set _beat_processing and work
         self._beat_processing = value
 
+    @monitoring
     def work(self, event, msg, *args, **kwargs):
 
         result = self._event_processing(
@@ -139,6 +146,7 @@ class engine(Engine, Configurable):
 
         return result
 
+    @monitoring
     def beat(self, *args, **kwargs):
         self._beat_processing(
             engine=self, logger=self.logger,

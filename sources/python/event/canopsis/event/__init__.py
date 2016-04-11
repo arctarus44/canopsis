@@ -28,6 +28,8 @@ from logging import getLogger
 from canopsis.old.storage import get_storage
 from canopsis.old.account import Account
 
+HOSTNAME = getfqdn() or gethostname()
+
 
 class Event(object):
     """
@@ -134,9 +136,7 @@ def forger(
         timestamp = int(time())
 
     if not component:
-        component = getfqdn()
-        if not component:
-            component = gethostname()
+        component = HOSTNAME
 
     if not state:
         state = 0
