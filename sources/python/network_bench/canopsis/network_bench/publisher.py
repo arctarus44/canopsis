@@ -34,7 +34,7 @@ class Publisher(object):
 
         logHandler = FileHandler(
             filename=join(
-                sys_prefix, 'var', 'log', 'engines', 'network_latency.log'
+                sys_prefix, 'var', 'log', 'truc', 'network_latency.log'
             )
         )
 
