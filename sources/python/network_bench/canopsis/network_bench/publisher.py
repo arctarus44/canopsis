@@ -19,7 +19,6 @@
 # ---------------------------------
 from __future__ import unicode_literals
 
-from canopsis.common.init import Init
 from logging import INFO, DEBUG, FileHandler, Formatter
 from os.path import join
 from sys import prefix as sys_prefix
@@ -30,25 +29,6 @@ class Publisher(object):
     def __init__(self, logging_level=INFO, *args, **kwargs):
         super(Publisher, self).__init__(*args, **kwargs)
 
-        self.logging_level = logging_level
-
-        logHandler = FileHandler(
-            filename=join(
-                sys_prefix, 'var', 'log', 'truc', 'network_latency.log'
-            )
-        )
-
-        logHandler.setFormatter(
-            Formatter(
-                "%(asctime)s %(levelname)s %(name)s %(message)s"
-            )
-        )
-
-        self.logger.addHandler(logHandler)
-
-        init = Init()
-        self.logger = init.getLogger(
-            'network_latency', logging_level=self.logging_level)
 
     def publish(self, message, *args, **kwargs):
-        self.logger.info('message')
+        print(message)
