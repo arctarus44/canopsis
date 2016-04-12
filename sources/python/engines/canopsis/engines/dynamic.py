@@ -29,6 +29,7 @@ from canopsis.configuration.model import Parameter
 from canopsis.engines.core import Engine
 from canopsis.task.core import get_task
 
+
 CONF_PATH = 'engines/engines.conf'  #: dynamic engine configuration path
 CATEGORY = 'ENGINE'  #: dynamic engine configuration category
 
