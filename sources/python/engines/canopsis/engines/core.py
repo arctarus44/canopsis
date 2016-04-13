@@ -38,7 +38,7 @@ from os import getpid
 from os.path import join
 from sys import prefix as sys_prefix
 
-import canopsis.network_bench.monitoring
+from canopsis.network_bench.monitoring import Network_decorator_in, Network_decorator_out
 
 
 DROP = -1
@@ -201,6 +201,7 @@ class Engine(object):
         self.stop()
         self.logger.info("End of Engine")
 
+    @Network_decorator_in
     def on_amqp_event(self, event, msg):
         try:
             self._work(event, msg)
@@ -497,6 +498,7 @@ class TaskHandler(Engine):
         raise NotImplementedError()
 
 @register_task
+@Network_decorator_out
 def publish(event, publisher, rk=None, exchange=None, logger=None, **kwargs):
     """Task dedicated to publish an event from an engine.
 
