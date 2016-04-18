@@ -62,7 +62,7 @@ class Serv(Thread):
         if (test == -1):
             self.tmp.append(result)
         else:
-            self.publish('temps d\'envoi: {0}'.format(
+            self.publish('{0}'.format(
                 float(result[1]) - float(test)))
 
     def already_in(self, obj):
@@ -89,5 +89,5 @@ class Serv(Thread):
             else:
                 cpt += 1
 
-    def publish(self, message):
-        self.publisher.publish(message)
+    def publish(self, time):
+       self.publisher.get_time(time)

@@ -19,16 +19,87 @@
 # ---------------------------------
 from __future__ import unicode_literals
 
-from logging import INFO, DEBUG, FileHandler, Formatter
-from os.path import join
-from sys import prefix as sys_prefix
+from kombu import Connection as AMQPConnection
+from kombu.pools import producers as AMQPProducers
+
+import json
+
+from b3j0f.conf import Configurable
 
 
+@Configurable(paths='network_bench/amqp.conf')
 class Publisher(object):
 
-    def __init__(self, logging_level=INFO, *args, **kwargs):
+    def __init__(self, url=None, *args, **kwargs):
         super(Publisher, self).__init__(*args, **kwargs)
+        self.url = url
+        self.times = []
+
+        self.timer = ThreadTimer(self)
+        self.timer.start()
+
+    def get_time(self, time):
+        self.times.append(time)
+
+    def clean_times(self):
+        self.times = []
+
+    def gen_event(self):
+        event = {
+            'connector': 'Times',
+            'connector_name': 'times',
+            'event_type': 'check',
+            'source_type': 'resource',
+            'resource': 'resource',
+            'output': 'average'.format(self.time_average),
+        }
+
+        self.amqp_publish(event)
+
+    def time_average(self):
+        cnt = 0
+        tmp = 0
+        for time in self.times:
+            cnt += 1
+            tmp += float(time)
+
+        return (tmp/cnt)
+
+    def amqp_publish(self, event):
+        """
+        publish an event on amqp
+
+        :param event: an event to publish
+        :return: a boolean
+        """
+
+        with AMQPConnection(self.url) as conn:
+            with AMQPProducers[conn].acquire(block=True) as producer:
+                rk = '{0}.{1}.{2}.{3}.{4}'.format(
+                    event['connector'],
+                    event['connector_name'],
+                    event['event_type'],
+                    event['source_type'],
+                    event['component']
+                )
+
+                if event['source_type'] == 'resource':
+                    rk = '{0}.{1}'.format(rk, event['resource'])
+
+                producer.publish(
+                    event, serializer='json',
+                    exchange='canopsis.events', routing_key=rk
+                )
 
 
-    def publish(self, message, *args, **kwargs):
-        print(message)
+class ThreadTimer(Thread):
+
+    def __init__(self, publisher, *args, **kwargs):
+        super(ThreadTimer, self).__init__(*args, **kwargs)
+        self.publisher = publisher
+
+    def run(self):
+        while True:
+            sleep(60)
+
+            self.publisher.gen_event()
