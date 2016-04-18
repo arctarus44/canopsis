@@ -30,12 +30,12 @@ class HashGenerator(object):
     def get_hash(self, message):
         if (isinstance(message, Hashable)):
             return hash(message)
-        elif (isinstance(message, dict())):
+        elif (type(message) == type({})):
             listtosort = []
             for name in message:
                 val = message[name]
-                listtosort.append(name, val)
-                result = str(listtosort.sort(lambda x: x[0]))
+                listtosort.append((name, val))
+                result = str(listtosort.sort())
             return (hash(result))
         elif (isinstance(message, list)):
             return (hash(str(message)))

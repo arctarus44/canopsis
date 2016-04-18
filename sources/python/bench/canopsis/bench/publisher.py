@@ -86,7 +86,8 @@ class Publisher(object):
         return [io_in / cpt, io_out / cpt]
 
     def publish_io(self):
-        if len(self.io_array) > 0:
+        if False:
+        #if len(self.io_array) > 0:
             values = self.average_io()
 
             perf_data_array = [

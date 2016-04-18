@@ -27,7 +27,7 @@ from hash import HashGenerator
 @Configurable(paths='network_bench/network_bench.conf')
 class Client(object):
 
-    def __init__(self, host=None, port=None, *args, **kwargs):
+    def __init__(self, host='127.0.0.1', port=4242, *args, **kwargs):
         super(Client, self).__init__(*args, **kwargs)
 
         self.host = host
@@ -35,7 +35,7 @@ class Client(object):
 
         self.context = zmq.Context()
         self.zmq_socket = self.context.socket(zmq.PUSH)
-        self.zmq_socket.connect("tcp://{0}:{1}".format(self.host, self.port))
+        self.zmq_socket.connect('tcp://{0}:{1}'.format(self.host, self.port))
 
         self.hash_generator = HashGenerator()
 

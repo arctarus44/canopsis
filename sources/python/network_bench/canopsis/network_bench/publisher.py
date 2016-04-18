@@ -22,9 +22,10 @@ from __future__ import unicode_literals
 from kombu import Connection as AMQPConnection
 from kombu.pools import producers as AMQPProducers
 
-import json
-
 from b3j0f.conf import Configurable
+
+from time import sleep
+from threading import Thread
 
 
 @Configurable(paths='network_bench/amqp.conf')
