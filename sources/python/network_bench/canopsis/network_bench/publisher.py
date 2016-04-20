@@ -19,22 +19,28 @@
 # ---------------------------------
 from __future__ import unicode_literals
 
-from kombu import Connection as AMQPConnection
-from kombu.pools import producers as AMQPProducers
+#from kombu import Connection as AMQPConnection
+#from kombu.pools import producers as AMQPProducers
 
-from b3j0f.conf import Configurable
+#from b3j0f.conf import Configurable, Category
 
 from time import sleep
 from threading import Thread
 
 
-@Configurable(paths='network_bench/amqp.conf')
+#@Configurable(paths='network_bench/amqp.conf', conf=Category('AMQP'))
 class Publisher(object):
 
-    def __init__(self, url=None, *args, **kwargs):
+    def __init__(
+            self,
+            # url='amqp://cpsrabbit:canopsis@localhost:5672/canopsis',
+            *args,
+            **kwargs):
         super(Publisher, self).__init__(*args, **kwargs)
-        self.url = url
+        #self.url = url
         self.times = []
+
+        print('démarrage publisher')
 
         self.timer = ThreadTimer(self)
         self.timer.start()
@@ -46,16 +52,21 @@ class Publisher(object):
         self.times = []
 
     def gen_event(self):
+        """
         event = {
             'connector': 'Times',
             'connector_name': 'times',
             'event_type': 'check',
             'source_type': 'resource',
             'resource': 'resource',
-            'output': 'average'.format(self.time_average),
+            'output': 'average: {0}'.format(self.time_average)
         }
 
         self.amqp_publish(event)
+        """
+
+        print('average: {0}\n'.format(
+            self.time_average()))
 
     def time_average(self):
         cnt = 0
@@ -64,7 +75,10 @@ class Publisher(object):
             cnt += 1
             tmp += float(time)
 
-        return (tmp/cnt)
+        if cnt == 0:
+            return -1
+        else:
+            return (tmp / cnt)
 
     def amqp_publish(self, event):
         """
@@ -73,6 +87,40 @@ class Publisher(object):
         :param event: an event to publish
         :return: a boolean
         """
+
+        print('dans le publisher event: {0}\n'.format(event))
+        """
+        with AMQPConnection(self.url) as conn:
+            with AMQPProducers[conn].acquire(block=True) as producer:
+                rk = '{0}.{1}.{2}.{3}.{4}'.format(
+                    event['connector'],
+                    event['connector_name'],
+                    event['event_type'],
+                    event['source_type'],
+                    event['component']
+                )
+
+                if event['source_type'] == 'resource':
+                    rk = '{0}.{1}'.format(rk, event['resource'])
+
+                producer.publish(
+                    event, serializer='json',
+                    exchange='canopsis.events', routing_key=rk
+                )
+        """
+
+    def publish_message(self, message):
+
+        print('dans le publisher message: {0}\n'.format(message))
+        """
+        event = {
+            'connector': 'Message',
+            'connector_name': 'message',
+            'event_type': 'check',
+            'source_type': 'resource',
+            'resource': 'resource',
+            'output': '{0}'.format(self.message)
+        }
 
         with AMQPConnection(self.url) as conn:
             with AMQPProducers[conn].acquire(block=True) as producer:
@@ -92,6 +140,8 @@ class Publisher(object):
                     exchange='canopsis.events', routing_key=rk
                 )
 
+        """
+
 
 class ThreadTimer(Thread):
 
@@ -102,5 +152,4 @@ class ThreadTimer(Thread):
     def run(self):
         while True:
             sleep(60)
-
             self.publisher.gen_event()

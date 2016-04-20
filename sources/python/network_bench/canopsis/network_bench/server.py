@@ -22,14 +22,14 @@ import zmq
 from threading import Thread, Event
 from zmq import Context
 from time import time
-from b3j0f.conf import Configurable
-from canopsis.network_bench.publisher import Publisher
+from b3j0f.conf import Configurable, Category
+from publisher import Publisher
 
 
-@Configurable(paths='network_bench/network_bench.conf')
+@Configurable(paths='network_bench/network_bench.conf', conf=Category('NETWORK'))
 class Serv(Thread):
 
-    def __init__(self, host=None, port=None, *args, **kwargs):
+    def __init__(self, host='127.0.0.1', port=4242, *args, **kwargs):
         super(Serv, self).__init__(*args, **kwargs)
 
         self.host = host
@@ -54,7 +54,8 @@ class Serv(Thread):
             result = self.receiver.recv_pyobj()
             self.processing(result)
 
-            if (time() - now) > 300:
+            if (time() - now) > 30:
+                now = time()
                 self.clean_list()
 
     def processing(self, result):
@@ -88,6 +89,10 @@ class Serv(Thread):
                 self.tmp.pop(cpt)
             else:
                 cpt += 1
+        print('{0} events deleted\n--------\n'.format(cpt))
+
+    def publish_message(self, message):
+        self.publisher.message(message)
 
     def publish(self, time):
         self.publisher.get_time(time)

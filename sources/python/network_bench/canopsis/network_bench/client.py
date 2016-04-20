@@ -18,13 +18,13 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from b3j0f.conf import Configurable
+from b3j0f.conf import Configurable, Category
 import zmq
 from time import time
 from hash import HashGenerator
 
 
-@Configurable(paths='network_bench/network_bench.conf')
+@Configurable(paths='network_bench/network_bench.conf', conf=Category('NETWORK'))
 class Client(object):
 
     def __init__(self, host='127.0.0.1', port=4242, *args, **kwargs):
@@ -39,16 +39,13 @@ class Client(object):
 
         self.hash_generator = HashGenerator()
 
-    def send(self, message):
+    def send_receive(self, message):
 
-        send_list = []
-        send_list.append(self.hash_generator.get_hash(message))
-        send_list.append(time())
-        self.zmq_socket.send_pyobj(send_list)
+        send_receive_list = []
+        send_receive_list.append(self.hash_generator.get_hash(message))
+        send_receive_list.append(time())
+        self.zmq_socket.send_pyobj(send_receive_list)
 
-    def receive(self, message):
-
-        receive_list = []
-        receive_list.append(self.hash_generator.get_hash(message))
-        receive_list.append(time())
-        self.zmq_socket.send_pyobj(receive_list)
+        file = open('/home/tgosselin/fichierdelog', 'a')
+        file.write('dansleclient: {0}\n'.format(str(send_receive_list)))
+        file.close()

@@ -28,16 +28,26 @@ class HashGenerator(object):
         super(HashGenerator, self).__init__(*args, **kwargs)
 
     def get_hash(self, message):
+
         if (isinstance(message, Hashable)):
+
             return hash(message)
-        elif (type(message) == type({})):
+
+        elif (isinstance(message, dict)):
             listtosort = []
             for name in message:
                 val = message[name]
                 listtosort.append((name, val))
-                result = str(listtosort.sort())
-            return (hash(result))
+
+            listtosort.sort(key=lambda x: x[0])
+            result = listtosort
+
+            return (hash(str(result)))
+
         elif (isinstance(message, list)):
+
             return (hash(str(message)))
+
         else:
+
             return message

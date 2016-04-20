@@ -19,36 +19,20 @@
 # ---------------------------------
 from client import Client
 from functools import wraps
+from utils import singleton_per_scope
 
 
-def Network_decorator_out(func):
+def Network_decorator(func):
     """
     decorator to send the object in the bench network system
     """
-    client = Client()
-
     @wraps(func)
     def monitor(event, *args, **kwargs):
-        client.send(event)
 
-        result = func(*args, **kwargs)
+        client = singleton_per_scope(Client)
+        client.send_receive(event)
 
-        return result
-
-    return monitor
-
-
-def Network_decorator_in(func):
-    """
-    decorator to send the object in the bench network system
-    """
-    client = Client()
-
-    @wraps(func)
-    def monitor(event, *args, **kwargs):
-        client.receive(event)
-
-        result = func(*args, **kwargs)
+        result = func(event, *args, **kwargs)
 
         return result
 
