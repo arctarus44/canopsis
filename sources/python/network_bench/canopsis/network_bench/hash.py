@@ -29,24 +29,35 @@ class HashGenerator(object):
 
     def get_hash(self, message):
 
-        if (isinstance(message, Hashable)):
+        if isinstance(message, Hashable):
 
             return hash(message)
 
-        elif (isinstance(message, dict)):
+        elif isinstance(message, dict):
             listtosort = []
             for name in message:
                 val = message[name]
-                listtosort.append((name, val))
+
+                if isinstance(val, Hashable):
+                    listtosort.append((name, val))
+                else:
+                    listtosort.append((name, self.get_hash(val)))
 
             listtosort.sort(key=lambda x: x[0])
             result = listtosort
 
-            return (hash(str(result)))
+            return hash(str(result))
 
-        elif (isinstance(message, list)):
+        elif isinstance(message, list):
 
-            return (hash(str(message)))
+            counter = 0
+
+            for i in message:
+                if not isinstance(i, Hashable):
+                    message[counter] = self.get_hash(i)
+                counter += 1
+
+            return hash(str(message))
 
         else:
 

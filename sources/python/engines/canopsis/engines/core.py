@@ -38,7 +38,8 @@ from os import getpid
 from os.path import join
 from sys import prefix as sys_prefix
 
-from canopsis.network_bench.monitoring import Network_decorator
+from canopsis.network_bench.monitoring import Network_decorator_in
+from canopsis.network_bench.monitoring import Network_decorator_out
 
 
 DROP = -1
@@ -201,8 +202,13 @@ class Engine(object):
         self.stop()
         self.logger.info("End of Engine")
 
-    @Network_decorator
+    @Network_decorator_in
     def on_amqp_event(self, event, msg, *args, **kwargs):
+
+        file = open('/home/tgosselin/comptage', 'a')
+        file.write('r\n')
+        file.close()
+
         try:
             self._work(event, msg)
 
@@ -498,7 +504,7 @@ class TaskHandler(Engine):
         raise NotImplementedError()
 
 
-@Network_decorator
+@Network_decorator_out
 @register_task
 def publish(
         event,
@@ -519,6 +525,10 @@ def publish(
     :param str exchange: exchange name. If None, use
         ``publisher.exchange_name_events``.
     """
+    file = open('/home/tgosselin/comptage', 'a')
+    file.write('ss\n')
+    file.close()
+
 
     if exchange is None:
         exchange = publisher.exchange_name_events

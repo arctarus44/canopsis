@@ -39,13 +39,25 @@ class Client(object):
 
         self.hash_generator = HashGenerator()
 
-    def send_receive(self, message):
+    def send(self, message):
 
-        send_receive_list = []
-        send_receive_list.append(self.hash_generator.get_hash(message))
-        send_receive_list.append(time())
-        self.zmq_socket.send_pyobj(send_receive_list)
+        send_list = []
+        send_list.append(self.hash_generator.get_hash(message))
+        send_list.append(time())
+        send_list.append('sent')
+        self.zmq_socket.send_pyobj(send_list)
 
         file = open('/home/tgosselin/fichierdelog', 'a')
-        file.write('dansleclient: {0}\n'.format(str(send_receive_list)))
+        file.write('envoi: {0}\n'.format(str(send_list)))
+        file.close()
+
+    def receive(self, message):
+        receive_list = []
+        receive_list.append(self.hash_generator.get_hash(message))
+        receive_list.append(time())
+        receive_list.append('received')
+        self.zmq_socket.send_pyobj(receive_list)
+
+        file = open('/home/tgosselin/fichierdelog', 'a')
+        file.write('reception: {0}\n'.format(str(receive_list)))
         file.close()

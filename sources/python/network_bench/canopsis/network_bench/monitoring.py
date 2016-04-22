@@ -20,19 +20,51 @@
 from client import Client
 from functools import wraps
 from utils import singleton_per_scope
+from inspect import getcallargs
 
 
-def Network_decorator(func):
+def Network_decorator_in(func):
     """
     decorator to send the object in the bench network system
     """
     @wraps(func)
-    def monitor(event, *args, **kwargs):
+    def monitor(*args, **kwargs):
+
+        arguments = getcallargs(func, *args, **kwargs)
+        event = arguments['event']
+
+        file = open('/home/tgosselin/fichierdelog2', 'a')
+        file.write('reception: {0}\n-----------------\n'.format(event))
+        file.close()
 
         client = singleton_per_scope(Client)
-        client.send_receive(event)
+        client.receive(event)
 
         result = func(event, *args, **kwargs)
+
+        return result
+
+    return monitor
+
+
+def Network_decorator_out(func):
+    """
+    decorator to send the object in the bench network system
+    """
+    @wraps(func)
+    def monitor(*args, **kwargs):
+
+        arguments = getcallargs(func, *args, **kwargs)
+        event = arguments['event']
+
+        client = singleton_per_scope(Client)
+        client.send(event)
+
+        file = open('/home/tgosselin/fichierdelog2', 'a')
+        file.write('envoi: {0}\n-----------------\n'.format(event))
+        file.close()
+
+        result = func(*args, **kwargs)
 
         return result
 

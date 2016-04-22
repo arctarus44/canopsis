@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import zmq
 from threading import Thread, Event
 from zmq import Context
-from time import time
+from time import time, sleep
 from b3j0f.conf import Configurable, Category
 from publisher import Publisher
 
@@ -41,42 +41,26 @@ class Serv(Thread):
         self.receiver = self.context.socket(zmq.PULL)
         self.receiver.bind('tcp://{0}:{1}'.format(self.host, self.port))
 
-        self.tmp = []
+        self.sent = []
+        self.received = []
+
+        self.times = []
 
         self.publisher = Publisher()
 
     def run(self):
 
+        proc = Process(self)
+        proc.start()
+
         self.loop.set()
 
         while self.loop.is_set():
-            now = time()
             result = self.receiver.recv_pyobj()
-            self.processing(result)
-
-            if (time() - now) > 30:
-                now = time()
-                self.clean_list()
-
-    def processing(self, result):
-        test = self.already_in(result[0])
-        if (test == -1):
-            self.tmp.append(result)
-        else:
-            self.publish('{0}'.format(
-                float(result[1]) - float(test)))
-
-    def already_in(self, obj):
-        cpt = 0
-        for i in self.tmp:
-            if (i[0] == obj):
-                time = i[1]
-                self.tmp.pop(cpt)
-                return time
-
-            cpt += 1
-
-        return -1
+            if result[2] == 'received':
+                self.received.append(result)
+            elif result[2] == 'sent':
+                self.sent.append(result)
 
     def stop(self):
         self.loop.clear()
@@ -84,15 +68,49 @@ class Serv(Thread):
     def clean_list(self):
         now = time()
         cpt = 0
-        for i in self.tmp:
-            if ((i[1] - now) > 30):
-                self.tmp.pop(cpt)
-            else:
+        for i in self.sent:
+            if ((now - i[1]) > 30):
+                self.sent.pop(cpt)
                 cpt += 1
-        print('{0} events deleted\n--------\n'.format(cpt))
+
+        print('{0} events deleted in sent\n--------\n'.format(cpt))
+
+        cpt = 0
+        for i in self.received:
+            if ((now - i[1]) > 30):
+                self.received.pop(cpt)
+                cpt += 1
+
+        print('{0} events deleted in received\n--------\n'.format(cpt))
+
+    def gentimes(self):
+        now = time()
+        for i in self.sent:
+            for j in self.received:
+                if i[0] == j[0]:
+                    self.times.append(float(j[1]) - float(i[1]))
+        print('temps de calcul :{0} \n\n'.format(time() - now))
+
+        self.publish(self.times)
+        self.times = []
 
     def publish_message(self, message):
         self.publisher.message(message)
 
-    def publish(self, time):
+    def publish(self, times):
         self.publisher.get_time(time)
+
+
+class Process(Thread):
+    def __init__(self, server, *args, **kwargs):
+        super(Process, self).__init__(*args, **kwargs)
+        self.server = server
+        self.loop = Event()
+
+    def run(self):
+        self.loop.set()
+        while self.loop.is_set():
+            sleep(30)
+            self.server.gentimes()
+            sleep(10)
+            self.server.clean_list()

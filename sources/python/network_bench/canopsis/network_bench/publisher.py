@@ -45,8 +45,8 @@ class Publisher(object):
         self.timer = ThreadTimer(self)
         self.timer.start()
 
-    def get_time(self, time):
-        self.times.append(time)
+    def get_time(self, times):
+        self.times = times
 
     def clean_times(self):
         self.times = []
@@ -71,9 +71,9 @@ class Publisher(object):
     def time_average(self):
         cnt = 0
         tmp = 0
-        for time in self.times:
+        for i in self.times:
             cnt += 1
-            tmp += float(time)
+            tmp += float(i)
 
         if cnt == 0:
             return -1
