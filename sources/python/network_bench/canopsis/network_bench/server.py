@@ -92,8 +92,22 @@ class Serv(Thread):
         print('temps de calcul :{0} \n\n'.format(time() - now))
 
         if len(self.times) > 0:
-            self.publish(self.times)
+            print'{0}\n'.format(self.time_average())
             self.times = []
+
+    def time_average(self):
+        print('\n{0}\n'.format(self.times))
+        print('\n{0}\n'.format(len(self.times)))
+        cnt = 0
+        tmp = 0
+        for i in self.times:
+            cnt += 1
+            tmp += float(i)
+
+        if cnt == 0:
+            return -1
+        else:
+            return (tmp / cnt)
 
     def publish_message(self, message):
         self.publisher.message(message)

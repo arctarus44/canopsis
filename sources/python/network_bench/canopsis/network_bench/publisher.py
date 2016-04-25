@@ -46,9 +46,8 @@ class Publisher(object):
         self.timer.start()
 
     def get_time(self, times):
-        print('times before {0}\n'.format(self.times))
-        self.times += times
-        print('times after {0}\n'.format(self.times))
+        for time in times:
+            self.times.appen(time)
 
 
     def clean_times(self):

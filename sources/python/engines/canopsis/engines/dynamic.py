@@ -20,7 +20,7 @@
 
 from os import getpid
 
-from canopsis.bench.io_counter import IOCounter
+#from canopsis.bench.io_counter import IOCounter
 from canopsis.bench.monitoring import monitoring
 from canopsis.common.init import basestring
 from canopsis.configuration.configurable import Configurable
@@ -71,7 +71,7 @@ class engine(Engine, Configurable):
         self.beat_processing = beat_processing
         self.params = params
 
-        IOCounter(self, getpid())
+        #IOCounter(self, getpid())
 
     @property
     def event_processing(self):

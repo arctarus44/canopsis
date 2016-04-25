@@ -27,6 +27,22 @@ class HashGenerator(object):
     def __init__(self, *args, **kwargs):
         super(HashGenerator, self).__init__(*args, **kwargs)
 
+    def dict_to_unicode(self, dic):
+
+        keys = []
+
+        for key, value in dic.items():
+            if not isinstance(key, unicode):
+                keys.append(key)
+            if isinstance(value, str):
+                dic[key] = unicode(value, 'utf-8')
+
+        for key in keys:
+            tmp = unicode(key, 'utf_8')
+            dic[tmp] = dic.pop(key)
+
+        return dic
+
     def get_hash(self, message):
 
         if isinstance(message, Hashable):
@@ -80,19 +96,3 @@ class HashGenerator(object):
         else:
 
             return message
-
-        def dict_to_unicode(self, dic):
-
-            keys = []
-
-            for key, value in dic.items():
-                if not isinstance(key, unicode):
-                    keys.append(key)
-                if isinstance(value, str):
-                    dic[key] = unicode(value, 'utf-8')
-
-            for key in keys:
-                tmp = unicode(key, 'utf_8')
-                dic[tmp] = dic.pop(key)
-
-            return dic
