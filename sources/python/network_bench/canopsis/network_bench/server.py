@@ -91,8 +91,9 @@ class Serv(Thread):
                     self.times.append(float(j[1]) - float(i[1]))
         print('temps de calcul :{0} \n\n'.format(time() - now))
 
-        self.publish(self.times)
-        self.times = []
+        if len(self.times) > 0:
+            self.publish(self.times)
+            self.times = []
 
     def publish_message(self, message):
         self.publisher.message(message)

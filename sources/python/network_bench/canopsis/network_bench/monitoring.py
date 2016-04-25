@@ -33,14 +33,10 @@ def Network_decorator_in(func):
         arguments = getcallargs(func, *args, **kwargs)
         event = arguments['event']
 
-        file = open('/home/tgosselin/fichierdelog2', 'a')
-        file.write('reception: {0}\n-----------------\n'.format(event))
-        file.close()
-
         client = singleton_per_scope(Client)
         client.receive(event)
 
-        result = func(event, *args, **kwargs)
+        result = func(*args, **kwargs)
 
         return result
 
@@ -59,10 +55,6 @@ def Network_decorator_out(func):
 
         client = singleton_per_scope(Client)
         client.send(event)
-
-        file = open('/home/tgosselin/fichierdelog2', 'a')
-        file.write('envoi: {0}\n-----------------\n'.format(event))
-        file.close()
 
         result = func(*args, **kwargs)
 

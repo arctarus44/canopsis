@@ -46,7 +46,10 @@ class Publisher(object):
         self.timer.start()
 
     def get_time(self, times):
-        self.times = times
+        print('times before {0}\n'.format(self.times))
+        self.times += times
+        print('times after {0}\n'.format(self.times))
+
 
     def clean_times(self):
         self.times = []
@@ -69,6 +72,7 @@ class Publisher(object):
             self.time_average()))
 
     def time_average(self):
+        print('\n{0}\n'.format(self.times))
         cnt = 0
         tmp = 0
         for i in self.times:

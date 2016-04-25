@@ -205,10 +205,6 @@ class Engine(object):
     @Network_decorator_in
     def on_amqp_event(self, event, msg, *args, **kwargs):
 
-        file = open('/home/tgosselin/comptage', 'a')
-        file.write('r\n')
-        file.close()
-
         try:
             self._work(event, msg)
 
@@ -512,7 +508,6 @@ def publish(
         rk=None,
         exchange=None,
         logger=None,
-        *args,
         **kwargs):
     """Task dedicated to publish an event from an engine.
 
@@ -525,11 +520,6 @@ def publish(
     :param str exchange: exchange name. If None, use
         ``publisher.exchange_name_events``.
     """
-    file = open('/home/tgosselin/comptage', 'a')
-    file.write('ss\n')
-    file.close()
-
-
     if exchange is None:
         exchange = publisher.exchange_name_events
 

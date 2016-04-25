@@ -34,9 +34,25 @@ class HashGenerator(object):
             return hash(message)
 
         elif isinstance(message, dict):
+            try:
+                message.pop('rk')
+            except:
+                pass
+
+            try:
+                message.pop(u'rk')
+            except:
+                pass
+
+            dict_tmp = self.dict_to_unicode(message)
+
+            file = open('/home/tgosselin/fichierdelog2', 'a')
+            file.write('dico a hash: {0}\n'.format(dict_tmp))
+            file.close()
+
             listtosort = []
-            for name in message:
-                val = message[name]
+            for name in dict_tmp:
+                val = dict_tmp[name]
 
                 if isinstance(val, Hashable):
                     listtosort.append((name, val))
@@ -57,8 +73,26 @@ class HashGenerator(object):
                     message[counter] = self.get_hash(i)
                 counter += 1
 
+            message.sort()
+
             return hash(str(message))
 
         else:
 
             return message
+
+        def dict_to_unicode(self, dic):
+
+            keys = []
+
+            for key, value in dic.items():
+                if not isinstance(key, unicode):
+                    keys.append(key)
+                if isinstance(value, str):
+                    dic[key] = unicode(value, 'utf-8')
+
+            for key in keys:
+                tmp = unicode(key, 'utf_8')
+                dic[tmp] = dic.pop(key)
+
+            return dic
