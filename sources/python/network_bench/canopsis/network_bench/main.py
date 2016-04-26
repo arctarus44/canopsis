@@ -1,4 +1,5 @@
 from server import Serv
 
-server = Serv()
-server.start()
+if __name__ == '__main__':
+    server = Serv()
+    server.start()
