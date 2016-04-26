@@ -27,7 +27,7 @@ script to get architecture's informations
 
 file_meminfo = open('/proc/meminfo', 'r')
 file_cpuinfo = open('/proc/cpuinfo', 'r')
-file_conf = open('../etc/bench/architecture.conf', 'w')
+file_conf = open('../etc/bench/bench.conf', 'w')
 
 memory = ''
 cpu_name = []
@@ -48,7 +48,12 @@ cadence = cpu_name[len(cpu_name) - 1]
 memory = sub(r'[a-z     :A-Z\n]', '', memory)
 cadence = sub(r'[a-z     :A-Z\n]', '', cadence)
 
-file_conf.write('[BENCH]\n\nmemory={0}\ncadence={1}'.format(
+file_conf.write('[BENCH]\n\nmemory={0}\ncadence={1}\nbenchmode=True'.format(
                 memory,
                 cadence
                 ))
+
+
+file_meminfo.close()
+file_cpuinfo.close()
+file_conf.close()

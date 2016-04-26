@@ -73,33 +73,37 @@ class Serv(Thread):
                 self.sent.pop(cpt)
                 cpt += 1
 
-        print('{0} events deleted in sent\n--------\n'.format(cpt))
-
         cpt = 0
         for i in self.received:
             if ((now - i[1]) > 30):
                 self.received.pop(cpt)
                 cpt += 1
 
-        print('{0} events deleted in received\n--------\n'.format(cpt))
-
     def gentimes(self):
-        now = time()
         for i in self.sent:
             for j in self.received:
                 if i[0] == j[0]:
                     self.times.append(float(j[1]) - float(i[1]))
-        print('temps de calcul :{0} \n\n'.format(time() - now))
 
         if len(self.times) > 0:
-            print'{0}\n'.format(self.time_average())
+
+            file = open('/opt/canopsis/var/log/network_bench.log', 'w')
+            file.write('{0}\n'.format(self.time_average()))
+            file.close()
+
+            print '{0}\n'.format(self.time_average())
+
             self.times = []
 
     def time_average(self):
-        print('\n{0}\n'.format(self.times))
-        print('\n{0}\n'.format(len(self.times)))
+
+        file = open('/opt/canopsis/var/log/network_bench.log', 'w')
+        file.write('{0} events\n'.format(len(self.times)))
+        file.close()
+
         cnt = 0
         tmp = 0
+
         for i in self.times:
             cnt += 1
             tmp += float(i)

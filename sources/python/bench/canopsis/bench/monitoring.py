@@ -77,49 +77,56 @@ def monitoring(func):
         result = None
 
         info = Info()
-        cadence = info.get_cadence()
 
-        pid = getpid()
-        process = Process(pid)
+        if info.get_mode():
 
-        cpu_thread = ThreadCPU(process)
+            cadence = info.get_cadence()
 
-        cpu_thread.start()
+            pid = getpid()
+            process = Process(pid)
 
-        now = time()
+            cpu_thread = ThreadCPU(process)
 
-        try:
-            result = func(engine, *args, **kwargs)
+            cpu_thread.start()
 
-        except Exception:
-            cpu_thread.stop()
+            now = time()
+
+            try:
+                result = func(engine, *args, **kwargs)
+
+            except Exception:
+                cpu_thread.stop()
+
+            else:
+                elapsed_time = time() - now
+
+                cpu_time = process.cpu_times()
+
+                cpu_thread.stop()
+                cpu_thread.join()
+
+                memory = cpu_thread.get_memory()
+
+                statements = (cpu_time.user + cpu_time.system) * cadence
+
+                metric_array = [elapsed_time, memory, statements]
+                publisher = singleton_per_scope(
+                    Publisher,
+                    scope='{0}-{1}'.format(engine.name, pid),
+                    kwargs={'engine': engine, 'pid': pid})
+
+                publisher.addmetrics_array(metric_array)
+
+            return result
 
         else:
-            elapsed_time = time() - now
-
-            cpu_time = process.cpu_times()
-
-            cpu_thread.stop()
-            cpu_thread.join()
-
-            memory = cpu_thread.get_memory()
-
-            statements = (cpu_time.user + cpu_time.system) * cadence
-
-            metric_array = [elapsed_time, memory, statements]
-            publisher = singleton_per_scope(
-                Publisher,
-                scope='{0}-{1}'.format(engine.name, pid),
-                kwargs={'engine': engine, 'pid': pid})
-
-            publisher.addmetrics_array(metric_array)
-
-        return result
+            result = func(engine, *args, **kwargs)
+            return result
 
     return monitor
 
 
-@Configurable(paths='bench/architecture.conf', conf=Category('BENCH'))
+@Configurable(paths='bench/bench.conf', conf=Category('BENCH'))
 class Info(object):
 
     def get_cadence(self):
@@ -127,3 +134,6 @@ class Info(object):
 
     def get_memory(self):
         return int(self.memory)
+
+    def get_mode(self):
+        return self.benchmode == 'True'

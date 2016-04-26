@@ -21,6 +21,7 @@ from client import Client
 from functools import wraps
 from utils import singleton_per_scope
 from inspect import getcallargs
+from b3j0f.conf import Configurable, Category
 
 
 def Network_decorator_in(func):
@@ -30,15 +31,23 @@ def Network_decorator_in(func):
     @wraps(func)
     def monitor(*args, **kwargs):
 
-        arguments = getcallargs(func, *args, **kwargs)
-        event = arguments['event']
+        info = Info()
+        if info.get_mode():
 
-        client = singleton_per_scope(Client)
-        client.receive(event)
+            arguments = getcallargs(func, *args, **kwargs)
+            event = arguments['event']
 
-        result = func(*args, **kwargs)
+            client = singleton_per_scope(Client)
+            client.receive(event)
 
-        return result
+            result = func(*args, **kwargs)
+
+            return result
+
+        else:
+            result = func(*args, **kwargs)
+
+            return result
 
     return monitor
 
@@ -50,14 +59,29 @@ def Network_decorator_out(func):
     @wraps(func)
     def monitor(*args, **kwargs):
 
-        arguments = getcallargs(func, *args, **kwargs)
-        event = arguments['event']
+        info = Info()
+        if info.get_mode():
 
-        client = singleton_per_scope(Client)
-        client.send(event)
+            arguments = getcallargs(func, *args, **kwargs)
+            event = arguments['event']
 
-        result = func(*args, **kwargs)
+            client = singleton_per_scope(Client)
+            client.send(event)
 
-        return result
+            result = func(*args, **kwargs)
+
+            return result
+
+        else:
+            result = func(*args, **kwargs)
+
+            return result
 
     return monitor
+
+
+@Configurable(paths='network_bench/network_bench.conf', conf=Category('NETWORK'))
+class Info(object):
+
+    def get_mode(self):
+        return self.benchmode == 'True'
