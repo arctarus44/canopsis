@@ -154,33 +154,34 @@ def get_task(_id, cache=True, cacheonly=False):
 
 
 @register_task
-def set_task(obj, name, attr=None, cache=True):
+def set_task(obj, _id, attr=None, cache=True):
     """Set a task to an object such as a method.
 
     :param obj: object from where set input task such as a method.
-    :param str attr: object attribute name. Default is task name.
-    :param str name: task name."""
+    :param str attr: object attribute _id. Default is task _id.
+    :param str _id: task _id."""
 
     if attr is None:
-        attr = name
+        attr = _id
 
-    task = get_task(name, cache=cache)
+    task = get_task(_id, cache=cache)
 
     setattr(obj, attr, task)
 
-    if name in __TASKS_BY_OBJ:
-        __TASKS_BY_OBJ[name].append(obj)
+    if _id in __TASKS_BY_OBJ:
+        __TASKS_BY_OBJ[_id].append((obj, attr))
 
     else:
-        __TASKS_BY_OBJ[name] = [obj]
+        __TASKS_BY_OBJ[_id] = [obj]
 
 
-def get_objs(name):
+@register_task
+def get_objs(_id):
     """Get objects which use a task (setted with the set_task function).
 
-    :param str name: task name."""
+    :param str _id: task _id."""
 
-    return __TASKS_BY_OBJ.get(name)
+    return __TASKS_BY_OBJ.get(_id)
 
 
 @register_task
