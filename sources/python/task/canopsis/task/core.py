@@ -51,13 +51,14 @@ TASK_ID = 'id'  #: task id field name in task conf
 
 
 class TaskError(Exception):
-    """
-    Default task error.
-    """
+    """Default task error."""
 
 
 # global set of tasks by ids
 __TASKS_BY_ID = {}
+
+# global set of tasks by obj
+__TASKS_BY_OBJ = {}
 
 
 def register_tasks(force=False, **tasks):
@@ -145,6 +146,7 @@ def get_task(_id, cache=True, cacheonly=False):
 
     if _id in __TASKS_BY_ID:
         result = __TASKS_BY_ID[_id]
+
     elif not cacheonly:
         result = lookup(path=_id, cached=cache)
 
@@ -152,7 +154,37 @@ def get_task(_id, cache=True, cacheonly=False):
 
 
 @register_task
-def task(**kwargs):
+def set_task(obj, name, attr=None, cache=True):
+    """Set a task to an object such as a method.
+
+    :param obj: object from where set input task such as a method.
+    :param str attr: object attribute name. Default is task name.
+    :param str name: task name."""
+
+    if attr is None:
+        attr = name
+
+    task = get_task(name, cache=cache)
+
+    setattr(obj, attr, task)
+
+    if name in __TASKS_BY_OBJ:
+        __TASKS_BY_OBJ[name].append(obj)
+
+    else:
+        __TASKS_BY_OBJ[name] = [obj]
+
+
+def get_objs(name):
+    """Get objects which use a task (setted with the set_task function).
+
+    :param str name: task name."""
+
+    return __TASKS_BY_OBJ.get(name)
+
+
+@register_task
+def default_task(**kwargs):
     """
     Default task signature.
     """
