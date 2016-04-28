@@ -19,9 +19,27 @@
 # ---------------------------------
 
 from manager import BenchPython
+from b3j0f.conf import Category, Configurable
+from monitoring import monitoring
 
 
+@Configurable(paths='bench/bench.conf', conf=Category('BENCH'))
 class Abstraction(object):
 
-    def __init__(self, uri,  *args, **kwargs):
+    def __init__(
+            self,
+            uri=None,
+            metrics=None,
+            params=None,
+            frequecy=30,
+            params=None,
+            bounds=None,
+            duration=None,
+            * args,
+            **kwargs):
         super(Abstraction, self).__init__(*args, **kwargs)
+        b = benchpython(uri=uri)
+
+    @monitoring
+    def exec(self, params, *arg, **kwargs):
+        pass
