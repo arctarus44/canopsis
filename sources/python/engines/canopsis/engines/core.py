@@ -360,7 +360,8 @@ class Engine(object):
                 namespace='lock',
                 logging_level=engine.logging_level,
                 account=Account(user='root', group='root')
-            ).get_backend()
+            )
+            self.backend = self.storage.get_backend()
 
             self.engine = engine
             self.lock = {}
@@ -386,7 +387,7 @@ class Engine(object):
             return False
 
         def __enter__(self):
-            lock = self.storage.find_and_modify(
+            lock = self.backend.find_and_modify(
                 query={'_id': self.lock_id},
                 update={'$set': {'l': True}},
                 upsert=True
@@ -406,11 +407,14 @@ class Engine(object):
                     'Release lock {1} on engine {0}'.format(
                         self.engine.etype, self.name))
 
-                self.storage.save({
+                self.backend.save({
                     '_id': self.lock_id,
                     'l': False,
                     't': time()
                 })
+
+        def __del__(self):
+            self.storage.disconnect()
 
         @classmethod
         def release(cls, lock_id, object_storage):
