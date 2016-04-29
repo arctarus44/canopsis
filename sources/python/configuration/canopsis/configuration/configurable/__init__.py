@@ -30,6 +30,8 @@ from canopsis.common.init import basestring
 from canopsis.configuration.model import Configuration, Category, Parameter
 from canopsis.configuration.driver import ConfigurationDriver
 
+from weakref import ref
+
 
 class MetaConfigurable(type):
     """Meta class for Configurable."""
@@ -106,15 +108,15 @@ class Configurable(object):
     CRITICAL_FORMAT = ERROR_FORMAT
 
     def __init__(
-        self,
-        unified_category=None,
-        to_configure=None,
-        conf_paths=None, drivers=DEFAULT_DRIVERS,
-        auto_conf=True, reconf_once=False,
-        log_lvl='INFO', log_name=None, log_info_format=INFO_FORMAT,
-        log_debug_format=DEBUG_FORMAT, log_warning_format=WARNING_FORMAT,
-        log_error_format=ERROR_FORMAT, log_critical_format=CRITICAL_FORMAT,
-        *args, **kwargs
+            self,
+            unified_category=None,
+            to_configure=None,
+            conf_paths=None, drivers=DEFAULT_DRIVERS,
+            auto_conf=True, reconf_once=False,
+            log_lvl='INFO', log_name=None, log_info_format=INFO_FORMAT,
+            log_debug_format=DEBUG_FORMAT, log_warning_format=WARNING_FORMAT,
+            log_error_format=ERROR_FORMAT, log_critical_format=CRITICAL_FORMAT,
+            *args, **kwargs
     ):
         """
         :param str unified_category: if not None, used such as a unified
@@ -139,7 +141,7 @@ class Configurable(object):
 
         self.unified_category = unified_category
 
-        self._to_configure = self if to_configure is None else to_configure
+        self._to_configure = ref(self if to_configure is None else to_configure)
 
         self.auto_conf = auto_conf
         self.reconf_once = reconf_once
@@ -408,8 +410,8 @@ class Configurable(object):
         self._reconf_once = value
 
     def apply_configuration(
-        self, conf=None, conf_paths=None, drivers=None, logger=None,
-        override=True, to_configure=None
+            self, conf=None, conf_paths=None, drivers=None, logger=None,
+            override=True, to_configure=None
     ):
         """
         Apply conf on a destination in 5 phases:
@@ -440,9 +442,9 @@ class Configurable(object):
         self.configure(conf=conf, to_configure=to_configure)
 
     def get_configuration(
-        self,
-        conf=None, conf_paths=None, drivers=None, logger=None,
-        override=True
+            self,
+            conf=None, conf_paths=None, drivers=None, logger=None,
+            override=True
     ):
         """
         Get a dictionary of params by name from conf,

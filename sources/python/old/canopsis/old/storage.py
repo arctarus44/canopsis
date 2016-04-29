@@ -36,8 +36,6 @@ from canopsis.mongo.core import CanopsisSONManipulator
 from canopsis.old.account import Account
 from canopsis.old.record import Record
 
-from operator import itemgetter
-
 from urlparse import urlparse
 
 CONFIG = ConfigParser.RawConfigParser()
@@ -199,12 +197,11 @@ class Storage(object):
                 break
 
         else:
-            self.db.add_son_manipulator(
-                CanopsisSONManipulator('_id')
-            )
+            self.db.add_son_manipulator(CanopsisSONManipulator('_id'))
 
         try:
             self.gridfs_namespace = CONFIG.get("master", "gridfs_namespace")
+
         except:
             pass
 
@@ -216,7 +213,7 @@ class Storage(object):
 
     def disconnect(self):
         if self.connected:
-            self.conn.fsync()
+            #self.conn.fsync()
             del self.conn
             self.connected = False
 
