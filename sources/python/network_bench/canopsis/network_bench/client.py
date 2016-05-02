@@ -47,9 +47,9 @@ class Client(object):
         send_list.append('sent')
         self.zmq_socket.send_pyobj(send_list)
 
-        file = open('/home/tgosselin/fichierdelog', 'a')
-        file.write('envoi: {0}\n'.format(str(send_list)))
-        file.close()
+       # file = open('/home/tgosselin/fichierdelog', 'a')
+       # file.write('envoi: {0}\n'.format(str(send_list)))
+       # file.close()
 
     def receive(self, message):
         receive_list = []
@@ -58,6 +58,6 @@ class Client(object):
         receive_list.append('received')
         self.zmq_socket.send_pyobj(receive_list)
 
-        file = open('/home/tgosselin/fichierdelog', 'a')
-        file.write('reception: {0}\n'.format(str(receive_list)))
-        file.close()
+       # file = open('/home/tgosselin/fichierdelog', 'a')
+       # file.write('reception: {0}\n'.format(str(receive_list)))
+       # file.close()

@@ -87,9 +87,9 @@ class Serv(Thread):
 
         if len(self.times) > 0:
 
-            file = open('/opt/canopsis/var/log/network_bench.log', 'w')
-            file.write('{0}\n'.format(self.time_average()))
-            file.close()
+           # file = open('/opt/canopsis/var/log/network_bench.log', 'w')
+           # file.write('{0}\n'.format(self.time_average()))
+           # file.close()
 
             print '{0}\n'.format(self.time_average())
 
@@ -97,9 +97,9 @@ class Serv(Thread):
 
     def time_average(self):
 
-        file = open('/opt/canopsis/var/log/network_bench.log', 'w')
-        file.write('{0} events\n'.format(len(self.times)))
-        file.close()
+       # file = open('/opt/canopsis/var/log/network_bench.log', 'w')
+       # file.write('{0} events\n'.format(len(self.times)))
+       # file.close()
 
         cnt = 0
         tmp = 0

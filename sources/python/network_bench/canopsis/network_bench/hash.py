@@ -62,9 +62,9 @@ class HashGenerator(object):
 
             dict_tmp = self.dict_to_unicode(message)
 
-            file = open('/home/tgosselin/fichierdelog2', 'a')
-            file.write('dico a hash: {0}\n'.format(dict_tmp))
-            file.close()
+           # file = open('/home/tgosselin/fichierdelog2', 'a')
+           # file.write('dico a hash: {0}\n'.format(dict_tmp))
+           # file.close()
 
             listtosort = []
             for name in dict_tmp:
