@@ -36,4 +36,10 @@ class BenchPython(Bench):
     def __init__(self, scope, path, *args, **kwargs):
         super(BenchPython, self).__init__(*args, **kwargs)
 
-        
+
+class BenchMongo(Bench):
+
+    __scope__ = 'mongo'
+
+    def __init__(self, scope, path, *args, **kwargs):
+        super(BenchPython, self).__init__(*args, **kwargs)
