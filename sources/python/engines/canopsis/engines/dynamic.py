@@ -18,8 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
+from six import string_types
+
 from canopsis.common.init import basestring
-from canopsis.task.core import get_task
+from canopsis.task.core import get_task, set_task
 from canopsis.engines.core import Engine
 from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import conf_paths
@@ -52,18 +54,15 @@ class engine(Engine, Configurable):
     CAMQP_CUSTOM = 'camqp_custom'  #: camqp custom
 
     def __init__(
-        self,
-        event_processing=None,
-        beat_processing=None,
-        params=None,
-        *args,
-        **kwargs
+            self, event_processing=None, beat_processing=None, params=None,
+            *args,
+            **kwargs
     ):
 
         super(engine, self).__init__(*args, **kwargs)
 
-        self.event_processing = event_processing
-        self.beat_processing = beat_processing
+        self._event_processing = self.event_processing = event_processing
+        self._beat_processing = self.beat_processing = beat_processing
         self.params = params
 
     @property
@@ -85,18 +84,17 @@ class engine(Engine, Configurable):
         """
 
         # by default, load default event processing
-        if value is None:
-            value = event_processing
-        # if str, load the related function
-        elif isinstance(value, basestring):
+        if isinstance(value, basestring):
             try:
-                value = get_task(value)
+                value = set_task(self, value, '_event_processing')
             except ImportError:
                 self.logger.error('Impossible to load %s' % value)
-                value = event_processing
 
-        # set _event_processing and work
-        self._event_processing = value
+        else:
+            if value is None:
+                value = self.event_processing
+
+            self._event_processing = value
 
     @property
     def beat_processing(self):
@@ -117,18 +115,17 @@ class engine(Engine, Configurable):
         """
 
         # by default, load default beat processing
-        if value is None:
-            value = beat_processing
-        # if str, load the related function
-        elif isinstance(value, basestring):
+        if isinstance(value, basestring):
             try:
-                value = get_task(value)
+                value = set_task(self, value, '_beat_processing')
             except ImportError:
                 self.logger.error('Impossible to load %s' % value)
-                value = beat_processing
 
-        # set _beat_processing and work
-        self._beat_processing = value
+        else:
+            if value is None:
+                value = self.beat_processing
+
+            self._beat_processing = value
 
     def work(self, event, msg, *args, **kwargs):
 
