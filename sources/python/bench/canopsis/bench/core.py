@@ -18,10 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.middleware.core import Middleware
+from b3j0f.middleware.url import URLMiddleware
 
 
-class Bench(Middleware):
+class Bench(URLMiddleware):
 
     __protocol__ = 'bench'
 

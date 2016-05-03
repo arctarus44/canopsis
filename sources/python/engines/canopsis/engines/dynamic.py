@@ -24,6 +24,7 @@ from canopsis.engines.core import Engine
 from canopsis.configuration.configurable import Configurable
 from canopsis.configuration.configurable.decorator import conf_paths
 from canopsis.configuration.model import Parameter
+from canopsis.task.core import register_task
 
 CONF_PATH = 'engines/engines.conf'  #: dynamic engine configuration path
 CATEGORY = 'ENGINE'  #: dynamic engine configuration category
@@ -130,6 +131,7 @@ class engine(Engine, Configurable):
         # set _beat_processing and work
         self._beat_processing = value
 
+    @register_task
     def work(self, event, msg, *args, **kwargs):
 
         result = self._event_processing(
@@ -139,6 +141,7 @@ class engine(Engine, Configurable):
 
         return result
 
+    @register_task
     def beat(self, *args, **kwargs):
         self._beat_processing(
             engine=self, logger=self.logger,

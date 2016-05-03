@@ -111,7 +111,7 @@ def monitoring(func):
 
             statements = (cpu_time.user + cpu_time.system) * cadence
 
-            file = open('', 'a')
+            file = open('/home/tgosselin/fichierdelog', 'a')
             file.write('time: {0}s, statements: {1}stmts, mem: {2}kb'.format(
                 elapsed_time,
                 statements,

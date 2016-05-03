@@ -18,13 +18,9 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from manager import BenchPython
-from b3j0f.conf import Category, Configurable
-from monitoring import monitoring
 
 
-@Configurable(paths='bench/bench.conf', conf=Category('BENCH'))
-class Abstraction(object):
+class Daemon_bench(object):
 
     def __init__(
             self,
@@ -37,9 +33,5 @@ class Abstraction(object):
             duration=None,
             * args,
             **kwargs):
-        super(Abstraction, self).__init__(*args, **kwargs)
-        b = benchpython(uri=uri)
-
-    @monitoring
-    def exec(self, params, *arg, **kwargs):
-        pass
+        super(Daemon_bench, self).__init__(*args, **kwargs)
+    
