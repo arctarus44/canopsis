@@ -51,6 +51,7 @@ TASK_ID = 'id'  #: task id field name in task conf
 
 
 class TaskError(Exception):
+
     """Default task error."""
 
 
@@ -173,6 +174,18 @@ def set_task(obj, _id, attr=None, cache=True):
 
     else:
         __TASKS_BY_OBJ[_id] = [obj]
+
+
+@register_task
+def unset_task(_id, obj, attr):
+    if _id in __TASKS_BY_OBJ:
+        new_list = [item for item in __TASKS_BY_OBJ[_id]
+                    if item[0] != obj and item[1] != attr]
+
+        if new_list:
+            __TASKS_BY_OBJ[_id] = new_list
+        else:
+            del __TASKS_BY_OBJ[_id]
 
 
 @register_task

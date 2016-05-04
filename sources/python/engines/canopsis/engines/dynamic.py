@@ -116,9 +116,13 @@ class engine(Engine, Configurable):
         """
 
         # by default, load default beat processing
+
         if isinstance(value, basestring):
+            file = open('/home/tgosselin/fichierdelog', 'a')
+            file.write('_id: {0}\n'.format(value))
+            file.close()
             try:
-                value = set_task(self, value, '_beat_processing')
+                set_task(self, value, '_beat_processing')
             except ImportError:
                 self.logger.error('Impossible to load %s' % value)
 
@@ -165,6 +169,9 @@ class engine(Engine, Configurable):
         """
 
         if isinstance(value, basestring):
+            file = open('/home/tgosselin/fichierdelog', 'a')
+            file.write('_id: {0}\n'.format(value))
+            file.close()
             value = eval(value)
 
         self._params = value
