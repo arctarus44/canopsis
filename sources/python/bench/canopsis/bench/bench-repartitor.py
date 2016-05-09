@@ -4,11 +4,17 @@ from zmq import Context, PUSH
 
 @Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/bench.conf')
 class Info(object):
+	"""
+	    class in charge to get information in configuration file
+	"""
     pass
 
 
 class Connexion(object):
 
+	"""
+	class in charge to distribute urls on each canopsis instances.
+	"""
     def __init__(self, *args, **kwargs):
         info = Info()
 

@@ -21,39 +21,12 @@
 from functools import wraps
 from math import pow
 from os import getpid
-from threading import Thread, Event
-from time import sleep, time
+from time import time
 from b3j0f.conf import Configurable, Category
-#from canopsis.common.utils import singleton_per_scope
 from psutil import Process
-#from publisher import Publisher
-
-
-class Mem(Thread):
-
-    """
-    cpu and memory analysis while an engine's function is running
-    """
-
-    def __init__(self, process, *args, **kwargs):
-        super(Mem, self).__init__(*args, **kwargs)
-        self.process = process
-        self.loop = Event()
-        self.memory_percent = 0
-        info = Info()
-        self.memory = info.get_memory()
-
-    def run(self):
-        self.loop.set()
-        while self.loop.is_set():
-            self.memory_percent = self.process.memory_percent()
-            sleep(0.0001)
-
-    def stop(self):
-        self.loop.clear()
-
-    def get_memory(self):
-        return ((self.memory_percent * self.memory) / 100)
+from check_mem import Mem
+from check_cpu import Cpu
+from check_io import IOCounter
 
 
 @Configurable(paths='bench/bench.conf', conf=Category('BENCH'))
@@ -82,14 +55,17 @@ def monitoring(func):
 
         info = Info()
 
-        cadence = info.get_cadence()
-
         pid = getpid()
         process = Process(pid)
 
-        mem_thread = Mem(process)
-
+        mem_thread = Mem(process, info.get_memory())
         mem_thread.start()
+
+        io_thread = Cpu(process, info.get_cadence())
+        io_thread.start()
+
+        cpu_thread = IOCounter(process)
+        cpu_thread.start()
 
         now = time()
 
@@ -98,24 +74,31 @@ def monitoring(func):
 
         except Exception:
             mem_thread.stop()
+            io_thread.stop()
+            cpu_thread.stop()
 
         else:
             elapsed_time = time() - now
 
-            cpu_time = process.cpu_times()
+            statements = cpu_thread.get_statements()
+            memory = mem_thread.get_memory()
+            io = io_thread.get_io()
 
             mem_thread.stop()
             mem_thread.join()
 
-            memory = mem_thread.get_memory()
+            cpu_thread.stop()
+            cpu_thread.join()
 
-            statements = (cpu_time.user + cpu_time.system) * cadence
+            io_thread.stop()
+            io_thread.join()
 
             file = open('/home/tgosselin/fichierdelog', 'a')
-            file.write('time: {0}s, statements: {1}stmts, mem: {2}kb'.format(
+            file.write('time: {0}s, statements: {1}stmts, mem: {2}kb, io:{3}'.format(
                 elapsed_time,
                 statements,
-                memory))
+                memory,
+                io))
             file.close()
 
             """
