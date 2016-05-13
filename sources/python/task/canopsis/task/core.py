@@ -171,15 +171,7 @@ def set_task(obj, _id, attr=None, cache=True):
 
     setattr(obj, attr, task)
 
-    if _id in __TASKS_BY_OBJ:
-        __TASKS_BY_OBJ[_id].append((obj, attr))
-
-    else:
-        __TASKS_BY_OBJ[_id] = [obj]
-
-    file = open('/home/tgosselin/fichierdelog', 'a')
-    file.write('objs in task: {0}\n'.format(__TASKS_BY_OBJ))
-    file.close()
+    __TASKS_BY_OBJ.setdefault(_id, []).append((obj, attr))
 
 
 @register_task
@@ -388,7 +380,7 @@ def tasks(confs=None, raiseerror=False, **kwargs):
 
 def test_for_me():
     myid = 'canopsis.serie.process.beat_processing'
-    obj = get_objs(myid)
-    task = get_task_with_params(myid)
-    task = monitoring(task)
-    set_task(obj[0], obj[1], task)
+    for obj, attr in get_objs(myid):
+        task = getattr(obj, attr)
+        task = monitoring(task)
+        set_task(obj, attr, task)
