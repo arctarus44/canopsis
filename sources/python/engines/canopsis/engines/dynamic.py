@@ -118,11 +118,11 @@ class engine(Engine, Configurable):
         # by default, load default beat processing
 
         if isinstance(value, basestring):
-            file = open('/home/tgosselin/fichierdelog', 'a')
-            file.write('_id: {0}\n'.format(value))
-            file.close()
             try:
                 set_task(self, value, '_beat_processing')
+                file = open('/home/tgosselin/fichierdelog', 'a')
+                file.write('_id: {0}\n'.format(value))
+                file.close()
             except ImportError:
                 self.logger.error('Impossible to load %s' % value)
 

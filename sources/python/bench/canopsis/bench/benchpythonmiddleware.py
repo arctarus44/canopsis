@@ -18,29 +18,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from b3j0f.middleware import URLMiddleware
-from monitoring import monitoring
+from benchmiddleware import BenchMiddleware
 
-class BenchMiddleware(URLMiddlware):
-    """
-    Middleware class for all benchs 
-    """
-
-    __protocols__ = ['bench']
-
-    def __init__(self, *args, **kwargs):
-        super(BenchMiddleware, self).__init__(*args, **kwargs)
-
-    def instanciate(self):
-        """
-        method to instanciate functions to bench them
-        """
-
-    @monitoring
-    def launch(self, func):
-        """
-        execute the method to bench it
-        """
 
 class BenchPythonMiddleware(BenchMiddleware):
     """
@@ -48,3 +27,8 @@ class BenchPythonMiddleware(BenchMiddleware):
     """
 
     __protocols__ = ['python_bench']
+
+    def launch(self):
+        """
+        lauch python method to bench  TO DO
+        """

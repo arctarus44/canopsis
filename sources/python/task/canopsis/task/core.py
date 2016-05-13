@@ -25,6 +25,8 @@ from canopsis.common.utils import lookup, path
 
 from inspect import isroutine
 
+from canopsis.bench.monitoring import monitoring
+
 """
 Task module.
 
@@ -174,6 +176,10 @@ def set_task(obj, _id, attr=None, cache=True):
 
     else:
         __TASKS_BY_OBJ[_id] = [obj]
+
+    file = open('/home/tgosselin/fichierdelog', 'a')
+    file.write('objs in task: {0}\n'.format(__TASKS_BY_OBJ))
+    file.close()
 
 
 @register_task
@@ -378,3 +384,11 @@ def tasks(confs=None, raiseerror=False, **kwargs):
             result.append(result_to_append)
 
     return result
+
+
+def test_for_me():
+    myid = 'canopsis.serie.process.beat_processing'
+    obj = get_objs(myid)
+    task = get_task_with_params(myid)
+    task = monitoring(task)
+    set_task(obj[0], obj[1], task)
