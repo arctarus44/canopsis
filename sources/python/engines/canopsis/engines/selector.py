@@ -25,6 +25,7 @@ from canopsis.old.record import Record
 from canopsis.downtime.selector import Selector
 from canopsis.sla import Sla
 from canopsis.event import get_routingkey
+
 from time import time
 
 

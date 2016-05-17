@@ -216,7 +216,7 @@ class Storage(object):
 
     def disconnect(self):
         if self.connected:
-            self.conn.fsync()
+            #self.conn.fsync()
             del self.conn
             self.connected = False
 
@@ -846,6 +846,10 @@ def get_storage(namespace='object', account=None, logging_level=logging.INFO):
         if not account:
             account = Account()
 
-        STORAGES[namespace] = Storage(account, namespace=namespace, logging_level=logging_level)
+        STORAGES[namespace] = Storage(
+            account, namespace=namespace, logging_level=logging_level
+        )
+
+    STORAGES[namespace].connect()
 
     return STORAGES[namespace]

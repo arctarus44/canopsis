@@ -295,6 +295,7 @@ class Storage(DataBase):
         :return: storage indexes such as a list of list of (name, direction).
         :rtype: list
         """
+
         return self._indexes
 
     def all_indexes(self):
@@ -345,7 +346,8 @@ class Storage(DataBase):
                 indexes.append(index)
         else:  # error in other cases
             raise Storage.StorageError(
-                "wrong indexes value %s. str, tuple or list accepted" % value)
+                "wrong indexes value %s. str, tuple or list accepted" % value
+            )
 
         self._indexes = indexes
         self.reconnect()
