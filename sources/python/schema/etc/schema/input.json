@@ -1,0 +1,12 @@
+{
+  "schema": {
+    "path": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema"
+  },
+  "data": {
+    "alias": "topo",
+    "sup": false,
+    "source": {
+      "path": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema"
+    }
+  }
+}

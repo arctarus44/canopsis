@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://canopsis.org/transformation.json",
+  "name": "transformation",
+  "description": "transformation schema for data migration version",
+  "links": [
+    {
+      "href": "#http://canopsis.org/base_schema.json"
+    }
+  ],
+
+  "type":"object",
+
+  "properties":{
+    
+    "patch":{"$ref":"http://canopsis.org/patch.json"},
+    "input":{"$ref":"http://canopsis.org/input.json"},
+    "output":{"$ref":"http://canopsis.org/output.json"},
+    "filter":{"$ref":"http://canopsis.org/filter.json"}
+  }
+}

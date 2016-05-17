@@ -1,0 +1,26 @@
+{ 
+  "add": {
+    "op": "add",
+    "path": "/properties/essai",
+    "value": "type:string"
+  },
+  "replace": {
+    "op": "replace",
+    "path": "/properties/info/properties",
+    "value": "entity"
+  },
+  "remove": {
+    "op": "remove",
+    "path": "/properties/info/properties"
+  },
+  "copy": {
+    "op": "copy",
+    "from":"/version",
+    "path": "/properties/info/properties"
+  },
+  "move": {
+    "op": "move",
+    "from":"/path",
+    "path": "/properties/info/properties"
+  }
+}

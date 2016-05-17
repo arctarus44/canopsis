@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://canopsis.org/base_schema.json",
+  "name": "base_schema",
+  "description": "base schema for canopsis",
+  "type": "object",
+  
+  "properties": {
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    }
+  }
+}

@@ -99,7 +99,6 @@ class Schema(object):
 
         :param str unique_key: schema unique_key
         :return: schema
-        :rtype: _ElementTree or None
         """
 
         if self.is_unique_key_existing(unique_key):
@@ -192,7 +191,7 @@ class Schema(object):
 
         return [False, None]
 
-    def assert_structural_schema(self, schema):
+       def assert_structural_schema(self, schema):
         """
         Raise an error if a schema is not a structural one
 
