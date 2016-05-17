@@ -1,74 +1,100 @@
-.. _FR__Schema:
+.. _FR_Schema:
 
 ===============
 Canopsis Schema
 ===============
 
-This document describes the concept of schema in Canopsis.
+This document describes the solution to the intercompatibility problem
 
 .. contents::
-   :depth: 2
+   :depth: 4
 
+----------
 References
-==========
+----------
 
- - :ref:`FR::Storage <FR__Storage>`
+- :ref:` fr__schema <fr__Schema>`
 
+-------
 Updates
-=======
+-------
 
 .. csv-table::
    :header: "Author(s)", "Date", "Version", "Summary", "Accepted by"
 
-   "David Delassus", "2015/10/06", "0.1", "Document creation", ""
-   "Gwenael Pluchon", "2015/11/02", "0.2", "Add meta-schema", ""
-   "Gwenael Pluchon", "2015/11/02", "0.3", "remove meta-schema", ""
+   "Julie Vanglabeke", "29/04/2016", "0.1", "schema projet", ""
 
-Contents
-========
+-------
+Content
+-------
+
+
+Context
+=======
+
+This project is based on one problem:
+    incompatibility of programmation languages.
+
+Many languages mean:
+ - adaptability difficulties
+ - reserved to "aficionados" of developpement
+ - for bigger project, a software configuration training is needed for the staff
+
+In addition, an IT staff is needed to be in touch with the customer to maintain the project and his adaptation.
+
+
+Objective
+=========
+
+Canopsis is a Hypervision/Supervision tool, it is based on the schema notion to define the structure and data treatment. 
+After taken schema to Canopsis, the tool will generate code to warranty maximum reliability and maintain of the tool easely.
+
+With the evolution of the system problematic, we bring many feature based on schema, datas migration is an importante part.
+
 
 Description
------------
+===========
+
+.. _FR__Schema__Description:
+
+A schema is a document in Json or XML or anyother language which describe the sctructure of an data.
+The structure of the data must respect what it describe in the schema to be validated.
 
 A schema is used to describe:
 
  - data: how data is structured, in order to generate models for it
- - transformation: how data can be turned into another data
- - components: how Canopsis components interact with data (chaining, ...)
+ - transformations: how data can be turned into another data
 
-.. _FR__Schema__Data:
+the following picture describe how schemas interact to migrate data in new data. 
+
+.. image:: ../_static/images/schema/Diagramme.png
+
+All schema in Canopsis inherit of Base_Schema.
+Patch is created with Schema_patch, is apply on data.
+The association of Patch and Data create New Data
+
+One Patch can be apply on many data and many Patch or Data are validate by Schema_Patch and Schema_Data whiwh inherit of Base_Schema.
+
 
 Data Schema
 -----------
 
-This schema **MUST** describe the structure of data:
+.. _FR__Schema__Data:
+
+The data schema describes how must be the structure of the data:
 
  - what fields are provided
  - how to interpret those fields (string, timestamp, ...)
-
-.. _FR__Schema__Transform:
 
 
 Transformation Schema
 ---------------------
 
-This schema **MUST** contain a reference to:
+.. _FR__Schema__Transform:
 
- - the source :ref:`data schema <FR__Schema__Data>`
- - the output :ref:`data schema <FR__Schema__Data>`
+This schema contain a reference to:
 
-And it **MUST** contain a mapping of:
-
- - fields used in output, from source
- - transformation operator to apply on fields (concatenate, split, integer to string, ...)
-
-.. _FR__Schema__Component:
-
-Component Schema
-----------------
-
-This schema describes the configuration of Canopsis components, for example:
-
- - what storage to use
- - what other components to chain data to
- - ...
+ - the input_schema : reference path to data and the schema which describe it
+ - the patch_schema : describe operation(s) which will be apply on data to transform it
+ - the output_schema : reference path to the output folder
+ - the filter_schema : describe the filter for choose the data to transform it

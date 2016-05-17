@@ -21,8 +21,8 @@
 
 from b3j0f.conf import Configurable
 
-@Configurable(paths = [])#décorateur qui permet de récupérer tous les chemins 
-#définis dans les fichiers de conf(ils peuvent être dans différents dossiers)
+@Configurable(paths = [])#decorator which get paths define in conf file.
+#those files can be in several folder.
 class Schema(object):
 
     def __init__(self, path, *args, **kwargs):
@@ -30,9 +30,8 @@ class Schema(object):
         super(Schema, self).__init__(*args, **kwargs)
         self.path = path
 
-    #valide les schema peut importe le langage
+    #valid schema independently of language.
     #raise an exception when it require derived classes to override the method.
     def validate(self, data):
 
         raise NotImplementedError()
-               

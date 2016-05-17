@@ -27,7 +27,7 @@ from ..core import Schema
 
 class JsonSchema(Schema):
 
-    def __init__(self, path, *args, **kwargs):
+    def __init__(self, path, *args, **kwargs):#define load methode which inherit from class Schema
 
         super(Schema, self).__init__(*args, **kwargs)
         self.path = path
@@ -41,5 +41,3 @@ class JsonSchema(Schema):
     def validate(self, data):
 
         return validate(data,schema)
-        
-               

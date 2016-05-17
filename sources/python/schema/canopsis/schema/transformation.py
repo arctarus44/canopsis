@@ -37,12 +37,12 @@ op = []
 value = []
 
 
-class Transformation(JsonSchema):
+class Transformation(object):
 
-    def __init__(self, path, *args, **kwargs):
+    def __init__(self, schema):
         
-        super(JsonSchema, self).__init__(*args, **kwargs)
-        self.path = path
+        super(Transformation, self).__init__(schema)
+        self.schema = schema
 
     def get_patch(self, data):
         """extract transformation informations from the patch
@@ -125,12 +125,13 @@ class Transformation(JsonSchema):
 
     def transformation(self):
         """ if sup_data = true, new data will be created old data will be deleted
-        if sup = false, old data will not be deleted"""
+        if sup = false, old data will not be deleted
+        and apply patch on data to transform it"""
 
             if sup_data[0] == True:
 
                 if path_output is not None:
-                    path_new = os.path.join(path_output[0], alias_data)
+                    path_new = os.path.join(path_output[0], alias_data[0])
 
                     result = p.apply(data)
 
@@ -141,7 +142,7 @@ class Transformation(JsonSchema):
 
                 else:
 
-                    path_new = os.path.join(path_sources[0], alias_data)
+                    path_new = os.path.join(path_sources[0], alias_data[0])
 
                     result = p.apply(data)
 
@@ -153,7 +154,7 @@ class Transformation(JsonSchema):
             elif sup_data[0] == False:
 
                 if path_output is not None:
-                    path_new = os.path.join(path_output[0], alias_data)
+                    path_new = os.path.join(path_output[0], alias_data[0])
 
                     result = p.apply(data)
 
@@ -162,7 +163,7 @@ class Transformation(JsonSchema):
 
                 else:
 
-                    path_new = os.path.join(path_sources[0], alias_data)
+                    path_new = os.path.join(path_sources[0], alias_data[0])
 
                     result = p.apply(data)
 

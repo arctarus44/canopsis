@@ -33,7 +33,7 @@ Context
 =======
 
 This project is based on one problem:
-    incompatibility of programmation languages
+    incompatibility of programmation languages.
 
 Many languages mean:
  - adaptability difficulties
@@ -57,8 +57,8 @@ Description
 
 .. _FR__Schema__Description:
 
-A schema is a document in Json or XML or anyother language which describe the sctructure of an other document or a data.
-The structure of the data/document must respect what it describe in the schema to be validated.
+A schema is a document in Json or XML or anyother language which describe the sctructure of an data.
+The structure of the data must respect what it describe in the schema to be validated.
 
 A schema is used to describe:
 
@@ -69,11 +69,11 @@ the following picture describe how schemas interact to migrate data in new data.
 
 .. image:: ../_static/images/schema/Diagramme.png
 
-All schema in Canopsis inherit of Schema_Base
+All schema in Canopsis inherit of Base_Schema.
 Patch is created with Schema_patch, is apply on data.
 The association of Patch and Data create New Data
 
-1 Patch can be apply on many Data and many Patch or Data are validate by Schema_Transformation and Schema_Data.
+One Patch can be apply on many data and many Patch or Data are validate by Schema_Patch and Schema_Data whiwh inherit of Base_Schema.
 
 
 Data Schema
@@ -94,7 +94,7 @@ Transformation Schema
 
 This schema contain a reference to:
 
- - the input_schema : reference path to data and the schema which describe it, a 
+ - the input_schema : reference path to data and the schema which describe it
  - the patch_schema : describe operation(s) which will be apply on data to transform it
  - the output_schema : reference path to the output folder
  - the filter_schema : describe the filter for choose the data to transform it
