@@ -22,14 +22,20 @@ from __future__ import absolute_import
 
 import json
 import jsonpatch
-from ..core import SchemaTr
+from ..core import transformation
+from ..lang import json
+
+patch = []
+inp = []
+output = []
+filtre = []
 
 
-class Transformation(object):
+class JsonTransformation(Transformation):
 
     def __init__(self, data):
         
-        super(Schema, self).__init__(data)
+        super(JsonSchema, self).__init__(data)
         self.data = data
 
 
@@ -37,8 +43,9 @@ class Transformation(object):
         """extract input informations
         and stock them in different lists which serves 
         to locate data"""
-        
-        raise NotImplementedError()
+
+        inp = self.get_item(data, key)
+        return inp
 
 
     def get_output(self, data, key):
@@ -46,37 +53,61 @@ class Transformation(object):
         and stock them in different lists which serves 
         to save new data"""
 
-        raise NotImplementedError()
+        output = self.get_item(data, key)
+        return output
 
 
     def get_filter(self, data, key):
         """extract filter to apply it
             on data"""
 
-        raise NotImplementedError()
+        filtre = self.get_item(data, key)
+        return filtre
 
 
     def get_patch(self, data, key):
-        """extract transformation informations from the patchs
+        """extract transformation informations from the patch
         and stock them in a list which serve 
         to apply the transformation to data"""
 
-        raise NotImplementedError()
+        patch = self.get_item(data, key)
+        return patch
 
 
     def select_data(self):
         """use filter information to select the right data"""
-        
-        raise NotImplementedError()
+
+        #decode inp
+        for cle in inp:
+            if cle == 'path':
+                path_data = inp[cle]
+
+        #decode filtre
+        recup filtre a aplliquer aux data pour les selctionner
+
+        #search data correspunding to it
+        appliquer le filtre et récuperer les data à traiter
+
+        #return the correct data
+        return data
 
 
-    def apply_patch(self):
+    def apply_patch(self, data):
         """ apply patch operation on data"""
-        
-        raise NotImplementedError()
 
+        #decode patch
+        p = jsonpatch.JsonPatch(patch)
 
-    def save(self):
-        """ save the new data in the chosen folder"""
+        #apply it on data
+        new_data = p.apply(data)
 
-        raise NotImplementedError()
+        #return the transform data
+        for cle in inp:
+            if cle == 'sup':
+                sup = inp[cle]
+
+        if sup[0] = True:
+            save(new_data, output)
+            os.remove(data)
+        else:
+            save(new_data, output)

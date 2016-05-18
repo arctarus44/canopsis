@@ -19,11 +19,8 @@
 # ---------------------------------
 
 from os import listdir
-
 from os.path import isfile, join
-
 from sys import prefix
-
 from lxml.etree import parse
 
 from canopsis.configuration.model import Parameter
@@ -53,6 +50,7 @@ try:
     _schema_manager = SchemaManager()
 except IOError:
     _schema_manager = None
+
 
 
 def get_schema_path(*args):

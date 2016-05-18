@@ -4,7 +4,7 @@
 Canopsis Schema
 ===============
 
-This document describes the solution to the intercompatibility problem
+This document describes the solution to the interopérability problem
 
 .. contents::
    :depth: 4
@@ -28,26 +28,11 @@ Updates
 Content
 -------
 
-
-Context
-=======
-
-This project is based on one problem:
-    incompatibility of programmation languages.
-
-Many languages mean:
- - adaptability difficulties
- - reserved to "aficionados" of developpement
- - for bigger project, a software configuration training is needed for the staff
-
-In addition, an IT staff is needed to be in touch with the customer to maintain the project and his adaptation.
-
-
 Objective
 =========
 
-Canopsis is a Hypervision/Supervision tool, it is based on the schema notion to define the structure and data treatment. 
-After taken schema to Canopsis, the tool will generate code to warranty maximum reliability and maintain of the tool easely.
+Canopsis is a Hypervision solution, it is based on the schema notion to define the structure of data and their treatment. 
+After taken schema to Canopsis, the tool will generate code to warranty maximum reliability and it maintain.
 
 With the evolution of the system problematic, we bring many feature based on schema, datas migration is an importante part.
 
@@ -57,7 +42,7 @@ Description
 
 .. _FR__Schema__Description:
 
-A schema is a document in Json or XML or anyother language which describe the sctructure of an data.
+A schema is a document in Json or XML or anyother language which describe the sctructure of data.
 The structure of the data must respect what it describe in the schema to be validated.
 
 A schema is used to describe:
@@ -65,36 +50,45 @@ A schema is used to describe:
  - data: how data is structured, in order to generate models for it
  - transformations: how data can be turned into another data
 
-the following picture describe how schemas interact to migrate data in new data. 
+the following picture is a class diagram.
 
 .. image:: ../_static/images/schema/Diagramme.png
 
-All schema in Canopsis inherit of Base_Schema.
-Patch is created with Schema_patch, is apply on data.
-The association of Patch and Data create New Data
 
-One Patch can be apply on many data and many Patch or Data are validate by Schema_Patch and Schema_Data whiwh inherit of Base_Schema.
+The JsonSchema class inherit of Schema class
 
 
-Data Schema
------------
+Schema
+------
 
-.. _FR__Schema__Data:
+.. _FR__Schema:
 
-The data schema describes how must be the structure of the data:
-
- - what fields are provided
- - how to interpret those fields (string, timestamp, ...)
+abstract class which introduce validate, load, get_item, set_item, del_item, and save methodes.
+Base of the different schema classes
 
 
-Transformation Schema
----------------------
+JsonSchema
+----------
 
-.. _FR__Schema__Transform:
+.. _FR__Schema__JsonSchema:
 
-This schema contain a reference to:
+specific class for JSON language
+translate Schema methodes for Json.
 
- - the input_schema : reference path to data and the schema which describe it
- - the patch_schema : describe operation(s) which will be apply on data to transform it
- - the output_schema : reference path to the output folder
- - the filter_schema : describe the filter for choose the data to transform it
+
+Transformation
+--------------
+
+.. _FR__Schema__Transformation:
+
+take a schema in parameter which inherit of Schema class.
+implement get_input, get_output, get_patch, get_filter, select_data, apply_patch and save methodes to transform data.
+
+
+JsonTransformation
+--------------
+
+.. _FR__Schema__JsonTransformation:
+
+specific class for JSON language
+translate Transformation methodes for Json.

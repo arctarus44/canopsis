@@ -41,3 +41,20 @@ class JsonSchema(Schema):
     def validate(self, data):
 
         return validate(data,schema)
+
+    def __get_item__(self, key):
+
+        return self.get(key)
+
+    def __set_item__(self, key, value):
+
+        return self[key] = value
+
+    def __del_item__(self, key):
+
+        return del self[key]
+
+    def save(self, data, output):
+
+    	with open(output, "w") as f:
+            json.dump(data, f)

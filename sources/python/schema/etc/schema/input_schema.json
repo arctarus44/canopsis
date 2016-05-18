@@ -10,28 +10,14 @@
   ],
   "type": "object",
   "properties": {
-
-    "schema": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
-        }
-      }
+    "alias": {
+      "type": "string"
     },
-    "data": {
-      "type": "object",
-      "properties": {
-        "alias": {
-          "type": "string"
-        },
-        "sup": {
-          "type": "boolean"
-        },
-        "path": {
-          "type": "string"
-        }
-      }, "required":true
+    "sup": {
+      "type": "boolean"
+    },
+    "path": {
+      "type": "string"
     }
-  }
+    }, "required":true
 }
