@@ -125,13 +125,13 @@ class Selector(Record):
         self.last_publication_date = dump.get('last_publication_date', time())
         self.state_when_all_ack = dump.get('state_when_all_ack', 'worststate')
 
+        self.data = dump
+
         self.output_tpl = self.get_output_tpl()
         self.sla_output_tpl = self.get_sla_output_tpl()
 
         if not self.output_tpl:
             self.output_tpl = "No output template defined"
-
-        self.data = dump
 
     def get_value(self, property_name, default_value):
         """
@@ -525,7 +525,7 @@ class Selector(Record):
     def have_to_publish(self, event):
 
         self.logger.debug(u'Previous metrics\n{}'.format(
-            pp.pformat(self.previous_metrics)
+            self.previous_metrics
         ))
 
         is_different = False

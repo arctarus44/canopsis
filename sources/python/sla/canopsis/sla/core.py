@@ -30,6 +30,8 @@ from pprint import PrettyPrinter
 from canopsis.timeserie.timewindow import Period
 from canopsis.event.manager import Event
 
+from canopsis.perfdata.manager import SLIDING_TIME
+
 pp = PrettyPrinter(indent=2)
 
 
@@ -343,6 +345,11 @@ class Sla(object):
             output = output.replace('[CRITICAL]', to_percent(sla_measures[3]))
             output = output.replace('[ALERTS]', to_percent(alerts_percent))
 
+            # Embed sla measures available total percentage in the output
+            output = output.replace('[P_AVAIL]', to_percent(
+                1.0 - alerts_percent)
+            )
+
             # Embed sla measures durations in the output
             output = output.replace('[T_AVAIL]', duration_to_time(
                 avail_duration)
@@ -386,15 +393,18 @@ class Sla(object):
         perf_data_array.append({
             'metric': 'cps_avail',
             'value': round(availability, 2),
-            'max': 100
+            'max': 100,
+            SLIDING_TIME: True
         })
         perf_data_array.append({
             'metric': 'cps_avail_duration',
             'value': avail_duration,
+            SLIDING_TIME: True
         })
         perf_data_array.append({
             'metric': 'cps_alerts_duration',
             'value': alerts_duration,
+            SLIDING_TIME: True
         })
 
         period_options = {
@@ -407,11 +417,7 @@ class Sla(object):
 
         period = Period(**period_options)
 
-        periodic_timestamp = period.round_timestamp(
-            now,
-            normalize=True,
-            next_period=True
-        )
+        periodic_timestamp = period.round_timestamp(now, next_period=True)
 
         self.logger.debug('periodic timestamp {}'.format(periodic_timestamp))
 
