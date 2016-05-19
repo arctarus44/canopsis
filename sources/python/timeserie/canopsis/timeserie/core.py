@@ -103,7 +103,7 @@ class TimeSerie(Configurable):
 
     @property
     def aggregation(self):
-        return self._aggregation.upper()
+        return self._aggregation.lower()
 
     @aggregation.setter
     def aggregation(self, value):
