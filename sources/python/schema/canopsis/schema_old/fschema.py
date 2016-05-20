@@ -26,7 +26,6 @@ from canopsis.schema.utils import get_unique_key, get_schema_path, \
     is_name_available
 from canopsis.schema.xslt2py import xslt2py
 
-
 class FSchema(object):
 
     def __init__(self, *args, **kwargs):

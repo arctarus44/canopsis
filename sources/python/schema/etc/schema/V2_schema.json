@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id":"http://canopsis.org/V2.json",
+  "name": "V2",
+  "description": "exemple schema v2",
+  "links": [
+    {
+      "href": "#http://canopsis.org/base_schema.json"
+    }
+  ],
+  "type": "object",
+
+  "properties": {
+      "version":{"$ref":"#http://canopsis.org/base_schema.json"},
+    
+      "info": {
+      "type": "object",
+      
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "essai1":{
+          "type": "string"
+        }
+      }
+    }
+  }
+}

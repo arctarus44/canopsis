@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "info": {
-    "eids": "blabla"
-  }
+  "info":{
+    "eids":"blabla"
+  },
+  "version":"1.0.0"
 }

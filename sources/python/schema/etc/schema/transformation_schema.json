@@ -13,9 +13,17 @@
 
   "properties":{
     
+    "inplace":{
+	"type":"boolean"},
+
     "patch":{"$ref":"http://canopsis.org/patch.json"},
-    "input":{"$ref":"http://canopsis.org/input.json"},
-    "output":{"$ref":"http://canopsis.org/output.json"},
+    
+    "input":{
+	"type":"uri",
+    
+    "output":{
+	"type":"uri",
+    
     "filter":{"$ref":"http://canopsis.org/filter.json"}
   }
 }

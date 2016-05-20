@@ -74,7 +74,7 @@ class JsonTransformation(Transformation):
         return patch
 
 
-    def select_data(self):
+    def select_data(self, filter, input):
         """use filter information to select the right data"""
 
         #decode inp
@@ -87,7 +87,8 @@ class JsonTransformation(Transformation):
 
         #search data correspunding to it
         appliquer le filtre et récuperer les data à traiter
-
+        with open(path_data, "r") as f:
+            data = json.load(f)
         #return the correct data
         return data
 

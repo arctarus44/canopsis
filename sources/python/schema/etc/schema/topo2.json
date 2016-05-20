@@ -1,27 +1,7 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id":"http://canopsis.org/V1.json",
-  "name": "V1",
-  "description": "exemple schema v1",
-  "links": [
-    {
-      "href": "#http://canopsis.org/base_schema.json"
-    }
-  ],
-  "type": "object",
-
-  "properties": {
-      "version":{"@ref":"#http://canopsis.org/base_schema.json"},
-      "essai":{"type":"string"},
-    
-      "info": {
-      "type": "object",
-      
-      "properties": {
-        "entity": {
-          "type": "string"
-        }
-      }
-    }
-  }
+  "essai":"test",
+  "info":{
+    "eids":"ble"
+  },
+  "version":"1.0.0"
 }

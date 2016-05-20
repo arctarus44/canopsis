@@ -86,7 +86,7 @@ implement get_input, get_output, get_patch, get_filter, select_data, apply_patch
 
 
 JsonTransformation
---------------
+------------------
 
 .. _FR__Schema__JsonTransformation:
 

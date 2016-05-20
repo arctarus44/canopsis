@@ -34,49 +34,35 @@ class Transformation(object):
 
 
     def get_input(self, data, key):
-        """extract input informations
-        and stock them in different lists which serves 
-        to locate data"""
         
         raise NotImplementedError()
 
 
     def get_output(self, data, key):
-        """extract input informations 
-        and stock them in different lists which serves 
-        to save new data"""
 
         raise NotImplementedError()
 
 
     def get_filter(self, data, key):
-        """extract filter to apply it
-            on data"""
 
         raise NotImplementedError()
 
 
     def get_patch(self, data, key):
-        """extract transformation informations from the patchs
-        and stock them in a list which serve 
-        to apply the transformation to data"""
 
         raise NotImplementedError()
 
 
-    def select_data(self):
-        """use filter information to select the right data"""
+    def select_data(self, filter, input):
         
         raise NotImplementedError()
 
 
     def apply_patch(self):
-        """ apply patch operation on data"""
         
         raise NotImplementedError()
 
 
     def save(self):
-        """ save the new data in the chosen folder"""
 
         raise NotImplementedError()

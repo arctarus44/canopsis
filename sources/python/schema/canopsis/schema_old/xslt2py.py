@@ -20,7 +20,6 @@
 
 from canopsis.schema.codebuffer import Codebuffer
 
-
 class xslt2py(object):
     """
     Converts xslt markups in python code. The method used to parse xslt

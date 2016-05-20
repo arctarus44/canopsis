@@ -13,10 +13,6 @@
 
   "properties": {
 
-    "op": {
-      "type": "string"
-    },
-
     "value": {
       "type": "string"
     }

@@ -1,26 +1,21 @@
 { 
   "add": {
     "op": "add",
-    "path": "/properties/essai",
-    "value": "type:string"
+    "path": "/essai1",
+    "value": "test1"
   },
   "replace": {
     "op": "replace",
-    "path": "/properties/info/properties",
-    "value": "entity"
-  },
-  "remove": {
-    "op": "remove",
-    "path": "/properties/info/properties"
+    "path": "/version",
+    "value": "2.0.0"
   },
   "copy": {
     "op": "copy",
-    "from":"/version",
-    "path": "/properties/info/properties"
+    "from": "/info/eids",
+    "path": "/info/entity_id"
   },
-  "move": {
-    "op": "move",
-    "from":"/path",
-    "path": "/properties/info/properties"
+  "remove": {
+    "op": "remove",
+    "path": "/info/eids"
   }
 }

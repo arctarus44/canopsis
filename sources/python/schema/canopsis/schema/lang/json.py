@@ -27,7 +27,8 @@ from ..core import Schema
 
 class JsonSchema(Schema):
 
-    def __init__(self, path, *args, **kwargs):#define load methode which inherit from class Schema
+    #define load methode which inherit from class Schema
+    def __init__(self, path, *args, **kwargs):
 
         super(Schema, self).__init__(*args, **kwargs)
         self.path = path
@@ -42,17 +43,23 @@ class JsonSchema(Schema):
 
         return validate(data,schema)
 
+
     def __get_item__(self, key):
 
         return self.get(key)
 
+
     def __set_item__(self, key, value):
 
-        return self[key] = value
+        self[key] = value
+
+        return self[key] 
+
 
     def __del_item__(self, key):
 
-        return del self[key]
+        del self[key]
+
 
     def save(self, data, output):
 

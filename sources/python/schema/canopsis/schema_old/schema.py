@@ -25,7 +25,6 @@ from lxml.etree import parse, tostring, XMLSchema, XSLT
 from canopsis.schema.utils import get_unique_key, get_schema_path, \
     is_name_available
 
-
 class Schema(object):
 
     def __init__(self, *args, **kwargs):
