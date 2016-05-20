@@ -85,10 +85,19 @@ take a schema in parameter which inherit of Schema class.
 implement get_input, get_output, get_patch, get_filter, select_data, apply_patch and save methodes to transform data.
 
 
-JsonTransformation
-------------------
 
-.. _FR__Schema__JsonTransformation:
+Patch
+-----
+
+.. _FR__Schema__Patch:
+
+
+
+
+JsonPatch
+---------
+
+.. _FR__Schema__JsonPatch:
 
 specific class for JSON language
 translate Transformation methodes for Json.

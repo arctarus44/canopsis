@@ -28,6 +28,8 @@ from ..core import Schema
 class JsonSchema(Schema):
 
     def getresource(self, path):
+        """take a path in parameter
+        and return specific ressource to schema correspunding to the path"""
 
         with open(path, "r") as f:
             result = load(f)
@@ -42,6 +44,17 @@ class JsonSchema(Schema):
     def __getitem__(self, key):
 
         return self._rsc[key]
+
+    #take key in argument and make Schema[key] = value dictionary methode
+    def __setitem__(self, key, value):
+
+        result = self._rsc[key] = value
+        return result
+
+    #take key in argument and make del Schema[key] dictionary methode
+    def __delitem__(self, key):
+
+        del self._rsc[keyss]
 
     def save(self, data, output):
 

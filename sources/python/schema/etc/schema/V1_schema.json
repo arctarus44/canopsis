@@ -11,16 +11,6 @@
   "type": "object",
 
   "properties": {
-      "version":{"@ref":"#http://canopsis.org/base_schema.json"},
-    
-      "info": {
-      "type": "object",
-      
-      "properties": {
-        "eids": {
-          "type": "string"
-        }
-      }
-    }
+      "version":{"@ref":"#http://canopsis.org/base_schema.json"}
   }
 }

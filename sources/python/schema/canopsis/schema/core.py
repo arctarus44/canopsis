@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/raise NotImplementedError()bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
 # Copyright (c) 2015 "Capensis" [http://www.capensis.com]
@@ -37,6 +37,10 @@ class Schema(object):
 
         raise NotImplementedError()
 
+    def load(self, path):
+
+        raise NotImplementedError()
+        
     #valid schema independently of language.
     #raise an exception when it require derived classes to override the method.
     def validate(self, data):

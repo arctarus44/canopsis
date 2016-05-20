@@ -40,14 +40,15 @@ class Transformation(object):
 
         return self.schema['output']
 
-    def get_filter(self):
+    @property
+    def filter(self):
 
-        raise NotImplementedError()
+        return self.schema['filter']
 
     @property
     def patch(self):
 
-        raise NotImplementedError()
+        return self.schema['patch']
 
     def select_data(self, filter, input):
 
