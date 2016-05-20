@@ -18,50 +18,39 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from __future__ import absolute_import
-
-import json
-import jsonpatch
-from ..core import SchemaTr
-
-
 class Transformation(object):
 
-    def __init__(self, data):
-        
-        super(Schema, self).__init__(data)
-        self.data = data
+    def __init__(self, schema):
 
+        super(Transformation, self).__init__(schema)
 
-    def get_input(self, data, key):
-        
-        raise NotImplementedError()
+        self.schema = schema
 
+    @property
+    def input(self):
 
-    def get_output(self, data, key):
+        return self.schema['input']
 
-        raise NotImplementedError()
+    @property
+    def output(self):
 
+        return self.schema['output']
 
-    def get_filter(self, data, key):
-
-        raise NotImplementedError()
-
-
-    def get_patch(self, data, key):
+    def get_filter(self):
 
         raise NotImplementedError()
 
+    def get_patch(self):
+
+        raise NotImplementedError()
 
     def select_data(self, filter, input):
-        
-        raise NotImplementedError()
 
+        raise NotImplementedError()
 
     def apply_patch(self):
-        
-        raise NotImplementedError()
 
+        raise NotImplementedError()
 
     def save(self):
 

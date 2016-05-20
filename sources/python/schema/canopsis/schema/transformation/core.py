@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
 # Copyright (c) 2015 "Capensis" [http://www.capensis.com]
@@ -19,31 +18,49 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from __future__ import absolute_import
+from ..patch.core import getpatch
 
-from json import load, dump
-from jsonschema import validate
-from ..core import Schema
 
-class JsonSchema(Schema):
+class Transformation(object):
 
-    def getresource(self, path):
+    def __init__(self, schema):
 
-        with open(path, "r") as f:
-            result = load(f)
+        super(Transformation, self).__init__(schema)
 
-        return result
+        self.schema = schema
+        self.patch = getpatch(self.schema, self.schema['patch'])
 
-    def validate(self, data):
+    @property
+    def input(self):
 
-        return validate(data,schema)
+        return self.schema['input']
 
-    #take key in argument and make Schema.get(key) dictionary methode
-    def __getitem__(self, key):
+    @property
+    def output(self):
 
-        return self._rsc[key]
+        return self.schema['output']
 
-    def save(self, data, output):
+    def get_filter(self):
 
-    	with open(output, "w") as f:
-            dump(data, f)
+        raise NotImplementedError()
+
+    @property
+    def patch(self):
+
+        raise NotImplementedError()
+
+    def select_data(self, filter, input):
+
+        raise NotImplementedError()
+
+    def apply_patch(self, data=None):
+
+        if data is None:
+
+            data = self.select_data(self.filter, self.input)
+
+        return self.patch.process(data)
+
+    def save(self):
+
+        raise NotImplementedError()

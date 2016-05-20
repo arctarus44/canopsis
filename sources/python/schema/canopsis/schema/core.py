@@ -28,31 +28,40 @@ class Schema(object):
     def __init__(self, path, *args, **kwargs):
 
         super(Schema, self).__init__(*args, **kwargs)
-        self.path = path
-    #valid schema independently of language.
 
+        self.path = path
+
+        self._rsc = self.getresource(path)
+
+    def getresource(self, path):
+
+        raise NotImplementedError()
+
+    #valid schema independently of language.
     #raise an exception when it require derived classes to override the method.
     def validate(self, data):
 
         raise NotImplementedError()
 
     #take key in argument and make Schema.get(key) dictionary methode
-    def __getItem__(self, key):
+    def __getitem__(self, key):
 
         raise NotImplementedError()
 
     #take key in argument and make Schema[key] = value dictionary methode
-    def __setItem__(self, key, value):
+    def __setitem__(self, key, value):
 
         raise NotImplementedError()
 
     #take key in argument and make del Schema[key] dictionary methode
-    def __delItem__(self, key):
+    def __delitem__(self, key):
 
         raise NotImplementedError()
 
     #take a data and an output path in argument and save it
-    def save(self, data, output):
+    def save(self, path=None):
+
+        if path is None:
+            path = self.path
 
         raise NotImplementedError()
-        
