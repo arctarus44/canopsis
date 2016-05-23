@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from b3j0f.conf import Configurable
 from zmq import Context, PUSH
 
@@ -5,13 +6,10 @@ from zmq import Context, PUSH
 @Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/bench.conf')
 class Info(object):
 	"""
-	    class in charge to get information in configuration file
+	class in charge to get information in configuration file
 	"""
-    pass
-
 
 class Connexion(object):
-
 	"""
 	class in charge to distribute urls on each canopsis instances.
 	"""
@@ -23,8 +21,8 @@ class Connexion(object):
 
         self.port = info.port
 
-        self.uris = info.uri
-        self.uri_tab = self.uris.split(';')
+        self.methodsandfunctions = info.methodsandfunctions
+        self.methodsandfunctions_tab = self.methodsandfunctions.split(';')
 
         self.context = Context()
 
@@ -33,7 +31,7 @@ class Connexion(object):
             try:
                 socket = self.context.socket(PUSH)
                 socket.connect('tcp://{0}:{1}'.format(host, self.port))
-                socket.send_pyobj(self.uri_tab)
+                socket.send_pyobj(self.uri_methodsandfunctions)
                 socket.close()
             except ImportError:
                 print 'connexion to {0} impossible'.format(host)

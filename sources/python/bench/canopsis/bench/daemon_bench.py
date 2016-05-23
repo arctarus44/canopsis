@@ -21,7 +21,7 @@
 from b3j0f.conf import Configurable
 from threading import Thread, Event
 from zmq import Context, PULL
-
+from canopsis.bench.set_functions_and_methods import launch
 
 class Daemon_bench(object):
 
@@ -30,10 +30,13 @@ class Daemon_bench(object):
         self.receiver = Receiver(self)
         self.receiver.start()
 
-    def bench_uri(self, uri):
+    def bench_uri(self, maf):
         """
-            method to bench uri
+            :arg list maf: list of methods and functions
+
+           method to bench mathods and functions
         """
+        launch(maf)
 
 
 class Receiver(Thread):
@@ -41,7 +44,7 @@ class Receiver(Thread):
     def __init__(self, daemon_bench, *args, **kwargs):
         super(Receiver, self).__init_(*args, **kwargs)
         self.loop = Event()
-        self.daemon_bench = daemon_bench
+        self.daemon_bench = Daemon_bench()
         info = Info()
 
         self.context = Context()
@@ -53,8 +56,8 @@ class Receiver(Thread):
 
         while self.loop.is_set():
             obj = self.socket.recv_pyobj()
-            for uri in obj:
-                self.daemon_bench.bench_uri(uri)
+            for maf in obj:
+                self.daemon_bench.bench_maf(maf)
 
     def stop(self):
         self.loop.clear()
