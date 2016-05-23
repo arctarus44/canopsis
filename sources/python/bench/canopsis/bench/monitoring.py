@@ -51,6 +51,10 @@ def monitoring(func):
     @wraps(func)
     def monitor(*args, **kwargs):
 
+        file = open('/home/tgosselin/fichierdelog', 'a')
+        file.write('I am the bench decorator and I am launched\n')
+        file.close()
+
         result = None
 
         info = Info()

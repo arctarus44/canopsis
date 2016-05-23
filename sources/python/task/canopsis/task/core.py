@@ -173,6 +173,9 @@ def set_task(obj, _id, attr=None, cache=True):
 
     __TASKS_BY_OBJ.setdefault(_id, []).append((obj, attr))
 
+    process(_id)
+
+
 
 @register_task
 def unset_task(_id, obj, attr):
@@ -378,8 +381,15 @@ def tasks(confs=None, raiseerror=False, **kwargs):
     return result
 
 
-def test_for_me():
-    myid = 'canopsis.serie.process.beat_processing'
+def process(myid):
+    if myid is None:
+        return -1
+
+    file = open('/home/tgosselin/fichierdelog', 'a')
+    file.write('1-- {0}\n'.format(get_objs(myid)))
+    file.write('2-- {0}\n'.format(__TASKS_BY_OBJ))
+    file.close()
+
     for obj, attr in get_objs(myid):
         task = getattr(obj, attr)
         task = monitoring(task)

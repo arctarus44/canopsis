@@ -83,7 +83,6 @@ class engine(Engine, Configurable):
             event_processing is used
         :type value: NoneType, str or function
         """
-
         # by default, load default event processing
         if isinstance(value, basestring):
             try:
@@ -137,7 +136,8 @@ class engine(Engine, Configurable):
 
         result = self._event_processing(
             engine=self, event=event, msg=msg, logger=self.logger,
-            *args, **kwargs
+            *args,
+            **kwargs
         )
 
         return result
@@ -146,7 +146,8 @@ class engine(Engine, Configurable):
     def beat(self, *args, **kwargs):
         self._beat_processing(
             engine=self, logger=self.logger,
-            *args, **kwargs
+            *args,
+            **kwargs
         )
 
     @property
