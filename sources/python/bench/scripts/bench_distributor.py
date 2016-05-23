@@ -5,14 +5,11 @@ from zmq import Context, PUSH
 
 @Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/bench.conf')
 class Info(object):
-	"""
-	class in charge to get information in configuration file
-	"""
+    """
+    class in charge to get information in configuration file
+    """
 
 class Connexion(object):
-	"""
-	class in charge to distribute urls on each canopsis instances.
-	"""
     def __init__(self, *args, **kwargs):
         info = Info()
 
@@ -31,7 +28,7 @@ class Connexion(object):
             try:
                 socket = self.context.socket(PUSH)
                 socket.connect('tcp://{0}:{1}'.format(host, self.port))
-                socket.send_pyobj(self.uri_methodsandfunctions)
+                socket.send_pyobj(self.methodsandfunctions)
                 socket.close()
             except ImportError:
                 print 'connexion to {0} impossible'.format(host)

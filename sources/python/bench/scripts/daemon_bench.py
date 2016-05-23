@@ -23,14 +23,14 @@ from threading import Thread, Event
 from zmq import Context, PULL
 from canopsis.bench.set_functions_and_methods import launch
 
-class Daemon_bench(object):
+class DaemonBench(object):
 
     def __init__(self, *args, **kwargs):
-        super(Daemon_bench, self).__init__(*args, **kwargs)
+        super(DaemonBench, self).__init__(*args, **kwargs)
         self.receiver = Receiver(self)
         self.receiver.start()
 
-    def bench_uri(self, maf):
+    def bench_maf(self, maf):
         """
             :arg list maf: list of methods and functions
 
@@ -42,9 +42,9 @@ class Daemon_bench(object):
 class Receiver(Thread):
 
     def __init__(self, daemon_bench, *args, **kwargs):
-        super(Receiver, self).__init_(*args, **kwargs)
+        super(Receiver, self).__init__(*args, **kwargs)
         self.loop = Event()
-        self.daemon_bench = Daemon_bench()
+        self.daemon_bench = daemon_bench
         info = Info()
 
         self.context = Context()
@@ -66,3 +66,7 @@ class Receiver(Thread):
 @Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/daemon_bench.conf')
 class Info(object):
     pass
+
+if __name__ == '__main__':
+    daemon_bench = DaemonBench()
+
