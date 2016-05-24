@@ -41,7 +41,7 @@ class Transformation(object):
         return self.schema['output']
 
     @property
-    def filter(self):
+    def filtre(self):
 
         return self.schema['filter']
 
@@ -65,3 +65,4 @@ class Transformation(object):
     def save(self):
 
         raise NotImplementedError()
+

@@ -18,23 +18,24 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------
 
-import glob
-import os
-import parse
-import json
-from jsonpath_rw import jsonpath, parse
-import jsonschema
-import jsonpatch
+
 from unittest import main, TestCase
 
 path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema'
 pa = []
 pat = []
 
-class TestParse(TestCase):
+class Testdemo(TestCase):
 
-    def test_load(self):
+    def test_getressource(self):
 
+    	with open(path, "r") as f:
+            result = load(f)
+
+        return result
+
+    def test_validate(self, data):
+    	validate(data, schema)
 
 if __name__ == '__main__':
     main()

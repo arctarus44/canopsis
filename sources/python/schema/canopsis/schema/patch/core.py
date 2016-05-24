@@ -1,6 +1,8 @@
  _PATCHS = {}
 
 def registerpatch(schemacls, cls=None):
+    """decorator which get type (JSON, xslt, uml, ...) of the patch 
+    and return it"""
 
     def _recordpatch(cls):
 
@@ -17,8 +19,7 @@ def registerpatch(schemacls, cls=None):
 
 def getpatch(schema, patch):
     """return the type of the patch, take 2 parameters
-    schema : to get the language 
-    patch : to return is type"""
+    schema, patch"""
 
     result = None
 

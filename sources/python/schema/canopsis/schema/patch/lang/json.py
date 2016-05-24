@@ -2,9 +2,10 @@ from ..core import Patch, registerpatch
 
 from ...lang.json import JsonSchema
 
-from ..Transformation import patch
+from ..Transformation import patch, output, filtre
 
 import jsonpatch
+import json
 
 
 @registerpatch(JsonSchema)
@@ -14,7 +15,7 @@ class JSONPatch(Patch):
         """define the correct process to return the patch 
         in the correct form and apply it on data"""
         
-        patch = self.patch(data)
+        patch = self.patch(schema)
         pa = []
         pat = []
 
@@ -48,7 +49,13 @@ class JSONPatch(Patch):
         pa.extend(pat)
 
         p = jsonpatch.JsonPatch(pa)
-        result = p.apply(data)
+
+        #traitement du filtre pour appliquer le patch 
+        #uniquement aux data souhaitées
+
+        filtre = self.filtre(schema)
+        #utilisation de la fonction find_element du fichier ..mongo.core
+        #on passe query = filtre[value]
 
         return result
 
@@ -59,4 +66,4 @@ class JSONPatch(Patch):
             output = self.output(data)
 
             with open('output', "w") as f:
-                jdon.dump(data, output)
+                jdon.dump(data, output, sort_keys = True, indent = 2, separators = (',', ':'))

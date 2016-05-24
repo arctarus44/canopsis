@@ -38,6 +38,7 @@ class JsonSchema(Schema):
 
     def validate(self, data):
 
+        # récupération de schema ?
         return validate(data,schema)
 
     #take key in argument and make Schema.get(key) dictionary methode
@@ -56,6 +57,7 @@ class JsonSchema(Schema):
 
         del self._rsc[keyss]
 
+    #save jsondata in the correct folder
     def save(self, data, output):
 
     	with open(output, "w") as f:

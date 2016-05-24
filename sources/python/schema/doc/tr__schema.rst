@@ -41,8 +41,15 @@ lang
 
 .. _TR__Schema_lang:
 
-Sub-folder which contains load and validate funtion write for specifique language.
+Sub-folder which contains load and validate function write for specifique language.
 Those files inherit of Schema class in core.
+
+
+patch
+=====
+
+.. _TR__Shema_lang:
+
 
 
 transformation
@@ -50,4 +57,4 @@ transformation
 
 .. _TR__Schema_transformation:
 
-Describes transformations to apply on data spécified in input schema. Transformation is write in specifique language, it refer to lang file.
+Describes transformations to apply on data. 
