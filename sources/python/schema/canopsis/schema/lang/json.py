@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -23,13 +22,18 @@ from __future__ import absolute_import
 
 from json import load, dump
 from jsonschema import validate
-from ..core import Schema
+from canopsis.schema.core import Schema
 
 class JsonSchema(Schema):
 
-    def getresource(self, path):
-        """take a path in parameter
-        and return specific ressource to schema correspunding to the path"""
+    def getressource(self, path):
+
+        with open(path, "r") as f:
+            _rsc = load(f)
+
+        return _rsc
+        
+    def load(self, path):
 
         with open(path, "r") as f:
             result = load(f)
@@ -49,13 +53,13 @@ class JsonSchema(Schema):
     #take key in argument and make Schema[key] = value dictionary methode
     def __setitem__(self, key, value):
 
-        result = self._rsc[key] = value
-        return result
+        self._rsc[key] = value
+        return self._rsc[key]
 
     #take key in argument and make del Schema[key] dictionary methode
     def __delitem__(self, key):
 
-        del self._rsc[keyss]
+        del self._rsc[key]
 
     #save jsondata in the correct folder
     def save(self, data, output):

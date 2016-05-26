@@ -1,7 +1,6 @@
-#!/usr/raise NotImplementedError()bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -42,7 +41,6 @@ class Schema(object):
         raise NotImplementedError()
         
     #valid schema independently of language.
-    #raise an exception when it require derived classes to override the method.
     def validate(self, data):
 
         raise NotImplementedError()
@@ -62,7 +60,6 @@ class Schema(object):
 
         raise NotImplementedError()
 
-    #take a data and an output path in argument and save it
     def save(self, path=None):
 
         if path is None:

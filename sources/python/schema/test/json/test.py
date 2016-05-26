@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -16,12 +16,14 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
-# --------------------------------
-
+# ---------------------------------
 
 from unittest import main, TestCase
+import jsonpatch
+import jsonschema
+import json
 
-path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema'
+path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schemma'
 pa = []
 pat = []
 
@@ -29,13 +31,31 @@ class Testdemo(TestCase):
 
     def test_getressource(self):
 
-    	with open(path, "r") as f:
-            result = load(f)
+        schema = { "$schema": "http://json-schema.org/draft-04/schema#",
+                      "id": "http://canopsis.org/base_schema.json",
+                      "name": "base_schema",
+                      "description": "base schema for canopsis",
+                      "type": "object",
+                      
+                      "properties": {
+                        "version": {
+                          "type": "string",
+                          "default": "1.0"
+                        }
+                      }
+                    }
 
-        return result
+        element = schema['id']
+        self.assertEqual(element, "http://canopsis.org/base_schema.json")
 
-    def test_validate(self, data):
-    	validate(data, schema)
+        schema['name'] = 'essai'
+        self.assertEqual('essai', schema['name'])
+
+        del schema['properties']
+        with self.assertRaises(KeyError):
+            schema['properties']
+
+
 
 if __name__ == '__main__':
     main()

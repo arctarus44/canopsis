@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -52,7 +52,8 @@ class Transformation(object):
 
     def select_data(self, filter, input):
 
-        raise NotImplementedError()
+        #application du filtre 
+
 
     def apply_patch(self, data=None):
 
@@ -62,7 +63,6 @@ class Transformation(object):
 
         return self.patch.process(data)
 
-    def save(self):
+    def save(self, output):
 
         raise NotImplementedError()
-

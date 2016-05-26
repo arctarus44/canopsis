@@ -1,4 +1,4 @@
-.. _FR_Schema:
+.. _FR__Schema:
 
 ===============
 Canopsis Schema
@@ -13,7 +13,7 @@ This document describes the solution to the interopérability problem
 References
 ----------
 
-- :ref:` fr__schema <fr__Schema>`
+ - :ref:`FR::Storage <FR__Storage>`
 
 -------
 Updates
@@ -22,7 +22,9 @@ Updates
 .. csv-table::
    :header: "Author(s)", "Date", "Version", "Summary", "Accepted by"
 
-   "Julie Vanglabeke", "29/04/2016", "0.1", "Document creation", ""
+   "David Delassus", "2015/10/06", "0.1", "Document creation", ""
+   "Gwenael Pluchon", "2015/11/02", "0.2", "Add meta-schema", ""
+   "Gwenael Pluchon", "2015/11/02", "0.3", "remove meta-schema", ""
 
 -------
 Content
@@ -35,70 +37,46 @@ Canopsis is a Hypervision solution, it is based on the schema notion to define t
 After taken schema to Canopsis, the tool will generate code to warranty maximum reliability and it maintain.
 
 With the evolution of the system problematic, we bring many feature based on schema, data migration is an important part of it.
- 
-  
+
+
 Description
 ===========
 
-.. _FR__Schema__Description:
-
-A **schema** is a document in Json or XML or anyother language.
-
-It is used to describe:
+A schema is used to describe:
 
  - data: how data is structured, in order to generate models for it
- - transformations: how data can be turned into another data
+ - transformation: how data can be turned into another data
+ - components: how Canopsis components interact with data (chaining, ...)
 
-The following picture is a class diagram to illustrate the running of different classes of this project.
+.. _FR__Data_Schema:
 
-.. image:: ../_static/images/schema/Diagramme.png
+Data Schema
+-----------
+
+This schema **MUST** describe the structure of data:
+
+ - what fields are provided
+ - how to interpret those fields (string, timestamp, ...)
+
+
+.. _FR__Schema_Transformation_Schema:
+
+Transformation Schema
+---------------------
+
+This schema **MUST** contain a reference to:
+
+ - the input :ref:`data schema <FR__Data_Schema>`
+ - the output :ref:`data schema <FR__Data_Schema>`
+
+And it **MUST** contain a mapping of:
+
+ - fields used in output, from input
+ - transformation operator to apply on fields (concatenate, split, integer to string, ...)
+
+.. _FR__Schema_Component:
  
-   
-Schema
-------
+Component Schema
+----------------
 
-.. _FR__Schema:
-
-*Abstract class* which introduce *validate, load, __getitem__, __setitem__, __delitem__, getressource and save* methodes.
-Base of the different schema classes.
-This class ease schema **CRUD** operations.
-
-
-JsonSchema
-----------
-
-.. _FR__Schema__JsonSchema:
-
-Specific class for *JSON* language.
-Translate Schema methodes for Json.
-This class inherit of **Schema**.
-
-
-Transformation
---------------
-
-.. _FR__Schema__Transformation:
-
-Take a schema in parameter which inherit of **Schema**.
-Implement *input, output, patch, filtre, select_data, apply_patch and save* methodes to transform data.
-
-
-Patch
------
-
-.. _FR__Schema__Patch:
-
-Take a patch in parameter which inherit of **Schema**.
-
-Define a decorator (recordpatch) to get the correct type of the patch in *Transformation*, it can be used as a function too.
-Get type *patch* and implement the process method which describe how apply patch according on is type (JSON, UML, xslt, ...)
-
-
-JsonPatch
----------
-
-.. _FR__Schema__JsonPatch:
-
-Specific class for *JSON* language.
-Translate Patch methodes for Json.
-This class inherit of **Patch**.
+TODO
