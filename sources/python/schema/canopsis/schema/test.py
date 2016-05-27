@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2016"Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -18,28 +18,30 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-
 """
 test the correct running of Schema API
 """
 
-from unittest import main, TestCase
-from canopsis.schema.core import Schema
+from canopsis.middleware.core import Middleware
 from canopsis.schema.transformation.core import Transformation
+from canopsis.schema.core import Schema
+
+from unittest import main, TestCase
 import jsonpatch
 import jsonschema
 import json
-from canopsis.middleware.core import Middleware
 
 
 class TestLoadSchema(TestCase):
     """schema are in a specific folder, we load it raise an error if schema does not exist"""
 
+    schema_class = Schema
+
     def setUp(self):
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
         self.paths = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/json'
-        self.schema = Schema(self.path)
+        self.schema = self.__class__.schema_class(self.path)
 
     def test_success(self):
         """API take a path, return a schema"""
@@ -54,14 +56,17 @@ class TestLoadSchema(TestCase):
         with self.assertRaises(IOErros):
             self.schema.getressource(self.schema, self.paths)
 
+
 class TestSchemaDict(TestCase):
     """test if returned schema can be used like a dictionary
     preciser dep"""
 
+    schema_class = Schema
+
     def setUp(self):
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
-        self.schema = Schema(self.path)
+        self.schema = self.__class__.schema_class(self.path)
 
     def test_modification(self):
         """get an item from the loaded schema
@@ -83,15 +88,19 @@ class TestSchemaDict(TestCase):
 class TestValidateSchema(TestCase):
     """test schema validation"""
 
+    schema_class = Schema
+
     def setUp(self):
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
-        self.schema = Schema(self.path)
+        self.schema = self.__class__.schema_class(self.path)
+
+        self.doc = {"version":"1.0.0"}
 
     def test_validation(self):
         """validate a schema return none"""
 
-        self.assertEqual(self.schema.validate, None)
+        self.assertEqual(self.schema.validate(self.doc), None)
 
 
     def test_validation_fail(self):
@@ -99,24 +108,26 @@ class TestValidateSchema(TestCase):
         schemaerror if schema is invalid"""
 
         with self.assertRaises(ValidationError):
-            self.schema.validate
+            self.schema.validate(self.doc)
 
 
 class TestTransformation(TestCase):
     """to transform data we need to get informations from transformation schema
     raise errors if information doesn't exist"""
 
+    schema_class = Schema
+    transformation_class = Transformation
+
     def setUp(self):
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
-        self.schema = Schema(self.path)
-        self.transfo = Transformation(self.schema)
-
+        self.schema = self.__class__.schema_class(self.path)
+        self.transfo = self.__class__.transformation_class(self.schema)
 
     def test_select_data(self):
         """test application of the filter for data selection"""
 
-        self.schema.validate
+        self.schema.validate()
 
     def test_apply_patch(self):
         """take the selected data and apply patch process
@@ -129,10 +140,6 @@ class TestTransformation(TestCase):
                     }
                 }
 
-        result = Transformation.apply_patch(self.patch)
-        
+        result = self.transfo.apply_patch(data)
+
         self.assertEqual(result, {'info': {u'entity_id': 'bla'}, u'essai1': 'test1', 'version': '2.0.0'})
-
-
-if __name__ == '__main__':
-    main()

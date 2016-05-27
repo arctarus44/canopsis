@@ -18,43 +18,24 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from unittest import main, TestCase
-import jsonpatch
-import jsonschema
-import json
+from canopsis.schema.test import TestLoadSchema, TestSchemaDict, TestValidateSchema, TestTransformation
+from canopsis.schema.lang.json import JsonSchema
+from canopsis.schema.transformation.core import Transformation
+from unittest import main
 
-path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schemma'
-pa = []
-pat = []
 
-class Testdemo(TestCase):
+class TestLoadJsonSchema(TestLoadSchema):
+  schema_class = JsonSchema
 
-    def test_getressource(self):
+class TestJsonSchemaDict(TestSchemaDict):
+  schema_class = JsonSchema
 
-        schema = { "$schema": "http://json-schema.org/draft-04/schema#",
-                      "id": "http://canopsis.org/base_schema.json",
-                      "name": "base_schema",
-                      "description": "base schema for canopsis",
-                      "type": "object",
-                      
-                      "properties": {
-                        "version": {
-                          "type": "string",
-                          "default": "1.0"
-                        }
-                      }
-                    }
+class TestValidateJsonSchema(TestValidateSchema):
+  schema_class = JsonSchema
 
-        element = schema['id']
-        self.assertEqual(element, "http://canopsis.org/base_schema.json")
-
-        schema['name'] = 'essai'
-        self.assertEqual('essai', schema['name'])
-
-        del schema['properties']
-        with self.assertRaises(KeyError):
-            schema['properties']
-
+class TestJsonTransformation(TestTransformation):
+  schema_class = JsonSchema
+  transformation_class = Transformation
 
 
 if __name__ == '__main__':
