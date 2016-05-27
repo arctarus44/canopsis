@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
- _PATCHS = {}
+_PATCHS = {}
 
 def registerpatch(schemacls, cls=None):
     """decorator which get type (JSON, xslt, uml, ...) of the patch 

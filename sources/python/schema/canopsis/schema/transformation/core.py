@@ -52,8 +52,8 @@ class Transformation(object):
 
     def select_data(self, filter, input):
 
-        #application du filtre 
-
+        #application du filtre
+        pass
 
     def apply_patch(self, data=None):
 
