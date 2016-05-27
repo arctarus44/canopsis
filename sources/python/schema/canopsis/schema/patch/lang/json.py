@@ -37,38 +37,13 @@ class JSONPatch(Patch):
         
         patch = self.patch(schema)
         pa = []
-        pat = []
 
-        for cle in patch:
-            if cle == 'remove':
-                pa.append(patch[cle])
-
-            elif cle == 'replace':
-                pa.append(patch[cle])
-
-            elif cle == 'move':
-                pa.append(patch[cle])
-
-            elif cle == 'add':
-                pa.append(patch[cle])
-
-            elif cle == 'copy':
-                pa.append(patch[cle])
-
-        for element in pa:
-            print element
-            
-            if isinstance(element, list):
-                #print element
-                pat.extend(element)
-        
-                #print pat
-                pa.remove(element)
-                #print pa
-
-        pa.extend(pat)
+        for element in patch:
+            pa.append(patch[element])
 
         p = jsonpatch.JsonPatch(pa)
+
+        result = p.apply(data)
 
         #traitement du filtre pour appliquer le patch 
         #uniquement aux data souhaitées

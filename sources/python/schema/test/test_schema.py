@@ -69,8 +69,6 @@ class TestSchemaDict(TestCase):
         del item
         raise an error if schema is not a dict"""
 
-        self.schema = Schema(self.path)
-
         element = self.schema['id']
         self.assertEqual(element, "http://canopsis.org/base_schema.json")
 
@@ -93,28 +91,15 @@ class TestValidateSchema(TestCase):
     def test_validation(self):
         """validate a schema return none"""
 
-        self.schema = Schema(self.path)
-
-        valid = {   
-                    "version":{"type":"string"}
-                }
-
-        self.assertEqual(jsonschema.validate(self.schema, valid), None)
+        self.assertEqual(self.schema.validate, None)
 
 
     def test_validation_fail(self):
         """validate a schema raise a validationerror if data is invalid
         schemaerror if schema is invalid"""
 
-        self.schema = Schema(self.path)
-
-        valid = {   
-                    "version":{"type":"number"}
-                }
-
-        jsonschema.validate(self.schema, valid)
         with self.assertRaises(ValidationError):
-            jsonschema.validate(self.schema, valid)
+            self.schema.validate
 
 
 class TestTransformation(TestCase):
@@ -125,17 +110,17 @@ class TestTransformation(TestCase):
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
         self.schema = Schema(self.path)
+        self.transfo = Transformation(self.schema)
+
 
     def test_select_data(self):
         """test application of the filter for data selection"""
-        data = Transformation.select_data(self.schema, filtre, inp)
-        Schema.validate(self.schema, data)
+
+        self.schema.validate
 
     def test_apply_patch(self):
         """take the selected data and apply patch process
         return the transform data"""
-
-        self.patch = Schema(self.path)   
 
         pa = []
         data =  {   "version":"1.0.0",
@@ -147,7 +132,6 @@ class TestTransformation(TestCase):
         result = Transformation.apply_patch(self.patch)
         
         self.assertEqual(result, {'info': {u'entity_id': 'bla'}, u'essai1': 'test1', 'version': '2.0.0'})
-
 
 
 if __name__ == '__main__':
