@@ -67,8 +67,36 @@ We can identify two possible point of view:
  - we are interested about the machines providing the clustered service
  - we are interested about what processes are running on a physical machine
 
-.. _FR__GraphMode__Walk:
+.. _FR__GraphMode__Request:
 
-Walking through the graph
--------------------------
+Requesting data
+---------------
 
+Querying data is done by walking the graph. It is done by selecting, as a starting
+point, either:
+
+ - a set of node that **SHOULD** be based on a filter
+ - a set of relationship, that **SHOULD** be based on a filter
+
+Then, the query **MUST** be constructed with a sequence of operator acting alternatively
+on relationships and nodes.
+
+Finally, the query **MUST** specify which elements that have been walked through
+will be selected.
+
+For example:
+
+ - starting point: all nodes with ``name = cpu-*``
+ - query operators:
+    - go through any relationship with 2 depth levels
+    - only on nodes with ``node-type = resource``
+ - select:
+    - only nodes
+
+Or:
+
+ - starting point: all ``provides`` relationships
+ - query operators:
+    - all nodes without ``provided by`` relationship
+ - select:
+    - only nodes
