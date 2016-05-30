@@ -5,3 +5,4 @@ Welcome to canopsis.graph's documentation!
    :maxdepth: 2
 
     Functional Requirements <fr__graphmodel>
+    Technical Requirements <tr__graphmodel>

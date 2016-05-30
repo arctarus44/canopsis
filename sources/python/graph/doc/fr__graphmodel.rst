@@ -21,6 +21,7 @@ Updates
    :header: "Author(s)", "Date", "Version", "Summary", "Accepted by"
 
    "David Delassus", "2016/05/25", "0.1", "Document creation", ""
+   "David Delassus", "2016/05/30", "0.2", "Add constraint module", ""
 
 Contents
 ========
@@ -67,7 +68,7 @@ We can identify two possible point of view:
  - we are interested about the machines providing the clustered service
  - we are interested about what processes are running on a physical machine
 
-.. _FR__GraphMode__Request:
+.. _FR__GraphModel__Request:
 
 Requesting data
 ---------------
@@ -106,3 +107,23 @@ Or:
     - only nodes
 
 .. figure:: _static/images/graph/query2.png
+
+.. _FR__GraphModel__Constraint:
+
+Constraint module
+-----------------
+
+When designing the graph model for a specific feature, from the meta model, constraints
+**MAY** be applied, for example:
+
+ - only one type of relationship can be linked to one type of node
+ - node informations **MUST** validate a :ref:`data schema <FR__Schema__Data>`
+ - only one type of relationship and node can be included in one type of graph
+ - ...
+
+A constraint **MUST** be defined by:
+
+ - a filter, selecting the elements to act on
+ - a rule, determining how to act
+
+.. figure:: _static/images/graph/constraints.png
