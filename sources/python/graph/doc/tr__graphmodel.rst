@@ -77,3 +77,10 @@ The constraints **SHOULD** be stored in a key/value storage with:
  - the ``rule`` field pointing to a *Python* function with the following prototype:
     - the element as argument
     - returning ``True`` or ``False`` whether the constraint is respected or not
+
+.. _TR__GraphModel__DSL:
+
+Domain Specific Language
+------------------------
+
+TODO
