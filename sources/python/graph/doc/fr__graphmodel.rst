@@ -86,17 +86,23 @@ will be selected.
 
 For example:
 
- - starting point: all nodes with ``name = cpu-*``
- - query operators:
+ - starting point (green elements):
+    - all nodes with ``name = cpu-*``
+ - query operators (blue elements):
     - go through any relationship with 2 depth levels
-    - only on nodes with ``node-type = resource``
- - select:
-    - only nodes
+    - only on nodes with ``node-type = metric``
+ - select (red elements):
+    - only nodes with ``node-type = trigger``
+
+.. figure:: _static/images/graph/query1.png
 
 Or:
 
- - starting point: all ``provides`` relationships
+ - starting point:
+    - all ``provides`` relationships (blue relationships)
  - query operators:
-    - all nodes without ``provided by`` relationship
- - select:
+    - all nodes without ``provided by`` relationship (green relationships)
+ - select (red elements):
     - only nodes
+
+.. figure:: _static/images/graph/query2.png
