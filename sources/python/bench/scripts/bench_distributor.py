@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 from b3j0f.conf import Configurable
 from zmq import Context, PUSH
+import sys
 
-
-@Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/bench.conf')
+@Configurable(paths='/opt/canopsis/etc/bench/bench.conf')
 class Info(object):
     """
     class in charge to get information in configuration file
@@ -36,4 +36,6 @@ class Connexion(object):
 
 
 co = Connexion()
-print co.send_uri()
+co.send_uri()
+print 'done'
+sys.exit(1)

@@ -384,11 +384,12 @@ def tasks(confs=None, raiseerror=False, **kwargs):
 def process(myid):
     if myid is None:
         return -1
-
+    """
     file = open('/home/tgosselin/fichierdelog', 'a')
     file.write('1-- {0}\n'.format(get_objs(myid)))
     file.write('2-- {0}\n'.format(__TASKS_BY_OBJ))
     file.close()
+    """
 
     for obj, attr in get_objs(myid):
         task = getattr(obj, attr)

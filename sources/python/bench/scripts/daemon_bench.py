@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
+from __future__ import unicode_literals
 
 from b3j0f.conf import Configurable
 from threading import Thread, Event
@@ -55,15 +56,22 @@ class Receiver(Thread):
         self.loop.set()
 
         while self.loop.is_set():
-            obj = self.socket.recv_pyobj()
-            for maf in obj:
-                self.daemon_bench.bench_maf(maf)
+            try:
+                obj = self.socket.recv_pyobj()
+
+                file = open('/home/tgosselin/fichierdelog', 'a')
+                file.write('{0}\n'.format(obj))
+                file.close()
+
+                    #self.daemon_bench.bench_maf(maf)
+            except KeyboardInterrupt:
+                self.stop()
 
     def stop(self):
         self.loop.clear()
 
 
-@Configurable(paths='/home/tgosselin/Documents/bordel/canopsis-propre/canopsis/sources/python/bench/etc/bench/daemon_bench.conf')
+@Configurable(paths='/opt/canopsis/etc/bench/daemon_bench.conf')
 class Info(object):
     pass
 
