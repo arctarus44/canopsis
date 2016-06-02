@@ -25,17 +25,21 @@ from unittest import main
 
 
 class TestLoadJsonSchema(TestLoadSchema):
-  schema_class = JsonSchema
+	"""test to load a Jsonschema"""
+	schema_class = JsonSchema
 
 class TestJsonSchemaDict(TestSchemaDict):
-  schema_class = JsonSchema
+	"""test to check the code behavior is like a dict"""
+  	schema_class = JsonSchema
 
 class TestValidateJsonSchema(TestValidateSchema):
-  schema_class = JsonSchema
+	"""test to validate loaded schema"""
+  	schema_class = JsonSchema
 
 class TestJsonTransformation(TestTransformation):
-  schema_class = JsonSchema
-  transformation_class = Transformation
+	"""test the data transformation for Json"""
+  	schema_class = JsonSchema
+  	transformation_class = Transformation
 
 
 if __name__ == '__main__':

@@ -48,7 +48,7 @@ Schema loading
 
 To load schema API looks into the configuration file and return a schema.
 It identify schema by their unique id (ex: name, key, ...). 
-Raise an error if non existing id.
+Raise an error if non existing document.
 
 
 .. _TR__Schema_Dictionary_Schema:

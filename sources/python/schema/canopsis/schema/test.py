@@ -38,6 +38,7 @@ class TestLoadSchema(TestCase):
     schema_class = Schema
 
     def setUp(self):
+        """parameters definition function"""
         
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
         self.paths = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/json'
@@ -74,16 +75,21 @@ class TestSchemaDict(TestCase):
         del item
         raise an error if schema is not a dict"""
 
+        """test to get an element from schema"""
         element = self.schema['id']
         self.assertEqual(element, "http://canopsis.org/base_schema.json")
 
+        """test to set a value in the schema"""
         self.schema['name'] = 'essai'
         self.assertEqual('essai', self.schema['name'])
 
+        """test to delete an element from the schema"""
         del self.schema['properties']
         with self.assertRaises(KeyError):
             self.schema['properties']
 
+        """test to save modifications in the schema"""
+        save(schema)
 
 class TestValidateSchema(TestCase):
     """test schema validation"""
@@ -112,14 +118,14 @@ class TestValidateSchema(TestCase):
 
 
 class TestTransformation(TestCase):
-    """to transform data we need to get informations from transformation schema
+    """to transform data we need to get informations from transformation schema 
     raise errors if information doesn't exist"""
 
     schema_class = Schema
     transformation_class = Transformation
 
     def setUp(self):
-        
+
         self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
         self.schema = self.__class__.schema_class(self.path)
         self.transfo = self.__class__.transformation_class(self.schema)
@@ -133,7 +139,6 @@ class TestTransformation(TestCase):
         """take the selected data and apply patch process
         return the transform data"""
 
-        pa = []
         data =  {   "version":"1.0.0",
                     "info":{
                         "eids":"bla"
