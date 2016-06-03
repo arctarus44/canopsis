@@ -26,7 +26,7 @@ from canopsis.schema.core import Schema
 
 class JsonSchema(Schema):
 
-    def getressource(self, path):
+    def getresource(self, path):
 
         with open(path, "r") as f:
             _rsc = load(f)
@@ -36,14 +36,13 @@ class JsonSchema(Schema):
     def load(self, path):
 
         with open(path, "r") as f:
-            result = load(f)
+            _res = load(f)
 
-        return result
+        return _res
 
-    def validate(self, data):
+    def validate(self, data, schema):
 
-        # récupération de schema ?
-        return validate(data,schema)
+        return validate(data, schema)
 
     #take key in argument and make Schema.get(key) dictionary methode
     def __getitem__(self, key):

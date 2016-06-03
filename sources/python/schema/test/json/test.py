@@ -18,7 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.test import TestLoadSchema, TestSchemaDict, TestValidateSchema, TestTransformation
+from canopsis.schema.test_schema import TestLoadSchema, TestSchemaDict, TestValidateSchema, TestTransformation
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
 from unittest import main

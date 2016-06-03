@@ -25,110 +25,110 @@ test the correct running of Schema API
 from canopsis.middleware.core import Middleware
 from canopsis.schema.transformation.core import Transformation
 from canopsis.schema.core import Schema
+from canopsis.schema.lang.json import JsonSchema
 
-from unittest import main, TestCase
+from unittest import main, TestCase, SkipTest
 import jsonpatch
 import jsonschema
 import json
+import pdb
 
 
-class TestLoadSchema(TestCase):
-    """schema are in a specific folder, we load it raise an error if schema does not exist"""
+class TestSchema(TestCase):
 
-    schema_class = Schema
+    schema_class = None
+
+    path = None
 
     def setUp(self):
         """parameters definition function"""
         
-        self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
-        self.paths = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/json'
-        self.schema = self.__class__.schema_class(self.path)
+        if self.schema_class is None:
+            raise SkipTest('Schema class is not given in {0}'.format(self))
+
+        self.schema = self.schema_class(self.path)
+
+
+class TestLoadSchema(TestSchema):
+    """schema are in a specifisc folder, we load it raise an error if schema does not exist"""
+
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
+
+    def setUp(self):
+        """parameters definition function"""
+        
+        super(TestLoadSchema, self).setUp()
+
+        self.paths = '/home/julie/Documents/canopsis/sources/python/schema/etc/schemma'
 
     def test_success(self):
         """API take a path, return a schema"""
         
-        self.schema.getressource(self.schema, self.path)
-        doc = self.schema.load(self.schema, self.path)
+        self.schema.getresource(self.path)
+        doc = self.schema.load(self.path)
 
     def test_failed(self):
         """Api take a non existing path raise an error"""
 
-        self.schema.getressource(self.schema, self.paths)
-        with self.assertRaises(IOErros):
-            self.schema.getressource(self.schema, self.paths)
+        with self.assertRaises(IOError):
+            self.schema.getresource(self.paths)
 
 
-class TestSchemaDict(TestCase):
+class TestSchemaDict(TestSchema):
     """test if returned schema can be used like a dictionary
-    preciser dep"""
-
-    schema_class = Schema
-
-    def setUp(self):
-        
-        self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
-        self.schema = self.__class__.schema_class(self.path)
-
-    def test_modification(self):
-        """get an item from the loaded schema
+        get an item from the loaded schema
         set a value in the item
         del item
         raise an error if schema is not a dict"""
 
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
+
+    def test_get(self):
         """test to get an element from schema"""
+
         element = self.schema['id']
         self.assertEqual(element, "http://canopsis.org/base_schema.json")
 
+    def test_set(self):
         """test to set a value in the schema"""
         self.schema['name'] = 'essai'
         self.assertEqual('essai', self.schema['name'])
 
+    def test_del(self):
         """test to delete an element from the schema"""
         del self.schema['properties']
         with self.assertRaises(KeyError):
             self.schema['properties']
 
-        """test to save modifications in the schema"""
-        save(schema)
-
-class TestValidateSchema(TestCase):
+class TestValidateSchema(TestSchema):
     """test schema validation"""
 
-    schema_class = Schema
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
 
     def setUp(self):
         
-        self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
-        self.schema = self.__class__.schema_class(self.path)
+        super(TestValidateSchema, self).setUp()
 
         self.doc = {"version":"1.0.0"}
 
     def test_validation(self):
         """validate a schema return none"""
 
-        self.assertEqual(self.schema.validate(self.doc), None)
+        self.assertIsNone(self.schema.validate(self.doc, self.schema))
 
-
-    def test_validation_fail(self):
-        """validate a schema raise a validationerror if data is invalid
-        schemaerror if schema is invalid"""
-
-        with self.assertRaises(ValidationError):
-            self.schema.validate(self.doc)
-
-
-class TestTransformation(TestCase):
+class TestTransformation(TestSchema):
     """to transform data we need to get informations from transformation schema 
     raise errors if information doesn't exist"""
 
-    schema_class = Schema
     transformation_class = Transformation
+
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch_schema.json'
 
     def setUp(self):
 
-        self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
-        self.schema = self.__class__.schema_class(self.path)
-        self.transfo = self.__class__.transformation_class(self.schema)
+        super(TestTransformation, self).setUp()
+
+        self.transfo = self.transformation_class(self.schema)
 
     def test_select_data(self):
         """test application of the filter for data selection"""

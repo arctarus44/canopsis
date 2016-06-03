@@ -66,3 +66,4 @@ class Patch(object):
     def process(self, data):
 
         raise NotImplementedError()
+

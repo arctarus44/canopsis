@@ -25,7 +25,7 @@ class Transformation(object):
 
     def __init__(self, schema):
 
-        super(Transformation, self).__init__(schema)
+        super(Transformation, self).__init__()
 
         self.schema = schema
         self.patch = getpatch(self.schema, self.schema['patch'])
@@ -53,7 +53,7 @@ class Transformation(object):
     def select_data(self, filter, input):
 
         #application du filtre
-        pass
+        raise NotImplementedError()
 
     def apply_patch(self, data=None):
 
