@@ -23,7 +23,6 @@ from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
 from unittest import main
 
-
 class TestLoadJsonSchema(TestLoadSchema):
 	"""test to load a Jsonschema"""
 	schema_class = JsonSchema

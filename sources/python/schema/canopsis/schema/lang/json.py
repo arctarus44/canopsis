@@ -36,17 +36,17 @@ class JsonSchema(Schema):
     def load(self, path):
 
         with open(path, "r") as f:
-            _res = load(f)
+            result = load(f)
 
-        return _res
+        return result
 
-    def validate(self, data, schema):
+    def validate(self, data):
 
-        return validate(data, schema)
+        return validate(data, self._rsc)
 
     #take key in argument and make Schema.get(key) dictionary methode
     def __getitem__(self, key):
-
+        
         return self._rsc[key]
 
     #take key in argument and make Schema[key] = value dictionary methode

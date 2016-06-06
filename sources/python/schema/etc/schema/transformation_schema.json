@@ -1,29 +1,50 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://canopsis.org/transformation.json",
+  "id": "http://canopsis.org/transformation_schema.json",
   "name": "transformation",
   "description": "transformation schema for data migration version",
   "links": [
     {
-      "href": "#http://canopsis.org/base_schema.json"
+      "$ref": "#http://canopsis.org/base_schema.json"
     }
   ],
-
-  "type":"object",
-
-  "properties":{
-    
-    "inplace":{
-	"type":"boolean"},
-
-    "patch":{"$ref":"http://canopsis.org/patch.json"},
-    
-    "input":{
-	"type":"uri",
-    
-    "output":{
-	"type":"uri",
-    
-    "filter":{"$ref":"http://canopsis.org/filter.json"}
+  "type": "object",
+  "properties": {
+    "inplace": {
+      "type": "boolean"
+    },
+    "patch": {
+      "type": "object",
+      "properties": {
+        "add": {
+          "op": "add",
+          "path": "/essai1",
+          "value": "test1"
+        },
+        "replace": {
+          "op": "replace",
+          "path": "/version",
+          "value": "2.0.0"
+        },
+        "copy": {
+          "op": "copy",
+          "from": "/info/eids",
+          "path": "/info/entity_id"
+        },
+        "remove": {
+          "op": "remove",
+          "path": "/info/eids"
+        }
+      }
+    },
+    "input": {
+      "type": "string"
+    },
+    "output": {
+      "type": "string",
+      "filter": {
+        "$ref": "http://canopsis.org/filter.json"
+      }
+    }
   }
 }

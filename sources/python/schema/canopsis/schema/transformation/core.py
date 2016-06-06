@@ -18,7 +18,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from ..patch.core import getpatch
+from canopsis.schema.patch.core import getpatch
+import jsonpatch
 
 
 class Transformation(object):
@@ -48,7 +49,8 @@ class Transformation(object):
     @property
     def patch(self):
 
-        return self.schema['patch']
+        p = jsonpatch.JsonPatch(self.patch)
+        return p
 
     def select_data(self, filter, input):
 

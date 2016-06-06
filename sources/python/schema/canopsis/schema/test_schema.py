@@ -31,8 +31,6 @@ from unittest import main, TestCase, SkipTest
 import jsonpatch
 import jsonschema
 import json
-import pdb
-
 
 class TestSchema(TestCase):
 
@@ -50,9 +48,9 @@ class TestSchema(TestCase):
 
 
 class TestLoadSchema(TestSchema):
-    """schema are in a specifisc folder, we load it raise an error if schema does not exist"""
+    """schema are in a specific folder, we load it raise an error if schema does not exist"""
 
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
 
     def setUp(self):
         """parameters definition function"""
@@ -81,13 +79,13 @@ class TestSchemaDict(TestSchema):
         del item
         raise an error if schema is not a dict"""
 
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
 
     def test_get(self):
         """test to get an element from schema"""
 
         element = self.schema['id']
-        self.assertEqual(element, "http://canopsis.org/base_schema.json")
+        self.assertEqual(element, "http://canopsis.org/transformation_schema.json")
 
     def test_set(self):
         """test to set a value in the schema"""
@@ -96,14 +94,14 @@ class TestSchemaDict(TestSchema):
 
     def test_del(self):
         """test to delete an element from the schema"""
-        del self.schema['properties']
+        del self.schema['name']
         with self.assertRaises(KeyError):
-            self.schema['properties']
+            self.schema['name']
 
 class TestValidateSchema(TestSchema):
     """test schema validation"""
 
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/base_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
 
     def setUp(self):
         
@@ -114,7 +112,7 @@ class TestValidateSchema(TestSchema):
     def test_validation(self):
         """validate a schema return none"""
 
-        self.assertIsNone(self.schema.validate(self.doc, self.schema))
+        self.assertIsNone(self.schema.validate(self.doc))
 
 class TestTransformation(TestSchema):
     """to transform data we need to get informations from transformation schema 
@@ -122,7 +120,7 @@ class TestTransformation(TestSchema):
 
     transformation_class = Transformation
 
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
 
     def setUp(self):
 
