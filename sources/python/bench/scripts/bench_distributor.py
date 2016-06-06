@@ -28,14 +28,15 @@ class Connexion(object):
             try:
                 socket = self.context.socket(PUSH)
                 socket.connect('tcp://{0}:{1}'.format(host, self.port))
-                socket.send_pyobj(self.methodsandfunctions)
+                socket.send_pyobj(self.methodsandfunctions_tab)
                 socket.close()
             except ImportError:
                 print 'connexion to {0} impossible'.format(host)
         return 'conf diffused'
 
 
-co = Connexion()
-co.send_uri()
-print 'done'
-sys.exit(1)
+if __name__ == '__main__':
+    co = Connexion()
+    co.send_uri()
+    print 'done'
+    sys.exit(1)

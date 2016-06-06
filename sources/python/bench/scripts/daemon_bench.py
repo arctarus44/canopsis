@@ -63,7 +63,9 @@ class Receiver(Thread):
                 file.write('{0}\n'.format(obj))
                 file.close()
 
-                    #self.daemon_bench.bench_maf(maf)
+                for maf in obj:
+                    self.daemon_bench.bench_maf(maf)
+
             except KeyboardInterrupt:
                 self.stop()
 
