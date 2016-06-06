@@ -63,5 +63,5 @@ class JsonSchema(Schema):
     #save jsondata in the correct folder
     def save(self, data, output):
 
-    	with open(output, "w") as f:
+        with open(output, "w") as f:
             dump(data, f)

@@ -19,7 +19,6 @@
 # ---------------------------------
 
 from canopsis.schema.patch.core import getpatch
-import jsonpatch
 
 
 class Transformation(object):
@@ -49,8 +48,7 @@ class Transformation(object):
     @property
     def patch(self):
 
-        p = jsonpatch.JsonPatch(self.patch)
-        return p
+        return self.schema['patch']
 
     def select_data(self, filter, input):
 
