@@ -64,6 +64,32 @@ def serie_processing(engine, event, manager=None, logger=None, **_):
     metric_tags['type'] = 'GAUGE'
 
     # Generate metric entity
+    connector_entity = {
+        'type': 'connector',
+        'name': 'canopsis'
+    }
+
+    connectorname_entity = {
+        'type': 'connector_name',
+        'connector': 'canopsis',
+        'name': engine.name
+    }
+
+    component_entity = {
+        'type': 'component',
+        'connector': 'canopsis',
+        'connector_name': engine.name,
+        'name': event['component']
+    }
+
+    resource_entity = {
+        'type': 'resource',
+        'connector': 'canopsis',
+        'connector_name': engine.name,
+        'component': event['component'],
+        'name': event['resource']
+    }
+
     entity = {
         'type': 'metric',
         'connector': 'canopsis',
@@ -76,6 +102,36 @@ def serie_processing(engine, event, manager=None, logger=None, **_):
     context = manager[Serie.CONTEXT_MANAGER]
     entity_id = context.get_entity_id(entity)
 
+    context.put(
+        _type='connector',
+        entity=connector_entity,
+        cache=True
+    )
+    context.put(
+        _type='connector_name',
+        entity=connectorname_entity,
+        context=connector_entity,
+        cache=True
+    )
+    context.put(
+        _type='component',
+        entity=component_entity,
+        context=connectorname_entity,
+        cache=True
+    )
+    context.put(
+        _type='resource',
+        entity=resource_entity,
+        context=component_entity,
+        cache=True
+    )
+    context.put(
+        _type='metric',
+        entity=entity,
+        context=resource_entity,
+        cache=True
+    )
+
     # Publish points
     perfdata = manager[Serie.PERFDATA_MANAGER]
     perfdata.put(
@@ -84,3 +140,4 @@ def serie_processing(engine, event, manager=None, logger=None, **_):
         meta=metric_tags,
         cache=False
     )
+
