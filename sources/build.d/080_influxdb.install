@@ -4,15 +4,16 @@ function build(){
     launch_cmd 0 service influxdb stop
 
     cd $SRC_PATH/externals
-    BASE="influxdb-$VERSION-$RELEASE_linux_$ARCH"
+    BASE="influxdb-$VERSION-${RELEASE}_linux_$ARCH"
 
     if [ ! -e $BASE ]; then
+        echo "VOILA LA BASE --$BASE--"
         extract_archive "$BASE.tar.gz"
     fi
 }
 
 function install(){
-    BASE="influxdb-$VERSION-$RELEASE"
+    BASE="influxdb-$VERSION-$RELEASE-1"
     cd $SRC_PATH/externals/$BASE
     check_code $?
 
