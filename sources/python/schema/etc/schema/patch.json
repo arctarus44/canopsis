@@ -1,21 +1,23 @@
-{ 
-  "add": {
-    "op": "add",
-    "path": "/essai1",
-    "value": "test1"
-  },
-  "replace": {
-    "op": "replace",
-    "path": "/version",
-    "value": "2.0.0"
-  },
-  "copy": {
-    "op": "copy",
-    "from": "/info/eids",
-    "path": "/info/entity_id"
-  },
-  "remove": {
-    "op": "remove",
-    "path": "/info/eids"
+{
+  "patch": {
+    "add": {
+      "op": "add",
+      "path": "/essai1",
+      "value": "test1"
+    },
+    "replace": {
+      "op": "replace",
+      "path": "/version",
+      "value": "2.0.0"
+    },
+    "copy": {
+      "op": "copy",
+      "from": "/info/eids",
+      "path": "/info/entity_id"
+    },
+    "remove": {
+      "op": "remove",
+      "path": "/info/eids"
+    }
   }
 }

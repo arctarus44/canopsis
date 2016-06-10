@@ -19,7 +19,8 @@
 # ---------------------------------
 
 from canopsis.schema.patch.core import getpatch
-
+from canopsis.schema.patch.core import Patch
+from canopsis.schema.lang.json import JsonSchema
 
 class Transformation(object):
 
@@ -45,15 +46,12 @@ class Transformation(object):
 
         return self.schema['filter']
 
-    @property
-    def patch(self):
-
-        return self.schema['patch']
-
     def select_data(self, filter, input):
 
-        #application du filtre
-        raise NotImplementedError()
+        data = getresource(input)
+        db.data.find(filter)
+        
+        return data
 
     def apply_patch(self, data=None):
 
@@ -66,3 +64,4 @@ class Transformation(object):
     def save(self, output):
 
         raise NotImplementedError()
+

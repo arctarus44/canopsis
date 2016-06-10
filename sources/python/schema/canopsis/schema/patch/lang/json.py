@@ -18,11 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.patch.core import Patch, registerpatch
-
+from canopsis.schema.patch.core import registerpatch
 from canopsis.schema.lang.json import JsonSchema
-
-from canopsis.schema.transformation.core.Transformation import patch, output, filtre
+from canopsis.schema.patch.core import Patch
+from canopsis.schema.transformation.core import Transformation
 
 import jsonpatch
 import json
@@ -34,7 +33,9 @@ class JSONPatch(Patch):
     def process(self, data):
         """define the correct process to return the patch 
         in the correct form and apply it on data"""
-        
+
+        filtre = self.filtre(schema)
+
         patch = self.patch(schema)
         pa = []
 
@@ -42,15 +43,7 @@ class JSONPatch(Patch):
             pa.append(patch[element])
 
         p = jsonpatch.JsonPatch(pa)
-
         result = p.apply(data)
-
-        #traitement du filtre pour appliquer le patch 
-        #uniquement aux data souhaitées
-
-        filtre = self.filtre(schema)
-        #utilisation de la fonction find_element du fichier ..mongo.core
-        #on passe query = filtre[value]
 
         return result
 

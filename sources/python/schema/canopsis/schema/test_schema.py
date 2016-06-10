@@ -62,14 +62,14 @@ class TestLoadSchema(TestSchema):
     def test_success(self):
         """API take a path, return a schema"""
         
-        self.schema.getresource(self.path)
-        doc = self.schema.load(self.path)
+        schema = self.schema.getresource(self.path)
+
 
     def test_failed(self):
         """Api take a non existing path raise an error"""
 
         with self.assertRaises(IOError):
-            self.schema.getresource(self.paths)
+            schema = self.schema.getresource(self.paths)
 
 
 class TestSchemaDict(TestSchema):
@@ -101,7 +101,7 @@ class TestSchemaDict(TestSchema):
 class TestValidateSchema(TestSchema):
     """test schema validation"""
 
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json'
 
     def setUp(self):
         
@@ -118,25 +118,24 @@ class TestTransformation(TestSchema):
     """to transform data we need to get informations from transformation schema 
     raise errors if information doesn't exist"""
 
-    transformation_class = Transformation
-
-    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
+    path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
 
     def setUp(self):
 
         super(TestTransformation, self).setUp()
-
         self.transfo = self.transformation_class(self.schema)
 
     def test_select_data(self):
         """test application of the filter for data selection"""
-
-        self.schema.validate()
+        
+        schema = self.schema.getresource(self.path)
+        self.schema.validate(schema)
 
     def test_apply_patch(self):
         """take the selected data and apply patch process
         return the transform data"""
 
+        schema = self.schema.getresource(self.path)
         data =  {   "version":"1.0.0",
                     "info":{
                         "eids":"bla"
@@ -144,5 +143,4 @@ class TestTransformation(TestSchema):
                 }
 
         result = self.transfo.apply_patch(data)
-
         self.assertEqual(result, {'info': {u'entity_id': 'bla'}, u'essai1': 'test1', 'version': '2.0.0'})

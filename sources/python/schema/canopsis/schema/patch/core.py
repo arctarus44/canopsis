@@ -45,14 +45,19 @@ def getpatch(schema, patch):
 
     cls = None
 
+    print schema
     for schemacls in _PATCHS:
 
-        if isinstance(schema, schemacls):
+        if isinstance(schema, JsonSchema):
+           
             cls = _PATCHS[schemacls]
             break
 
     if cls is not None:
         result = cls(patch)
+
+    if not result:
+        raise(Exception('patch not found'))
 
     return result
 
@@ -66,4 +71,3 @@ class Patch(object):
     def process(self, data):
 
         raise NotImplementedError()
-

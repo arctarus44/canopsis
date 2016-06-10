@@ -20,9 +20,10 @@
 
 from __future__ import absolute_import
 
+from canopsis.schema.core import Schema
+
 from json import load, dump
 from jsonschema import validate
-from canopsis.schema.core import Schema
 
 class JsonSchema(Schema):
 
@@ -32,13 +33,6 @@ class JsonSchema(Schema):
             _rsc = load(f)
 
         return _rsc
-        
-    def load(self, path):
-
-        with open(path, "r") as f:
-            result = load(f)
-
-        return result
 
     def validate(self, data):
 
@@ -53,7 +47,6 @@ class JsonSchema(Schema):
     def __setitem__(self, key, value):
 
         self._rsc[key] = value
-        return self._rsc[key]
 
     #take key in argument and make del Schema[key] dictionary methode
     def __delitem__(self, key):
@@ -65,3 +58,4 @@ class JsonSchema(Schema):
 
         with open(output, "w") as f:
             dump(data, f)
+
