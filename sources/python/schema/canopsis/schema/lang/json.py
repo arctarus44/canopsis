@@ -58,4 +58,3 @@ class JsonSchema(Schema):
 
         with open(output, "w") as f:
             dump(data, f)
-

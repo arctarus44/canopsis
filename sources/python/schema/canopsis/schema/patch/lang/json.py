@@ -18,10 +18,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.patch.core import registerpatch
-from canopsis.schema.lang.json import JsonSchema
-from canopsis.schema.patch.core import Patch
-from canopsis.schema.transformation.core import Transformation
+from canopsis.schema.patch.core import Patch, registerpatch
+from canopsis.schema.lang.json import JsonSchema  
 
 import jsonpatch
 import json
@@ -30,13 +28,11 @@ import json
 @registerpatch(JsonSchema)
 class JSONPatch(Patch):
 
-    def process(self, data):
+    def process(self, data, schema):
         """define the correct process to return the patch 
         in the correct form and apply it on data"""
 
-        filtre = self.filtre(schema)
-
-        patch = self.patch(schema)
+        patch = schema['patch']
         pa = []
 
         for element in patch:
@@ -47,11 +43,10 @@ class JSONPatch(Patch):
 
         return result
 
-    def save(self, data):
+    def save(self, data, output):
         inplace = self.JsonSchema['sup']
 
         if inplace == 'true':
-            output = self.output(data)
 
             with open('output', "w") as f:
                 jdon.dump(data, output, sort_keys = True, indent = 2, separators = (',', ':'))

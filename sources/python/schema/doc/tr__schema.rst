@@ -40,6 +40,10 @@ The configuration file providing:
 
 Schema **MUST** have a unique identifier.
 
+The different classes of the project interact as the following diagram:
+
+.. figure:: /canopsis/sources/python/schema/doc/_static/Diagramme1.png
+
 
 .. _TR__Schema_Schema_loading:
 

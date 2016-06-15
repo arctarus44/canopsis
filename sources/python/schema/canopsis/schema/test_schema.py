@@ -23,9 +23,9 @@ test the correct running of Schema API
 """
 
 from canopsis.middleware.core import Middleware
-from canopsis.schema.transformation.core import Transformation
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
+from canopsis.schema.transformation.core import Transformation
 
 from unittest import main, TestCase, SkipTest
 import jsonpatch
@@ -144,3 +144,7 @@ class TestTransformation(TestSchema):
 
         result = self.transfo.apply_patch(data)
         self.assertEqual(result, {'info': {u'entity_id': 'bla'}, u'essai1': 'test1', 'version': '2.0.0'})
+
+
+if __name__ == '__main__':
+    main()

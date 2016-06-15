@@ -38,13 +38,13 @@
       }
     },
     "input": {
-      "type": "string"
+      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/dataV1.json"
     },
     "output": {
-      "type": "string",
-      "filter": {
+      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema"
+    },
+    "filter": {
         "$ref": "http://canopsis.org/filter.json"
-      }
     }
-  }
-}
+   }
+ }

@@ -45,10 +45,9 @@ def getpatch(schema, patch):
 
     cls = None
 
-    print schema
     for schemacls in _PATCHS:
 
-        if isinstance(schema, JsonSchema):
+        if isinstance(schema, schemacls):
            
             cls = _PATCHS[schemacls]
             break
@@ -68,6 +67,6 @@ class Patch(object):
 
         self.patch = patch
 
-    def process(self, data):
+    def process(self, data, schema):
 
         raise NotImplementedError()

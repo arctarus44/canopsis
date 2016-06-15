@@ -59,9 +59,9 @@ class Transformation(object):
 
             data = self.select_data(self.filter, self.input)
 
-        return self.patch.process(data)
+        return self.patch.process(data, self.schema)
 
     def save(self, output):
 
         raise NotImplementedError()
-
+        
