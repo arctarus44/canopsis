@@ -18,8 +18,6 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------
 
-
-
 from canopsis.middleware.core import Middleware
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
@@ -29,42 +27,53 @@ from unittest import main, TestCase, SkipTest
 import jsonpatch
 import jsonschema
 import json
-
+import os
 
 class TestUseCase(TestCase):
 
-    schema_class = JsonSchema
-    transformation_class = Transformation
-
-    path = None
-
     def setUp(self):
-        """parameters definition function"""
+
+        self.path_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation.json'
+        self.path_v1 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json'
+        self.path_v2 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json'
+
+        self.schema_class = JsonSchema
+        self.transformation_class = Transformation
+
+        self.schema = self.schema_class(self.path_transfo)
+        self.transfo = self.transformation_class(self.schema)
         
-        if self.schema_class is None:
-            raise SkipTest('Schema class is not given in {0}'.format(self))
 
-
-        path_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
-        path_v1 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json'
-        path_v2 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json'
-
-    def Test(TestUseCase):
+    def test_use(self):
 
         schema_transfo = self.schema.getresource(self.path_transfo)
-        schemaV1 = self.schema.getresource(self.path_v1)
+        schema_V1 = self.schema.getresource(self.path_v1)
         schema_V2 = self.schema.getresource(self.path_v2)
 
+        #print schema_transfo
+        #print schema_V1
+        #print schema_V2
+
         inp = schema_transfo['input']
+        #print inp
+        
         data = self.schema.getresource(inp)
+        #print data
 
         self.schema.validate(data)
 
-        patch = schema_transfo['patch']
         output = schema_transfo['output']
+        #print output
 
         result = self.transfo.apply_patch(data)
-        self.schema.save(data, output)
+        #print result
+
+        output = os.path.expanduser(output)
+        output = os.path.abspath(output)
+
+        #print output
+
+        self.schema.save(result, output)
 
 
 if __name__ == '__main__':

@@ -43,10 +43,11 @@ class JSONPatch(Patch):
 
         return result
 
-    def save(self, data, output):
+    def save(self, new_data, output):
         inplace = self.JsonSchema['sup']
 
         if inplace == 'true':
 
             with open('output', "w") as f:
-                jdon.dump(data, output, sort_keys = True, indent = 2, separators = (',', ':'))
+                jdon.dump(new_data, output, sort_keys = True, indent = 2, separators = (',', ':'))
+

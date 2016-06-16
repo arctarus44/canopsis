@@ -30,6 +30,7 @@ class Transformation(object):
 
         self.schema = schema
         self.patch = getpatch(self.schema, self.schema['patch'])
+        print self.patch
 
     @property
     def input(self):
