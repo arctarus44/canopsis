@@ -8,6 +8,7 @@ User guide
    :titlesonly:
 
    quickstart/index
+   brickmanager/index
    reminders/index
    UI/index
    engines/index
