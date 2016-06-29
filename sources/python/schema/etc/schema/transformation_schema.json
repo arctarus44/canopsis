@@ -3,7 +3,11 @@
   "id": "http://canopsis.org/transformation_schema.json",
   "name": "transformation",
   "description": "transformation schema for data migration version",
-
+  "links": [
+    {
+      "$ref": "#http://canopsis.org/base_schema.json"
+    }
+  ],
   "type": "object",
   "properties": {
     "inplace": {
@@ -13,34 +17,34 @@
       "type": "object",
       "properties": {
         "add": {
-          "op": "string",
-          "path": "string",
-          "value": "string"
+          "op": "add",
+          "path": "/essai1",
+          "value": "test1"
         },
         "replace": {
-          "op": "string",
-          "path": "string",
-          "value": "string"
+          "op": "replace",
+          "path": "/version",
+          "value": "2.0.0"
         },
         "copy": {
-          "op": "string",
-          "from": "string",
-          "path": "string"
+          "op": "copy",
+          "from": "/info/eids",
+          "path": "/info/entity_id"
         },
         "remove": {
-          "op": "string",
-          "path": "string"
+          "op": "remove",
+          "path": "/info/eids"
         }
       }
     },
     "input": {
-      "type": "string"
+      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/dataV1.json"
     },
     "output": {
-      "type": "string"
+      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema"
     },
     "filter": {
-        "type":"string"
+        "$ref": "http://canopsis.org/filter.json"
     }
    }
  }

@@ -1,5 +1,4 @@
 {
-  "inplace": true,
   "patch": {
     "add": {
       "op": "add",
@@ -20,10 +19,5 @@
       "op": "remove",
       "path": "/info/eids"
     }
-  },
-  "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/dataV1.json",
-  "output": "~/dataV2.json",
-  "filter": {
-    "$ref": "http://canopsis.org/filter.json"
   }
 }

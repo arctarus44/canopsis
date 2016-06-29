@@ -1,9 +1,13 @@
 {
-  "$schema": "http://canopsis.org/base_schema.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "id":"http://canopsis.org/V2.json",
   "name": "V2",
   "description": "exemple schema v2",
-
+  "links": [
+    {
+      "href": "#http://canopsis.org/base_schema.json"
+    }
+  ],
   "type": "object",
 
   "properties": {

@@ -1,16 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id":"http://canopsis.org/V1.json",
-  "name": "V1",
-  "description": "exemple schema v1",
+  "id": "http://canopsis.org/filter.json",
+  "name": "filter",
+  "description": "filter schema for data migration version",
   "links": [
     {
       "href": "#http://canopsis.org/base_schema.json"
     }
   ],
+
   "type": "object",
 
   "properties": {
-      "version":{"@ref":"#http://canopsis.org/base_schema.json"}
+
+    "value": {
+      "type": "string"
+    }
   }
 }

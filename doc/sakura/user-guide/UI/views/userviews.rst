@@ -38,7 +38,7 @@ Main view features
 On the top right of the main view are located some view actions :
 
 +----------------+--------------------------------------------------------+------------------------------+
-|``refresh``     | .. image:: ../../../_static/images/views/refresh.png   | Manually refreshes the view  |
+|``refresh``     | .. image:: ../../../_static/images/views/refresh.png   | Manually refreshes the view  | 
 +----------------+--------------------------------------------------------+------------------------------+
 
 +-----------------------+-----------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
@@ -75,93 +75,3 @@ For each view, some actions are available :
 +---------------+--------------------------------------------------------------------+--------------------------------------+
 
 
-
-Create a view
--------------
-
-To add a view click on the button on the top left, a menu appear.
-Click on "Add a view" as following :
-
- .. image:: ../../../_static/images/views/add_view.png
-
-
-Delete a view
--------------
-
-Click on the left top button and on "Edit current view" as following :
-
- .. image:: ../../../_static/images/views/delete_view_1.png
-
-
-A new toolbar appear, click on the trash icon to delete the current view :
-
- .. image:: ../../../_static/images/views/delete_view_2.png
-Click on "Save changes" to confirm
-
-
-Edit view
----------
-
-Click on the left top button and on "Edit current view" as following :
-
- .. image:: ../../../_static/images/views/delete_view_1.png
-
-
-A new toolbar appear, click on the pencil icon to edit the current view :
-
- .. image:: ../../../_static/images/views/delete_view_3.png
-
-You can add widgets too by click on the "insert widget" button.
-
-
-Header and Footer
-----------------
-
-By the edition of Header and footer views, you personnalise you interface with your preferences,
-you can add anywidget you want (make sure of the configuration of the widget before save changes).
-You may the interface be yours.
-
-Edit header
-^^^^^^^^^^^
-
-Click on the left top button and on "Manage views" as following :
-
- .. image:: ../../../_static/images/views/add_header_1.png
-
-
-Select "app_header.json" and click on the eye button on the right of the line :
-
- .. image:: ../../../_static/images/views/add_header_2.png
-
-
-Now you can click on on the pencil icon to edit the current header :
-
- .. image:: ../../../_static/images/views/edit_header_1.png
-
-
-In this new screen you can delete or add or modify labels ans their values :
-
- .. image:: ../../../_static/images/views/edit_header_2.png
-
-You can create short cut to your different views.
-By this way you personnalise your interface with your preferences.
-
-
-Edit footer
-^^^^^^^^^^^
-
-Click on the left top button and on "Manage views" as following :
-
- .. image:: ../../../_static/images/views/add_header_1.png
-
-
-Select "app_footer.json" and click on the eye button on the right of the line :
-
- .. image:: ../../../_static/images/views/add_header_2.png
-
-Now you can click on on the pencil icon to edit the current footer.
-In this new screen you can modifie widget title, template and other options so you can personnalise the interface by modifying templates and others options
-
-The default footer show you the states of series (info, minor, major, critical) but you can show what you want (events, metrics, series, mixin...).
-
-You can observe header and footer you've choosen all over the interface.
