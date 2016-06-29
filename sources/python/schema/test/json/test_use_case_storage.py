@@ -64,25 +64,29 @@ class TestUseCase(TestCase):
             element = self.schema.getresource(pat)
 
             self.mystorage.put_element(element)
+            #print element
 
-        cursor = self.mystorage.find_elements()
+        cursor = self.mystorage.find_elements(query={"info":{"$exists":True}})
 
         for data in cursor:
 
+            print data
+            name = files
             self.schema.validate(data)
 
             output = schema_transfo['output']
-            self.assertEqual(output, '~/dataV2.json')
-
-            result = self.transfo.apply_patch(data)
+            self.assertEqual(output, '~/')
 
             output = os.path.expanduser(output)
             output = os.path.abspath(output)
+            #print output
+            out = os.path.join(output, name)
+            #print out
 
-            print output
-            self.assertEqual(output, '/opt/canopsis/dataV2.json')
+            result = self.transfo.apply_patch(data)
+            #print result
 
-            self.schema.save(result, output)
+            self.schema.save(result, out)
 
 
 if __name__ == '__main__':

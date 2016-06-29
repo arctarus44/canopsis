@@ -48,7 +48,7 @@ def getpatch(schema, patch):
     for schemacls in _PATCHS:
 
         if isinstance(schema, schemacls):
-           
+
             cls = _PATCHS[schemacls]
             break
 

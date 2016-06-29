@@ -30,7 +30,7 @@ class Transformation(object):
 
         self.schema = schema
         self.patch = getpatch(self.schema, self.schema['patch'])
-        print self.patch
+
 
     @property
     def input(self):
@@ -51,7 +51,7 @@ class Transformation(object):
 
         data = getresource(input)
         db.data.find(filter)
-        
+
         return data
 
     def apply_patch(self, data=None):
@@ -65,4 +65,3 @@ class Transformation(object):
     def save(self, output):
 
         raise NotImplementedError()
-        
