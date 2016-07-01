@@ -1,8 +1,8 @@
 {
-	"version":"1.0.0",
-	"info":{
-		"eids":"ble"
-	},
-	"name":"data1V1.json",
-	"essais":"test"
+	"info": {
+		"eids": "ble"
+	}, 
+	"name": "data1V1.json", 
+	"essais": "test", 
+	"version": "1.0.0"
 }

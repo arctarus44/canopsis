@@ -49,6 +49,7 @@ class UseCase(Schema):
 
     inp = schema_transfo['input']
     query = schema_transfo['filter']
+    inplace = schema_transfo['inplace']
     output = schema_transfo['output']
 
 
@@ -70,10 +71,20 @@ class UseCase(Schema):
 
         name = data['name']
 
-        output = os.path.expanduser(output)
-        output = os.path.abspath(output)
-        out = os.path.join(output, name)
-
         result = transfo.apply_patch(data)
 
-        schema.save(result, out)
+        if inplace == True:
+
+            output = os.path.expanduser(output)
+            output = os.path.abspath(output)
+            out = os.path.join(output, name)
+
+            schema.save(result, out)
+
+        else:
+
+            output = os.path.expanduser(inp)
+            output = os.path.abspath(inp)
+            out = os.path.join(inp, name)
+
+            schema.save(result, out)

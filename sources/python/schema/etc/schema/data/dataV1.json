@@ -1,7 +1,7 @@
 {
-	"version":"1.0.0",
-	"info":{
-		"eids":"blabla"
+	"info": {
+		"eids": "blabla"
 	},
-	"name":"dataV1.json"
+	"version": "2.0.0", 
+	"name": "dataV1.json"
 }
