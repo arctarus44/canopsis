@@ -21,9 +21,7 @@
       "path": "/info/eids"
     }
   },
-  "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/dataV1.json",
-  "output": "~/dataV2.json",
-  "filter": {
-    "$ref": "http://canopsis.org/filter.json"
-  }
+  "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/",
+  "output": "~/",
+  "filter": {"info":{"$exists":true}}
 }

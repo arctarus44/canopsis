@@ -35,7 +35,7 @@ class Schema(object):
     def getresource(self, path):
 
         raise NotImplementedError()
-        
+
     #valid schema independently of language.
     def validate(self, data):
 

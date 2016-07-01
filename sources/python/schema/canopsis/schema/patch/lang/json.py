@@ -19,7 +19,7 @@
 # ---------------------------------
 
 from canopsis.schema.patch.core import Patch, registerpatch
-from canopsis.schema.lang.json import JsonSchema  
+from canopsis.schema.lang.json import JsonSchema
 
 import jsonpatch
 import json
@@ -29,7 +29,7 @@ import json
 class JSONPatch(Patch):
 
     def process(self, data, schema):
-        """define the correct process to return the patch 
+        """define the correct process to return the patch
         in the correct form and apply it on data"""
 
         patch = schema['patch']

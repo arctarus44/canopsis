@@ -39,7 +39,6 @@ class TestUseCase(TestCase):
         self.path_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation.json'
         self.path_v1 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json'
         self.path_v2 = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json'
-        self.path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/data'
 
         self.schema_class = JsonSchema
         self.transformation_class = Transformation
@@ -54,12 +53,13 @@ class TestUseCase(TestCase):
         schema_V1 = self.schema.getresource(self.path_v1)
         schema_V2 = self.schema.getresource(self.path_v2)
 
+        inp = schema_transfo['input']
         query = schema_transfo['filter']
 
-        dirs = os.listdir(self.path)
+        dirs = os.listdir(inp)
 
         for files in dirs:
-            pat = os.path.join(self.path, files)
+            pat = os.path.join(inp, files)
 
             element = self.schema.getresource(pat)
 

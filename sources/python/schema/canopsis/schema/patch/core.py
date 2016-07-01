@@ -21,7 +21,7 @@
 _PATCHS = {}
 
 def registerpatch(schemacls, cls=None):
-    """decorator which get type (JSON, xslt, uml, ...) of the patch 
+    """decorator which get type (JSON, xslt, uml, ...) of the patch
     and return it"""
 
     def _recordpatch(cls):
@@ -48,7 +48,7 @@ def getpatch(schema, patch):
     for schemacls in _PATCHS:
 
         if isinstance(schema, schemacls):
-           
+
             cls = _PATCHS[schemacls]
             break
 

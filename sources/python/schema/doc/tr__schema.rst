@@ -36,13 +36,14 @@ Description
 This feature **MUST** have a configuration file.
 
 The configuration file providing:
+
  - where are stored the schema (ex: storage URI)
 
 Schema **MUST** have a unique identifier.
 
 The different classes of the project interact as the following diagram:
 
-.. figure:: /canopsis/sources/python/schema/doc/_static/Diagramme1.png
+.. image:: /canopsis/sources/python/schema/doc/_static/Diagramme1.png
 
 
 .. _TR__Schema_Schema_loading:
@@ -51,7 +52,7 @@ Schema loading
 ==============
 
 To load schema API looks into the configuration file and return a schema.
-It identify schema by their unique id (ex: name, key, ...). 
+It identify schema by their unique id (ex: name, key, ...).
 Raise an error if non existing document.
 
 
@@ -63,6 +64,7 @@ Dictionary Schema
 Schema **SHOULD** be used like a dictionary, it depends on Schema loading.
 
 It possible to use dictionary methodes on it:
+
  - get an item from the loaded schema
  - set a value in the item
  - delete an item
@@ -77,11 +79,12 @@ Schema Validation
 =================
 
 A methode to validate data **MUST**:
- - do nothing if data is valid
- - raise a validationerror if data is invalid
- - raise a schemaerror if the schema itself is invalid
 
-This function validate the structure of data by a schema but not his contain. 
+ - do nothing if data is valid
+ - raise a ValidationError if data is invalid
+ - raise a SchemaError if the schema itself is invalid
+
+This function validate the structure of data by a schema but not his contain.
 
 
 .. _TR__Schema_Transformation:
@@ -90,6 +93,7 @@ Transformation
 ==============
 
 The transformation schema **MUST** provide:
+
  - input field to know where are stored data (ex: storage URI)
  - output field to know where will be stored new data (ex: storage URI)
  - a filter field to tell what are the selected data to the API

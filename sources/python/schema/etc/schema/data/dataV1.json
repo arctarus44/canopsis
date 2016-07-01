@@ -2,5 +2,6 @@
 	"version":"1.0.0",
 	"info":{
 		"eids":"blabla"
-	}
+	},
+	"name":"dataV1.json"
 }

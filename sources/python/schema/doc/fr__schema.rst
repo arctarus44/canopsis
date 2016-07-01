@@ -16,7 +16,7 @@ References
  - :ref:`FR::Storage <FR__Storage>`
 
 -------
-Updates 
+Updates
 -------
 
 .. csv-table::
@@ -33,7 +33,7 @@ Content
 Objective
 =========
 
-Canopsis is a Hypervision solution, it is based on the schema notion to define the structure of data and their treatment. 
+Canopsis is a Hypervision solution, it is based on the schema notion to define the structure of data and their treatment.
 After taken schema to Canopsis, the tool will generate code to warranty maximum reliability and it maintain.
 
 With the evolution of the system problematic, we bring many feature based on schema, data migration is an important part of it.
@@ -75,7 +75,7 @@ And it **MUST** contain a mapping of:
  - transformation operator to apply on fields (concatenate, split, integer to string, ...)
 
 .. _FR__Schema_Component:
- 
+
 Component Schema
 ----------------
 

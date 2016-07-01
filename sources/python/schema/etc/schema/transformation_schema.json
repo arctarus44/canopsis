@@ -1,13 +1,9 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://canopsis.org/base_schema.json",
   "id": "http://canopsis.org/transformation_schema.json",
   "name": "transformation",
   "description": "transformation schema for data migration version",
-  "links": [
-    {
-      "$ref": "#http://canopsis.org/base_schema.json"
-    }
-  ],
+
   "type": "object",
   "properties": {
     "inplace": {
@@ -17,34 +13,33 @@
       "type": "object",
       "properties": {
         "add": {
-          "op": "add",
-          "path": "/essai1",
-          "value": "test1"
+          "op": "string",
+          "path": "string",
+          "value": "string"
         },
         "replace": {
-          "op": "replace",
-          "path": "/version",
-          "value": "2.0.0"
+          "op": "string",
+          "path": "string",
+          "value": "string"
         },
         "copy": {
-          "op": "copy",
-          "from": "/info/eids",
-          "path": "/info/entity_id"
+          "op": "string",
+          "from": "string",
+          "path": "string"
         },
         "remove": {
-          "op": "remove",
-          "path": "/info/eids"
+          "op": "string",
+          "path": "string"
         }
       }
     },
     "input": {
-      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/dataV1.json"
+      "type": "string"
     },
     "output": {
-      "type": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema"
+      "type": "string"
     },
     "filter": {
-        "$ref": "http://canopsis.org/filter.json"
-    }
+	"type":"string"
    }
  }

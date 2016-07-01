@@ -40,7 +40,7 @@ class JsonSchema(Schema):
 
     #take key in argument and make Schema.get(key) dictionary methode
     def __getitem__(self, key):
-        
+
         return self._rsc[key]
 
     #take key in argument and make Schema[key] = value dictionary methode

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -42,7 +42,7 @@ class TestUseCase(TestCase):
 
         self.schema = self.schema_class(self.path_transfo)
         self.transfo = self.transformation_class(self.schema)
-        
+
 
     def test_use(self):
 
@@ -56,7 +56,7 @@ class TestUseCase(TestCase):
 
         inp = schema_transfo['input']
         #print inp
-        
+
         data = self.schema.getresource(inp)
         #print data
 
