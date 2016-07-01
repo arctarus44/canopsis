@@ -8,7 +8,7 @@ Userviews
 Concept
 -------
 
-In Canopsis' frontend, almost everything element an user can see is wrapped in a container called view.
+In Canopsis, you can see all everything you want in a container named "view"
 
 
 Main view and Sattelite views
@@ -88,15 +88,13 @@ Click on "Add a view" as following :
 Delete a view
 -------------
 
-Click on the left top button and on "Edit current view" as following :
+Click on the left top button and on "Manage views" as following :
 
- .. image:: ../../../_static/images/views/delete_view_1.png
+ .. image:: ../../../_static/images/views/add_header_1.png
 
+Now you can click on on the trash icon nearby the name of the view you want to delete:
 
-A new toolbar appear, click on the trash icon to delete the current view :
-
- .. image:: ../../../_static/images/views/delete_view_2.png
-Click on "Save changes" to confirm
+ .. image:: ../../../_static/images/views/delete_view.png
 
 
 Edit view
@@ -109,7 +107,7 @@ Click on the left top button and on "Edit current view" as following :
 
 A new toolbar appear, click on the pencil icon to edit the current view :
 
- .. image:: ../../../_static/images/views/delete_view_3.png
+ .. image:: ../../../_static/images/views/edit_view.png
 
 You can add widgets too by click on the "insert widget" button.
 
@@ -117,8 +115,8 @@ You can add widgets too by click on the "insert widget" button.
 Header and Footer
 ----------------
 
-By the edition of Header and footer views, you personnalise you interface with your preferences,
-you can add anywidget you want (make sure of the configuration of the widget before save changes).
+By the edition of Header and footer views, you personnalise your interface with your preferences,
+you can add any widget you want (make sure of the configuration of the widget before save changes).
 You may the interface be yours.
 
 Edit header
@@ -164,4 +162,4 @@ In this new screen you can modifie widget title, template and other options so y
 
 The default footer show you the states of series (info, minor, major, critical) but you can show what you want (events, metrics, series, mixin...).
 
-You can observe header and footer you've choosen all over the interface.
+You can observe header and footer you've chosen all over the interface.
