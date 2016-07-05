@@ -61,6 +61,7 @@ class engine(Engine):
 
                 # Is it a cancel ?
                 if event['event_type'] == 'cancel':
+
                     ack_info = devent.get('ack', {})
                     # Saving status, in case cancel is undone
                     # If cancel is not in ok, it's not an alert cancellation
@@ -89,6 +90,13 @@ class engine(Engine):
                         update['ack'] = devent.get('ack', {})
                         update['ack']['isAck'] = True
                         update['ack']['isCancel'] = False
+
+                        update['cancel'] = {
+                            'timestamp': time(),
+                            'author': event.get('author', 'unknown'),
+                            'comment': event['output'],
+                            'previous_status': devent.get('status', 1),
+                        }
 
                         # Restore previous status
                         if 'cancel' in devent:
