@@ -32,6 +32,14 @@ import os
 @Configurable(paths='script.conf')
 class UseCase(object):
 
+    def __init__(self, *args, **kwargs):
+        super(UseCase, self).__init__(*args, **kwargs)
+
+        self.inp = self._schema_transfo['input']
+        self.query = self._schema_transfo['filter']
+        self.inplace = self._schema_transfo['inplace']
+        self.output = self._schema_transfo['output']
+
     @property
     def schema(self):
         if not hasattr(self, '_schema'):
@@ -68,14 +76,6 @@ class UseCase(object):
             self._schemaV2 = self.schema.getresource(self.path_v2)
 
         return self._schemaV2
-
-    def __init__(self, *args, **kwargs):
-        super(UseCase, self).__init__(*args, **kwargs)
-
-        self.inp = self._schema_transfo['input']
-        self.query = self._schema_transfo['filter']
-        self.inplace = self._schema_transfo['inplace']
-        self.output = self._schema_transfo['output']
 
     def storage(self):
 
