@@ -43,37 +43,27 @@ class TestUseCase(TestCase):
         self.schema = self.schema_class(self.path_transfo)
         self.transfo = self.transformation_class(self.schema)
 
-
     def test_use(self):
 
         schema_transfo = self.schema.getresource(self.path_transfo)
         schema_V1 = self.schema.getresource(self.path_v1)
         schema_V2 = self.schema.getresource(self.path_v2)
 
-        #print schema_transfo
-        #print schema_V1
-        #print schema_V2
-
         inp = schema_transfo['input']
-        #print inp
 
         data = self.schema.getresource(inp)
-        #print data
 
         self.schema.validate(data)
 
         output = schema_transfo['output']
-        #print output
-
-        result = self.transfo.apply_patch(data)
-        #print result
 
         output = os.path.expanduser(output)
         output = os.path.abspath(output)
 
-        #print output
+        self.assertEqual(output, '/opt/canopsis/dataV2.json')
 
-        self.schema.save(result, output)
+        result = self.transfo.apply_patch(data)
+        self.assertEqual(result, {"info": {"entity_id": "blabla"}, "essai1": "test1", "version": "2.0.0", "name": "dataV1.json"})
 
 
 if __name__ == '__main__':

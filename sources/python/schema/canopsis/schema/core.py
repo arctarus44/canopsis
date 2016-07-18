@@ -54,7 +54,7 @@ class Schema(object):
     #take key in argument and make del Schema[key] dictionary methode
     def __delitem__(self, key):
 
-        raise NotImplementedError()
+        raise NotImplementedError()zz
 
     def save(self, path=None):
 

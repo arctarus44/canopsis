@@ -1,5 +1,6 @@
 {
   "inplace": true,
+  "exit":"file",
   "patch": {
     "add": {
       "op": "add",
@@ -9,7 +10,7 @@
     "replace": {
       "op": "replace",
       "path": "/version",
-      "value": "2.0.0"
+      "value": "1.0.0"
     },
     "copy": {
       "op": "copy",
@@ -23,5 +24,13 @@
   },
   "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/",
   "output": "~/",
-  "filter": {"info":{"$exists":true}}
+  "filter": {
+    "info": {
+      "$exists": true
+    }
+  },
+"path_v1":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/v1_schema.json",
+"path_v2":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/v2_schema.json",
+"schema_class":"JsonSchema",
+"URL":"mongodb-default-JsonSchema://"
 }

@@ -1,45 +1,80 @@
 {
-  "$schema": "http://canopsis.org/base_schema.json",
-  "id": "http://canopsis.org/transformation_schema.json",
-  "name": "transformation",
-  "description": "transformation schema for data migration version",
+    "$schema": "http://canopsis.org/base_schema.json",
+    "id": "http://canopsis.org/transformation_schema.json",
+    "name": "transformation",
+    "description": "transformation schema for data migration version",
 
-  "type": "object",
-  "properties": {
-    "inplace": {
-      "type": "boolean"
-    },
-    "patch": {
-      "type": "object",
-      "properties": {
-        "add": {
-          "op": "string",
-          "path": "string",
-          "value": "string"
+    "type": "object",
+    "properties": {
+        "inplace": {
+            "type": "boolean"
         },
-        "replace": {
-          "op": "string",
-          "path": "string",
-          "value": "string"
+        "patch": {
+            "type": "object",
+            "properties": {
+                "add": {
+                    "type": "object",
+                    "properties": {
+                        "op": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "replace": {
+                    "type": "object",
+                    "properties": {
+                        "op": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "copy": {
+                    "type": "object",
+                    "properties": {
+                        "op": {
+                            "type": "string"
+                        },
+                        "from": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "remove": {
+                    "type": "object",
+                    "properties": {
+                        "op": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         },
-        "copy": {
-          "op": "string",
-          "from": "string",
-          "path": "string"
+        "input": {
+            "type": "string"
         },
-        "remove": {
-          "op": "string",
-          "path": "string"
+        "output": {
+            "type": "string"
+        },
+        "filter": {
+            "type": "string"
         }
-      }
-    },
-    "input": {
-      "type": "string"
-    },
-    "output": {
-      "type": "string"
-    },
-    "filter": {
-	"type":"string"
-   }
- }
+    }
+}

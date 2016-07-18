@@ -33,11 +33,14 @@ Contents
 Description
 ===========
 
-This feature **MUST** have a configuration file.
+This feature **MUST** have a transformation file.
 
-The configuration file providing:
+The transformation file providing:
 
  - where are stored the schema (ex: storage URI)
+ - where data will be saved after the migration process
+ - type of data
+ - operations to apply on data to migrate them
 
 Schema **MUST** have a unique identifier.
 

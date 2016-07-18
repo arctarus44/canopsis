@@ -38,7 +38,7 @@ def registerpatch(schemacls, cls=None):
 
 
 def getpatch(schema, patch):
-    """return the type of the patch, take 2 parameters
+    """return the correct patch, take 2 parameters
     schema, patch"""
 
     result = None

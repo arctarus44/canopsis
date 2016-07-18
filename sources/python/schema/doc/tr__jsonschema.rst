@@ -51,4 +51,4 @@ Transformation schema
 =====================
 
 The transformation schema is a Json patch
-To see the structure follow that link : `Jsonpatch <https://tools.ietf.org/html/rfc6902>`_
+To see the structure follow that link : `Jsonpatch <http://jsonpatch.com/>`_

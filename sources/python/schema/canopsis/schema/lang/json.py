@@ -25,6 +25,7 @@ from canopsis.schema.core import Schema
 from json import load, dump
 from jsonschema import validate
 
+@newschema(JsonSchema)
 class JsonSchema(Schema):
 
     def getresource(self, path):
@@ -38,23 +39,23 @@ class JsonSchema(Schema):
 
         return validate(data, self._rsc)
 
-    #take key in argument and make Schema.get(key) dictionary methode
     def __getitem__(self, key):
+        #take key in argument and make Schema.get(key) dictionary methode
 
         return self._rsc[key]
 
-    #take key in argument and make Schema[key] = value dictionary methode
     def __setitem__(self, key, value):
+        #take key in argument and make Schema[key] = value dictionary methode
 
         self._rsc[key] = value
 
-    #take key in argument and make del Schema[key] dictionary methode
     def __delitem__(self, key):
+        #take key in argument and make del Schema[key] dictionary methode
 
         del self._rsc[key]
 
-    #save jsondata in the correct folder
     def save(self, data, output):
+        #save jsondata in the correct folder
 
         with open(output, "w") as f:
             dump(data, f)

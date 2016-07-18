@@ -47,3 +47,12 @@ testtools==2.0.0
 traceback2==1.4.0
 unittest2==1.1.0
 chardet==2.3.0
+jsonpatch==1.14
+jsonschema==2.5.1
+b3j0f.aop==0.8.4
+b3j0f.conf==0.3.18
+b3j0f.utils==1.4.3
+b3j0f.annotation==0.3.4
+jsonpointer==1.10
+vcversioner==1.14.1.1
+functools32==3.2.3.2

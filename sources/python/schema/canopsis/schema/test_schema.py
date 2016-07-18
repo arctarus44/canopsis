@@ -40,7 +40,7 @@ class TestSchema(TestCase):
 
     def setUp(self):
         """parameters definition function"""
-        
+
         if self.schema_class is None:
             raise SkipTest('Schema class is not given in {0}'.format(self))
 
@@ -54,14 +54,14 @@ class TestLoadSchema(TestSchema):
 
     def setUp(self):
         """parameters definition function"""
-        
+
         super(TestLoadSchema, self).setUp()
 
         self.paths = '/home/julie/Documents/canopsis/sources/python/schema/etc/schemma'
 
     def test_success(self):
         """API take a path, return a schema"""
-        
+
         schema = self.schema.getresource(self.path)
 
 
@@ -104,7 +104,7 @@ class TestValidateSchema(TestSchema):
     path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json'
 
     def setUp(self):
-        
+
         super(TestValidateSchema, self).setUp()
 
         self.doc = {"version":"1.0.0"}
@@ -115,7 +115,7 @@ class TestValidateSchema(TestSchema):
         self.assertIsNone(self.schema.validate(self.doc))
 
 class TestTransformation(TestSchema):
-    """to transform data we need to get informations from transformation schema 
+    """to transform data we need to get informations from transformation schema
     raise errors if information doesn't exist"""
 
     path = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/patch.json'
@@ -127,7 +127,7 @@ class TestTransformation(TestSchema):
 
     def test_select_data(self):
         """test application of the filter for data selection"""
-        
+
         schema = self.schema.getresource(self.path)
         self.schema.validate(schema)
 
