@@ -21,49 +21,21 @@
 from canopsis.middleware.core import Middleware
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
-from canopsis.schema.transformation.core import Transformation
 from canopsis.storage.core import Storage
 
 import os
 
-_Schema = {}
-
-def newschema(classchema, path_transfo):
-    """take the schema class and the path to the transformation document in parameter
-    this function identify the class of the transformation document
-    get this document and return it"""
-
-    result = None
-    clas = None
-
-    _Schema[classchema] = clas
-
-    for classchema in _Schema:
-
-        if isinstance(path_transfo, classchema):
-
-            clas = _Schema[classchema]
-
-    if clas is None:
-        result = clas(path_transfo)
-
-    if not result:
-        raise(Exception('Transformation document not found'))
-
-    return result
-
-
-def migrate(path_transfo, schema_class):
+def migrate(path_transfo):
     """the migrate function transform data and save them in function of exit field"""
 
-    inp = schema_transfo['input']
-    query = schema_transfo['filter']
-    inplace = schema_transfo['inplace']
-    output = schema_transfo['output']
-    path_v1 = schema_transfo['path_v1']
-    path_v2 = schema_transfo['path_v2']
-    URL = schema_transfo['URL']
-    exit = schema_transfo['exit']
+    inp = path_transfo['input']
+    query = path_transfo['filter']
+    inplace = path_transfo['inplace']
+    output = path_transfo['output']
+    path_v1 = path_transfo['path_v1']
+    path_v2 = path_transfo['path_v2']
+    URL = path_transfo['URL']
+    exit = path_transfo['exit']
 
     if exit == 'file':
 
@@ -148,20 +120,26 @@ def storage(URL, path_v1, path_v2, inp, query):
 
     dirs = os.listdir(inp)
 
-        for files in dirs:
+    for files in dirs:
 
-            pat = os.path.join(inp, files)
+        pat = os.path.join(inp, files)
 
-            element = schema.getresource(pat)
+        element = schema.getresource(pat)
 
-            mystorage.put_element(element)
+        mystorage.put_element(element)
 
-            cursor = mystorage.find_elements(query)
+        cursor = mystorage.find_elements(query)
 
-            for data in cursor:
+        for data in cursor:
 
-                schema.validate(data)
+            schema.validate(data)
 
-            result = transfo.apply_patch(data)
+        result = transfo.apply_patch(data)
 
-            mystorage.put_element(result)
+        mystorage.put_element(result)
+
+class Document(object):
+
+    def __init__(self, document):
+
+        self.document = document

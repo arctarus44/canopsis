@@ -25,7 +25,6 @@ from canopsis.schema.core import Schema
 from json import load, dump
 from jsonschema import validate
 
-@newschema(JsonSchema)
 class JsonSchema(Schema):
 
     def getresource(self, path):
