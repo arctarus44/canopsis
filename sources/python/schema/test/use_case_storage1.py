@@ -20,6 +20,6 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------
 
-from canopsis.schema.transformation import migration
+from canopsis.schema import migration
 
 migration.migrate('/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation.json')

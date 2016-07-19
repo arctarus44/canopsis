@@ -22,41 +22,73 @@ from canopsis.middleware.core import Middleware
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.storage.core import Storage
+from canopsis.schema.transformation.core import Transformation
 
 import os
 
+_Schema = {}
+
+def newschema(classchema, clas=None):
+
+    def _recordschema(clas):
+
+        _Schema[classchema] = clas
+
+        return clas
+
+    if clas is None:
+        return _recordschema
+
+    else:
+        return _recordschema(clas)
+
+@newschema(JsonSchema)
 def migrate(path_transfo):
     """the migrate function transform data and save them in function of exit field"""
 
-    inp = path_transfo['input']
-    query = path_transfo['filter']
-    inplace = path_transfo['inplace']
-    output = path_transfo['output']
-    path_v1 = path_transfo['path_v1']
-    path_v2 = path_transfo['path_v2']
-    URL = path_transfo['URL']
-    exit = path_transfo['exit']
+    schema_class = JsonSchema
+    transformation_class = Transformation
+
+    schema = schema_class(path_transfo)
+    transfo = transformation_class(schema)
+
+    schema_transfo = schema.getresource(path_transfo)
+
+    inp = schema_transfo['input']
+    query = schema_transfo['filter']
+    inplace = schema_transfo['inplace']
+    output = schema_transfo['output']
+    path_v1 = schema_transfo['path_v1']
+    path_v2 = schema_transfo['path_v2']
+    URL = schema_transfo['URL']
+    exit = schema_transfo['exit']
 
     if exit == 'file':
 
-        schema.file(inp, output, path_v1, path_v2)
+        fil(inp, output, path_v1, path_v2, path_transfo)
 
     elif exit == 'dictionary':
 
-        schema.dictionary(inp, path_v1, path_v2)
+        dictionary(inp, path_v1, path_v2, path_transfo)
 
     elif exit == 'storage':
 
-        schema.storage(URL, path_v1, path_v2, inp, query)
+        storage(URL, path_v1, path_v2, inp, query, path_transfo)
 
 
-def file(inp, output, path_v1, path_v2):
+def fil(inp, output, path_v1, path_v2, path_transfo):
     """treatment of the file case
     this function load the validation schema v1 and v2
     get the data and his name
     validate data
     apply the patch to transform data
     and save it in function of inplace field"""
+
+    schema_class = JsonSchema
+    transformation_class = Transformation
+
+    schema = schema_class(path_transfo)
+    transfo = transformation_class(schema)
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
@@ -85,12 +117,18 @@ def file(inp, output, path_v1, path_v2):
         schema.save(result, out)
 
 
-def dictionary(inp, path_v1, path_v2):
+def dictionary(inp, path_v1, path_v2, path_transfo):
     """treatment of the python dictionary case
     load validation schema v1 and v2
     get the data, in this case data is a python dictionary
     apply the transformation patch on data
     print the result"""
+
+    schema_class = JsonSchema
+    transformation_class = Transformation
+
+    schema = schema_class(path_transfo)
+    transfo = transformation_class(schema)
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
@@ -104,7 +142,7 @@ def dictionary(inp, path_v1, path_v2):
     print result
 
 
-def storage(URL, path_v1, path_v2, inp, query):
+def storage(URL, path_v1, path_v2, inp, query, path_transfo):
     """treatment of the storage case
     instanciate a storage and connect it
     load validation schema v1 and v2
@@ -114,6 +152,12 @@ def storage(URL, path_v1, path_v2, inp, query):
 
     mystorage = Middleware.get_middleware_by_uri(URL)
     mystorage.connect()
+
+    schema_class = JsonSchema
+    transformation_class = Transformation
+
+    schema = schema_class(path_transfo)
+    transfo = transformation_class(schema)
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
@@ -137,6 +181,7 @@ def storage(URL, path_v1, path_v2, inp, query):
         result = transfo.apply_patch(data)
 
         mystorage.put_element(result)
+
 
 class Document(object):
 

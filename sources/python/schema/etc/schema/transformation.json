@@ -1,6 +1,6 @@
 {
   "inplace": true,
-  "exit":"file",
+  "exit":"dictionary",
   "patch": {
     "add": {
       "op": "add",
@@ -22,15 +22,15 @@
       "path": "/info/eids"
     }
   },
-  "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/",
+  "input": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/dataV1.json",
   "output": "~/",
   "filter": {
     "info": {
       "$exists": true
     }
   },
-"path_v1":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/v1_schema.json",
-"path_v2":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/v2_schema.json",
+"path_v1":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json",
+"path_v2":"/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json",
 "schema_class":"JsonSchema",
 "URL":"mongodb-default-JsonSchema://"
 }
