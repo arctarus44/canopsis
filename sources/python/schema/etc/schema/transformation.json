@@ -1,6 +1,6 @@
 {
   "inplace": true,
-  "exit":"dictionary",
+  "exit":"file",
   "patch": {
     "add": {
       "op": "add",
