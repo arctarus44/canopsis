@@ -38,28 +38,76 @@ def migrate(path_transfo):
     schema_transfo = schema.getresource(path_transfo)
 
     inp = schema_transfo['input']
-    query = schema_transfo['filter']
-    inplace = schema_transfo['inplace']
     output = schema_transfo['output']
     path_v1 = schema_transfo['path_v1']
     path_v2 = schema_transfo['path_v2']
-    URL = schema_transfo['URL']
-    exit = schema_transfo['exit']
+    inplace = schema_transfo['inplace']
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
-    if exit == 'file':
+    #folder -> folder
+    if isinstance(inp, unicode) and inp.startswith('/') and inp.endswith('/'):
+
+        if isinstance(output, unicode):
+
+            dirs = os.listdir(inp)
+            for files in dirs:
+
+                path = os.path.join(inp, files)
+                data = schema.getresource(path)
+                print 'Beware you are migrating '+inp+' do not use it before end of migration'
+
+                result = transfo.apply_patch(data)
+                schema.validate(result)
+
+                if inplace == True :
+
+                    schema.save(result, path)
+
+                elif inplace == False and output.starswith('/') and output.endswith('/'):
+
+                    out = os.path.join(output, name)
+
+                    schema.save(result, out)
+
+                elif inplace == False and output.starswith('/'):
+
+                    output = os.path.expanduser(output)
+                    output = os.path.abspath(output)
+                    out = os.path.join(output, files)
+
+                    schema.save(result, out)
+
+                else :
+                    raise(Exception('Invalid output'))
+
+        elif isinstance(output, dict):
+            print result
+
+    #file -> storage
+        elif isinstance(output, unicode) and output.endswith('//'):
+
+            mystorage = Middleware.get_middleware_by_uri(output)
+            mystorage.connect()
+            mystorage.put_element(result)
+
+        else:
+            raise(Exception('Invalid output'))
+
+    elif isinstance(inp, unicode) and inp.startswith('/'):
 
         data = schema.getresource(inp)
         name = data['name']
+        print 'Beware you are migrating '+name+' do not use it before end of migration'
 
         schema.validate(data)
 
         result = transfo.apply_patch(data)
         schema.validate(result)
 
-        if inplace == True:
+        #file -> file
+        if inplace == True and output.startswith('/'):
 
             output = os.path.expanduser(output)
             output = os.path.abspath(output)
@@ -67,7 +115,7 @@ def migrate(path_transfo):
 
             schema.save(result, out)
 
-        else:
+        elif inplace == False and output.startswith('/'):
 
             output = os.path.expanduser(inp)
             output = os.path.abspath(inp)
@@ -75,37 +123,97 @@ def migrate(path_transfo):
 
             schema.save(result, out)
 
-    elif exit == 'dictionary':
+    #file -> dict
+        elif isinstance(output, dict):
+            print result
 
-        data = schema.getresource(inp)
-        schema.validate(data)
+    #file -> storage
+        elif isinstance(output, unicode) and output.endswith('//'):
 
-        result = transfo.apply_patch(data)
-        schema.validate(result)
+            mystorage = Middleware.get_middleware_by_uri(output)
+            mystorage.connect()
+            mystorage.put_element(result)
 
-        print result
+        else:
+            raise(Exception('Invalid output'))
 
-    elif exit == 'storage':
+    #storage -> file
+    elif isinstance(inp, unicode) and inp.endswith('//'):
 
-        mystorage = Middleware.get_middleware_by_uri(URL)
+        query = schema_transfo['filter']
+
+        mystorage = Middleware.get_middleware_by_uri(inp)
         mystorage.connect()
 
-        dirs = os.listdir(inp)
+        cursor = mystorage.find_elements(query)
 
-        for files in dirs:
+        for data in cursor:
+            schema.validate(data)
 
-            pat = os.path.join(inp, files)
+        print 'Beware you are migrating '+inp+' do not use it before end of migration'
+        result = transfo.apply_patch(data)
 
-            element = schema.getresource(pat)
+        if isinstance(output, unicode):
+            if output.startswith('/'):
 
-            mystorage.put_element(element)
+                if inplace == True:
 
-            cursor = mystorage.find_elements(query)
+                    name = data['name']
+                    output = os.path.expanduser(output)
+                    output = os.path.abspath(output)
+                    out = os.path.join(output, name)
 
-            for data in cursor:
+                    schema.save(result, out)
 
-                schema.validate(data)
+                else:
 
-            result = transfo.apply_patch(data)
+                    name = data['name']
+                    output = os.path.expanduser(inp)
+                    output = os.path.abspath(inp)
+                    out = os.path.join(inp, name)
 
-            mystorage.put_element(result)
+                    schema.save(result, out)
+
+            #storage -> storage
+            if output.endswith('//'):
+
+                mystorage.put_element(result)
+
+        #storage -> dict
+        elif isinstance(output, dict):
+            print result
+
+        else:
+            raise(Exception('Invalid output'))
+
+    elif isinstance(inp, dict):
+
+        #dict -> file
+        schema.validate(inp)
+        name = inp['name']
+        print 'Beware you are migrating '+name+' do not use it before end of migration'
+        result = transfo.apply_patch(inp)
+
+        if isinstance(output, unicode) and output.startswith('/'):
+
+            output = os.path.expanduser(output)
+            output = os.path.abspath(output)
+
+            #print output
+
+            schema.save(result, output)
+
+            #dict -> storage
+        elif isinstance(output, unicode) and output.endswith('//'):
+
+                mystorage.put_element(result)
+
+        #dict -> dict
+        elif isinstance(output, dict):
+            print result
+
+        else:
+            raise(Exception('Invalid output'))
+
+    else:
+        raise(Exception('Invalid input'))

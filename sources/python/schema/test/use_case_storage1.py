@@ -22,4 +22,4 @@
 
 from canopsis.schema.migration.core import migrate
 
-migrate('/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation.json')
+migrate('/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_dictionary.json')

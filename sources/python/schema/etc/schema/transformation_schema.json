@@ -10,10 +10,10 @@
             "type": "boolean"
         },
         "patch": {
-            "type": "object",
+            "type": "array",
             "properties": {
                 "add": {
-                    "type": "object",
+                    "type": "item",
                     "properties": {
                         "op": {
                             "type": "string"
@@ -27,7 +27,7 @@
                     }
                 },
                 "replace": {
-                    "type": "object",
+                    "type": "item",
                     "properties": {
                         "op": {
                             "type": "string"
@@ -41,7 +41,7 @@
                     }
                 },
                 "copy": {
-                    "type": "object",
+                    "type": "item",
                     "properties": {
                         "op": {
                             "type": "string"
@@ -55,7 +55,7 @@
                     }
                 },
                 "remove": {
-                    "type": "object",
+                    "type": "item",
                     "properties": {
                         "op": {
                             "type": "string"
