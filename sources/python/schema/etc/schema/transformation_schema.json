@@ -68,10 +68,12 @@
             }
         },
         "input": {
-            "type": "string"
+            "type": "string",
+	    "pattern":"^[a-z]{:}{/}{/}[ -z]/[ -z]$"
         },
         "output": {
-            "type": "string"
+            "type": "string",
+	    "pattern":"^[a-z]{:}{/}{/}[ -z]/[ -z]$"
         },
         "filter": {
             "type": "string"

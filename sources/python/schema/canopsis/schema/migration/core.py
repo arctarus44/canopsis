@@ -154,7 +154,7 @@ def migrate(path_transfo):
         result = transfo.apply_patch(data)
 
         if isinstance(output, unicode):
-            if output.startswith('/'):
+            if output.startswith('/'):0
 
                 if inplace == True:
 
