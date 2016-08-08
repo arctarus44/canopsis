@@ -56,7 +56,6 @@ def migrate(path_transfo):
 
                 path = os.path.join(inp, files)
                 data = schema.getresource(path)
-                print 'Beware you are migrating '+inp+' do not use it before end of migration'
 
                 result = transfo.apply_patch(data)
                 schema.validate(result)
@@ -99,7 +98,6 @@ def migrate(path_transfo):
 
         data = schema.getresource(inp)
         name = data['name']
-        print 'Beware you are migrating '+name+' do not use it before end of migration'
 
         schema.validate(data)
 
@@ -150,7 +148,6 @@ def migrate(path_transfo):
         for data in cursor:
             schema.validate(data)
 
-        print 'Beware you are migrating '+inp+' do not use it before end of migration'
         result = transfo.apply_patch(data)
 
         if isinstance(output, unicode):
@@ -191,7 +188,6 @@ def migrate(path_transfo):
         #dict -> file
         schema.validate(inp)
         name = inp['name']
-        print 'Beware you are migrating '+name+' do not use it before end of migration'
         result = transfo.apply_patch(inp)
 
         if isinstance(output, unicode) and output.startswith('/'):

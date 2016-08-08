@@ -1,4 +1,6 @@
 
+import urlparse
+
 class MigrationFactory(object):
     """instanciate the behavior class with the URL protocol
     it's possible to override the __setitem__ and the __getitem__
@@ -26,15 +28,8 @@ class MigrationFactory(object):
     def register(self, cls, URL):
         raise NotImplementedError()
 
+    def get_protocol(URL):
+        uri = urlparse.urlsplit(URL)
+        protocol = uri[0]
 
-import urlparse
-
-def get_protocol(URL):
-    uri = urlparse.urlsplit(URL)
-    protocol = uri[0]
-
-    return protocol
-
-class FolderFactory(MigrationFactory):
-    def register(self, cls, URL):
-        return cls(URL)
+        return protocol

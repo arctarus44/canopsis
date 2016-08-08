@@ -1,30 +1,29 @@
 {
-	"patch": {
-		"add": {
-			"op": "add",
-			"path": "/essai1",
-			"value": "test1"
-		},
-		"replace": {
-			"op": "replace",
-			"path": "/version",
-			"value": "2.0.0"
-		},
-		"copy": {
-			"op": "copy",
-			"from": "/info/eids",
-			"path": "/info/entity_id"
-		},
-		"remove": {
-			"op": "remove",
-			"path": "/info/eids"
-		}
-	},
-
-	"input": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/",
-	"inplace":"True",	
-	"output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/",
-	"path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json",
-	"path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json",
-	"schema_class": "JsonSchema"
+    "inplace": "True", 
+    "patch": {
+        "add": {
+            "path": "/test", 
+            "value": "TT", 
+            "op": "add"
+        }, 
+        "add1": {
+            "path": "/info/entity_id", 
+            "value": "bb", 
+            "op": "add"
+        }, 
+        "remove": {
+            "path": "/essai1", 
+            "op": "remove"
+        }, 
+        "replace": {
+            "path": "/version", 
+            "value": "2.0.0", 
+            "op": "replace"
+        }
+    }, 
+    "schema_class": "JsonSchema", 
+    "input": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/", 
+    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/", 
+    "path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json", 
+    "path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
 }
