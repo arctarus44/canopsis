@@ -33,3 +33,17 @@ class MigrationFactory(object):
         protocol = uri[0]
 
         return protocol
+
+
+#définir l'interface de base
+#propose des methodes utilisées par migration
+class IOInterface(object):
+
+    def load(self, URL):
+        raise NotImplementedError()
+
+    def transformation(self, data):
+        raise NotImplementedError()
+
+    def save(self, result, URL):
+        raise NotImplementedError()

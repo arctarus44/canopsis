@@ -1,8 +1,7 @@
 from canopsis.schema import edit
 
-
-path_schema_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_schema.json'
 path_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_dictionary.json'
+
 edit.add(path_transfo, '/test', 'TT')
 edit.add(path_transfo, '/info/entity_id', 'bb', 'add1')
 edit.replace(path_transfo, '/version', '2.0.0')

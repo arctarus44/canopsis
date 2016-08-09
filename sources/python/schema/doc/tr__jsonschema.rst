@@ -52,3 +52,5 @@ Transformation schema
 
 The transformation schema is a Json patch
 To see the structure follow that link : `Jsonpatch <http://jsonpatch.com/>`_
+
+this document may write with the edition_patch module with simple comand line(ex: add(path_transfo, path, value, new=add))

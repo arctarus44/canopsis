@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
+"""edition transformation patch module in JSON format"""
 
 import json
 import jsonpatch
@@ -73,6 +74,26 @@ def remove(path_transfo, path, new='remove'):
 
     dc_patch = doc_transfo['patch']
     dc_patch[new] = remove_prop
+    doc_transfo['patch'] = dc_patch
+
+    with open(path_transfo, "w") as f:
+        json.dump(doc_transfo, f, indent=4)
+
+
+def move(path_transfo, path, fr, new='remove'):
+    """Function to remove field in the transformation patch"""
+
+    move_prop = {}
+
+    move_prop['op'] = 'move'
+    move_prop['path'] = path
+    move_prop['from'] = fr
+
+    with open(path_transfo, "r") as f:
+        doc_transfo = json.load(f)
+
+    dc_patch = doc_transfo['patch']
+    dc_patch[new] = move_prop
     doc_transfo['patch'] = dc_patch
 
     with open(path_transfo, "w") as f:

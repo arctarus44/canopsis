@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+z# -*- coding: utf-8 -*-
 # --------------------------------
 # Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
@@ -18,16 +18,15 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.middleware.core import Middleware
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
-from canopsis.storage.core import Storage
 from canopsis.schema.transformation.core import Transformation
-
+from canopsis.schema.migration import MigrationFactory, get_protocol
 import os
+import urlparse
 
 def migrate(path_transfo):
-    """the migrate function transform data and save them in function of exit field"""
+    """the migrate function transform data and save them"""
 
     schema_class = JsonSchema
     transformation_class = Transformation
@@ -46,170 +45,51 @@ def migrate(path_transfo):
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
-    #folder -> folder
-    if isinstance(inp, unicode) and inp.startswith('/') and inp.endswith('/'):
+    #appeler le MigrationFactory.__getitem__(URL)
+    myinp = MigrationFactory().__getitem__(inp)
+    data = myinp.load(inp, schema_V1)
+    result = myinp.transformation(data, schema_V2)
 
-        if isinstance(output, unicode):
+    myout = MigrationFactory().__getitem__(output)
+    out = myout.save(result, output)
 
-            dirs = os.listdir(inp)
-            for files in dirs:
 
-                path = os.path.join(inp, files)
-                data = schema.getresource(path)
+class FileFactory(MigrationFactory):
+    def register(self, cls, URL):
+        return cls(URL)
 
-                result = transfo.apply_patch(data)
-                schema.validate(result)
 
-                if inplace == True :
+#définir l'interface de base
+#propose des methodes utilisées par migration
+class IOInterface(object):
 
-                    schema.save(result, path)
+    def load(self, URL):
+        raise NotImplementedError()
 
-                elif inplace == False and output.starswith('/') and output.endswith('/'):
+    def transformation(self, data):
+        raise NotImplementedError()
 
-                    out = os.path.join(output, name)
+    def save(self, result, URL):
+        raise NotImplementedError()
 
-                    schema.save(result, out)
 
-                elif inplace == False and output.starswith('/'):
+#Input File behavio class
+class InputFile(IOInterface):
 
-                    output = os.path.expanduser(output)
-                    output = os.path.abspath(output)
-                    out = os.path.join(output, files)
+    def load(self, URL, schema_V1):
 
-                    schema.save(result, out)
+        data = schema.getresource(path)
+        schema_V1.validate(data)
 
-                else :
-                    raise(Exception('Invalid output'))
-
-        elif isinstance(output, dict):
-            print result
-
-    #file -> storage
-        elif isinstance(output, unicode) and output.endswith('//'):
-
-            mystorage = Middleware.get_middleware_by_uri(output)
-            mystorage.connect()
-            mystorage.put_element(result)
-
-        else:
-            raise(Exception('Invalid output'))
-
-    elif isinstance(inp, unicode) and inp.startswith('/'):
-
-        data = schema.getresource(inp)
-        name = data['name']
-
-        schema.validate(data)
+    def transformation(self, data, schema_V2):
 
         result = transfo.apply_patch(data)
-        schema.validate(result)
+        schema_V2.validate(result)
 
-        #file -> file
-        if inplace == True and output.startswith('/'):
 
-            output = os.path.expanduser(output)
-            output = os.path.abspath(output)
-            out = os.path.join(output, name)
+class OutputFile(IOInterface):
 
-            schema.save(result, out)
+    def save(self, result, URL):
 
-        elif inplace == False and output.startswith('/'):
+        schema.save(result, URL)
 
-            output = os.path.expanduser(inp)
-            output = os.path.abspath(inp)
-            out = os.path.join(inp, name)
-
-            schema.save(result, out)
-
-    #file -> dict
-        elif isinstance(output, dict):
-            print result
-
-    #file -> storage
-        elif isinstance(output, unicode) and output.endswith('//'):
-
-            mystorage = Middleware.get_middleware_by_uri(output)
-            mystorage.connect()
-            mystorage.put_element(result)
-
-        else:
-            raise(Exception('Invalid output'))
-
-    #storage -> file
-    elif isinstance(inp, unicode) and inp.endswith('//'):
-
-        query = schema_transfo['filter']
-
-        mystorage = Middleware.get_middleware_by_uri(inp)
-        mystorage.connect()
-
-        cursor = mystorage.find_elements(query)
-
-        for data in cursor:
-            schema.validate(data)
-
-        result = transfo.apply_patch(data)
-
-        if isinstance(output, unicode):
-            if output.startswith('/'):0
-
-                if inplace == True:
-
-                    name = data['name']
-                    output = os.path.expanduser(output)
-                    output = os.path.abspath(output)
-                    out = os.path.join(output, name)
-
-                    schema.save(result, out)
-
-                else:
-
-                    name = data['name']
-                    output = os.path.expanduser(inp)
-                    output = os.path.abspath(inp)
-                    out = os.path.join(inp, name)
-
-                    schema.save(result, out)
-
-            #storage -> storage
-            if output.endswith('//'):
-
-                mystorage.put_element(result)
-
-        #storage -> dict
-        elif isinstance(output, dict):
-            print result
-
-        else:
-            raise(Exception('Invalid output'))
-
-    elif isinstance(inp, dict):
-
-        #dict -> file
-        schema.validate(inp)
-        name = inp['name']
-        result = transfo.apply_patch(inp)
-
-        if isinstance(output, unicode) and output.startswith('/'):
-
-            output = os.path.expanduser(output)
-            output = os.path.abspath(output)
-
-            #print output
-
-            schema.save(result, output)
-
-            #dict -> storage
-        elif isinstance(output, unicode) and output.endswith('//'):
-
-                mystorage.put_element(result)
-
-        #dict -> dict
-        elif isinstance(output, dict):
-            print result
-
-        else:
-            raise(Exception('Invalid output'))
-
-    else:
-        raise(Exception('Invalid input'))

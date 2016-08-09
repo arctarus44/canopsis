@@ -26,7 +26,7 @@ Updates
    :header: "Author(s)", "Date", "Version", "Summary", "Accepted by"
 
    "Julie Vanglabeke", "30/06/2016", "0.1", "Document creation", ""
-   "Julie Vanglabeke", "05/07/2016", "0.2", "Document modification", ""
+   "Julie Vanglabeke", "09/08/2016", "0.2", "Document update", ""
 
 
 --------
@@ -41,7 +41,6 @@ Installation
 
 The migration can be use in canopsis.
 To use the migration you **SHOULD** launch a script which describes different operations.
-Run canopsis and his different services, open the folder where it save the migration script.
 
 
  .. _ED__Migration__Use:
@@ -49,9 +48,9 @@ Run canopsis and his different services, open the folder where it save the migra
 Use
 ---
 
-You can use the migration to change your data version or to move data from a storage to another
-with a simple script.
-To launch the script execute the following command line : 'python script_name.py'.
+The migration is describes in the migrate function.
+You can call it or launch it with a script wich will describe your preferences.
+In the script you can call migrate() and the edition module to write your own transformation patch.
 
 
  .. _ED__Migration__Requirement:
@@ -70,7 +69,6 @@ You **MUST** launch the migration with the migrate function.
 This function have the path to the transformation document in parameter.
 
 
-
  .. _ED__Migration__JSON:
 
 JSON
@@ -78,20 +76,19 @@ JSON
 
 In the transformation document you **MUST** write :
 
- - input : path to the data to migrate
- - output : path to the migrated data folder
- - filter : mongodb query to select data in the storage
- - inplace : boolean to precise if you want to replace the initial data by the migrated data
- - path_V1 : path to the validation schema of the first data version
- - path_V2 : path to the validation schema of the second data version
- - schema_class : the good  type class(JsonSchema, XML, ...)
- - URL : URL for instanciate the storage with your preferences
- - exit : type of exit data
+ - **input** : URI to the data to migrate (ex: file uri)
+ - **output** : URI to the migrated data folder (ex: file uri)
+ - **filter** : mongodb query to select data in the storage
+ - **inplace** : boolean to precise if you want to replace the initial data by the migrated data
+ - **path_V1** : path to the validation schema of the first data version
+ - **path_V2** : path to the validation schema of the second data version
+ - **schema_class** : the good  type class(JsonSchema, XML, ...)
 
 
- .. _ED__Migration__Errors:
+construction of URI
+-------------------
 
-Errors
-------
+for migration tool, URI are on standard format
+URL = protocol(*://)domain name(*.*.com)path(/...)"""
 
-If you have a storage error see the help.
+You can create your own protocol
