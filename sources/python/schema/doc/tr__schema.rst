@@ -41,7 +41,6 @@ The transformation file providing:
  - where data will be saved after the migration process(ex: file URI)
  - operations to apply on data to migrate them
  - where are stored the validation schema for entering data and the transformed data
- - Inplace field
 
 Schema **MUST** have a unique identifier.
 
@@ -97,7 +96,6 @@ The transformation schema **MUST** provide:
  - **input** field to know where are stored data (ex: storage URI)
  - **output** field to know where will be stored new data (ex: storage URI)
  - **filter** field to tell what are the selected data to the API
- - **inplace** : an option to remove old data after transformation or not
  - The data schema identifier for selected data
  - The data schema identifier for transform data
  - The transformation patch

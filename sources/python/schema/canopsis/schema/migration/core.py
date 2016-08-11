@@ -1,4 +1,4 @@
-z# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # --------------------------------
 # Copyright (c) 2016 "Capensis" [http://www.capensis.com]
 #
@@ -21,9 +21,115 @@ z# -*- coding: utf-8 -*-
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
-from canopsis.schema.migration import MigrationFactory, get_protocol
 import os
 import urlparse
+
+class IOInterface(object):
+
+    def load(self, URL):
+        raise NotImplementedError()
+
+    def transformation(self, data):
+        raise NotImplementedError()
+
+    def save(self, result, URL):
+        raise NotImplementedError()
+
+
+#Input File behavio class
+class File(IOInterface):
+
+    def load(self, URL, schema):
+
+        data = schema.getresource(URL)
+        schema.validate(data)
+        return data
+
+    def transformation(self, data, transfo_cls, schema):
+
+        result = transfo_cls.apply_patch(data)
+        schema.validate(result)
+        return result
+
+    def save(self, result, URL, schema):
+
+        schema.save(result, URL)
+
+class Dict(IOInterface):
+
+    def load(self, URL, schema):
+        data = schema.getresource(URL)
+        schema.validate(data)
+        return data
+
+    def transformation(self, data, transfo_cls, schema):
+        result = transfo_cls.apply_patch(data)
+        schema.validate(result)
+        print result
+
+class CanopsisStorage(IOInterface):
+
+    def load(self, URL, query):
+        mystorage = Middleware.get_middleware_by_uri(URL)
+        mystorage.connect()
+
+        cursor = mystorage.find(query)
+        for data in cursor:
+            return data
+
+    def transformation(self, transfo_cls, URL, query):
+        mystorage = Middleware.get_middleware_by_uri(URL)
+        mystorage.connect()
+
+        cursor = mystorage.find(query)
+        for data in cursor:
+            result = transfo_cls.apply_patch(data)
+
+        return result
+
+    def save(self, result, URL):
+        mystorage = Middleware.get_middleware_by_uri(URL)
+        mystorage.connect()
+        mystorage.put_elements(result, URL)
+
+
+class MigrationFactory(object):
+    """instanciate the behavior class with the URL protocol
+    it's possible to override the __setitem__ and the __getitem__
+    by the register"""
+
+    def __init__(self):
+        self.URL = {'file':'File', 'dict':'Dict', 'mongodb-default':'CanopsisStorage'}
+
+    """take URI in parameter
+    URI = protocol(*://)domain name(*.*.com)path(/...)"""
+    def get(self, URI):
+        protocol = get_protocol(URI)
+
+        if self.URL[protocol] == 'File':
+            return File()
+        elif self.URL[protocol] == 'Dict':
+            return Dict()
+        elif self.URL[protocol] == 'CanopsisStorage':
+            return CanopsisStorage()
+
+    def register(self, protocol, cls):
+
+        self.URL[protocol] = cls
+
+
+def get_protocol(URI):
+    uri = urlparse.urlsplit(URI)
+    protocol = uri[0]
+
+    return protocol
+
+def get_path(url):
+    uri = urlparse.urlsplit(url)
+    path = uri[2]
+
+    return path
+
 
 def migrate(path_transfo):
     """the migrate function transform data and save them"""
@@ -40,56 +146,13 @@ def migrate(path_transfo):
     output = schema_transfo['output']
     path_v1 = schema_transfo['path_v1']
     path_v2 = schema_transfo['path_v2']
-    inplace = schema_transfo['inplace']
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
-    #appeler le MigrationFactory.__getitem__(URL)
-    myinp = MigrationFactory().__getitem__(inp)
-    data = myinp.load(inp, schema_V1)
-    result = myinp.transformation(data, schema_V2)
+    myinp = MigrationFactory().get(inp)
+    data = myinp.load(get_path(inp), schema)
 
-    myout = MigrationFactory().__getitem__(output)
-    out = myout.save(result, output)
-
-
-class FileFactory(MigrationFactory):
-    def register(self, cls, URL):
-        return cls(URL)
-
-
-#définir l'interface de base
-#propose des methodes utilisées par migration
-class IOInterface(object):
-
-    def load(self, URL):
-        raise NotImplementedError()
-
-    def transformation(self, data):
-        raise NotImplementedError()
-
-    def save(self, result, URL):
-        raise NotImplementedError()
-
-
-#Input File behavio class
-class InputFile(IOInterface):
-
-    def load(self, URL, schema_V1):
-
-        data = schema.getresource(path)
-        schema_V1.validate(data)
-
-    def transformation(self, data, schema_V2):
-
-        result = transfo.apply_patch(data)
-        schema_V2.validate(result)
-
-
-class OutputFile(IOInterface):
-
-    def save(self, result, URL):
-
-        schema.save(result, URL)
-
+    myout = MigrationFactory().get(output)
+    result = myout.transformation(data, transfo, schema)
+    myout.save(result, get_path(output), schema)

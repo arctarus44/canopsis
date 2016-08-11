@@ -7,12 +7,12 @@
             "op": "add"
         }, 
         "add1": {
-            "path": "/info/entity_id", 
-            "value": "bb", 
+            "path": "/info", 
+            "value": "{entity_id:'bb'}", 
             "op": "add"
         }, 
         "remove": {
-            "path": "/essai1", 
+            "path": "/essai", 
             "op": "remove"
         }, 
         "replace": {
@@ -22,8 +22,8 @@
         }
     }, 
     "schema_class": "JsonSchema", 
-    "input": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/", 
-    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/", 
+    "input": "dict:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data.json", 
+    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json", 
     "path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json", 
     "path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
 }

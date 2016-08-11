@@ -57,4 +57,4 @@ class JsonSchema(Schema):
         #save jsondata in the correct folder
 
         with open(output, "w") as f:
-            dump(data, f)
+            dump(data, f, indent=4)

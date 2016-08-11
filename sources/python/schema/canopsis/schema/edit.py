@@ -23,7 +23,12 @@ import json
 import jsonpatch
 
 def add(path_transfo, path, value, new='add'):
-    """Function to add field in the transformation patch"""
+    """Function to add field in the transformation patch
+    parameters : path_transfo : path to the transformation document
+    path : /property_name/field_name_to_create
+    value : value to set the field to create
+    new : default = 'function name', use it to write several operations 'add'"""
+
     add_prop = {}
 
     add_prop['op'] = 'add'
@@ -42,7 +47,11 @@ def add(path_transfo, path, value, new='add'):
 
 
 def copy(path_transfo, fr, path, new='copy'):
-    """Function to copy field in the transformation patch"""
+    """Function to copy field in the transformation patch
+    parameters : path_transfo : path to the transformation document
+    fr : /property_name/field_name_to_copy
+    path : /property_name/field_name_where_copy
+    new : default = 'function name', use it to write several operations 'copy'"""
 
     copy_prop = {}
 
@@ -62,7 +71,10 @@ def copy(path_transfo, fr, path, new='copy'):
 
 
 def remove(path_transfo, path, new='remove'):
-    """Function to remove field in the transformation patch"""
+    """Function to remove field in the transformation patch
+    parameters : path_transfo : path to the transformation document
+    path : "to" /property_name/field_name_to_delete
+    new : default = 'function name', use it to write several operations 'remove'"""
 
     remove_prop = {}
 
@@ -81,7 +93,11 @@ def remove(path_transfo, path, new='remove'):
 
 
 def move(path_transfo, path, fr, new='remove'):
-    """Function to remove field in the transformation patch"""
+    """Function to remove field in the transformation patch
+    parameters : path_transfo : path to the transformation document
+    fr : /property_name/field_name_to_move
+    path : /property_name/field_name_where_move
+    new : default = 'function name', use it to write several operations 'move'"""
 
     move_prop = {}
 
@@ -101,7 +117,11 @@ def move(path_transfo, path, fr, new='remove'):
 
 
 def replace(path_transfo, path, value, new='replace'):
-    """Function to replace field by another in the transformation patch"""
+    """Function to replace field by another in the transformation patch
+    parameters : path_transfo : path to the transformation document
+    path : /property_name/field_name_to_replace
+    value : value to set the field to replace
+    new : default = 'function name', use it to write several operations 'replace'"""
 
     replace_prop = {}
 
