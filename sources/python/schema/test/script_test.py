@@ -8,6 +8,7 @@ edit.replace(path_transfo, '/version', '2.0.0')
 edit.remove(path_transfo, '/essai1')"""
 
 from canopsis.schema.migration import core
+#from canopsis.middleware.core import Middleware
 
 
 path_transfo = '/home/julie/Documents/canopsis/sources/python/schema/etc/schema/transformation_dictionary.json'

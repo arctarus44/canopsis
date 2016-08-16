@@ -21,8 +21,11 @@
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
+from canopsis.middleware.core import Middleware
+
 import os
 import urlparse
+
 
 class IOInterface(object):
 
@@ -55,6 +58,39 @@ class File(IOInterface):
 
         schema.save(result, URL)
 
+class Folder(IOInterface):
+
+    def load(self, URL, schema):
+
+        dirs = os.path.listdir(URL)
+        for files in dirs :
+
+            if os.path.isfile(files):
+                data = schema.getresource(URL)
+                schema.validate(data)
+                return data
+
+            elif os.path.isdir(files):
+                path = os.path.join(URL, files)
+                return load(self, path, schema)
+
+            else:
+                raise Exception('No such file or directory')
+
+
+    def transformation(self, data, transfo_cls, schema):
+
+        result = transfo_cls.apply_patch(data)
+        schema.validate(result)
+        return result
+
+    def save(self, result, URL, schema):
+
+        name = result['name']
+        path = os.path.join(URL, name)
+        schema.save(result, path)
+
+
 class Dict(IOInterface):
 
     def load(self, URL, schema):
@@ -73,19 +109,18 @@ class CanopsisStorage(IOInterface):
         mystorage = Middleware.get_middleware_by_uri(URL)
         mystorage.connect()
 
-        cursor = mystorage.find(query)
+        cursor = mystorage.find_elements(query)
         for data in cursor:
             return data
 
-    def transformation(self, transfo_cls, URL, query):
+    def transformation(self, transfo_cls, URL, query=None):
         mystorage = Middleware.get_middleware_by_uri(URL)
         mystorage.connect()
 
-        cursor = mystorage.find(query)
+        cursor = mystorage.find_elements(query)
         for data in cursor:
             result = transfo_cls.apply_patch(data)
-
-        return result
+            return result
 
     def save(self, result, URL):
         mystorage = Middleware.get_middleware_by_uri(URL)
@@ -99,7 +134,7 @@ class MigrationFactory(object):
     by the register"""
 
     def __init__(self):
-        self.URL = {'file':'File', 'dict':'Dict', 'mongodb-default':'CanopsisStorage'}
+        self.URL = {'file':'File', 'folder':'Folder', 'dict':'Dict', 'mongodb-default':'CanopsisStorage'}
 
     """take URI in parameter
     URI = protocol(*://)domain name(*.*.com)path(/...)"""
@@ -112,6 +147,8 @@ class MigrationFactory(object):
             return Dict()
         elif self.URL[protocol] == 'CanopsisStorage':
             return CanopsisStorage()
+        else:
+            raise Exception('Incorrect URL')
 
     def register(self, protocol, cls):
 
@@ -146,13 +183,13 @@ def migrate(path_transfo):
     output = schema_transfo['output']
     path_v1 = schema_transfo['path_v1']
     path_v2 = schema_transfo['path_v2']
+    query = schema_transfo['filter']
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
     myinp = MigrationFactory().get(inp)
-    data = myinp.load(get_path(inp), schema)
+    result = myinp.transformation(transfo, inp)
 
     myout = MigrationFactory().get(output)
-    result = myout.transformation(data, transfo, schema)
     myout.save(result, get_path(output), schema)
