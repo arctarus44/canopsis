@@ -21,13 +21,45 @@
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
-from canopsis.middleware.core import Middleware
 
 import os
 import urlparse
 
 
+class MigrationFactory(object):
+    """instanciate the behavior class with the URL protocol
+    it's possible to override the __setitem__ and the __getitem__
+    by the register"""
+
+    """take URI in parameter
+    URI = protocol(*://)domain name(*.*.com)path(/...)"""
+
+    def __init__(self):
+        self.URL = {}
+
+    def get(self, URI):
+        protocol = get_protocol(URI)
+        return protocol
+
+    #on retourne cls pour pouvoir utiliser register en tant que décorateur
+    def register(self, protocol, cls):
+        self.URL[protocol] = cls()
+        return cls()
+
+
+class MetaMigration(type):
+    """Metaclasse pour les IOInterfaces.
+    Elle va écrire dans le dictionnaire URL à chaque fois qu'une classe utilisant cette metaclasse sera créée"""
+
+    def __init__(cls, protocol, bases, dict):
+        type.__init__(cls, protocol, bases, dict)
+        newfactory = MigrationFactory()
+        newfactory.register(protocol, cls)
+
+
 class IOInterface(object):
+
+    __metaclass__ = MetaMigration
 
     def load(self, URL):
         raise NotImplementedError()
@@ -44,7 +76,7 @@ class File(IOInterface):
 
     def load(self, URL, schema):
 
-        data = schema.getresource(URL)
+        data = schema.getresource(get_path(URL))
         schema.validate(data)
         return data
 
@@ -56,22 +88,22 @@ class File(IOInterface):
 
     def save(self, result, URL, schema):
 
-        schema.save(result, URL)
+        schema.save(result, get_path(URL))
 
 class Folder(IOInterface):
 
     def load(self, URL, schema):
 
-        dirs = os.path.listdir(URL)
+        dirs = os.path.listdir(get_path(URL))
         for files in dirs :
 
             if os.path.isfile(files):
-                data = schema.getresource(URL)
+                data = schema.getresource(get_path(URL))
                 schema.validate(data)
                 return data
 
             elif os.path.isdir(files):
-                path = os.path.join(URL, files)
+                path = os.path.join(get_path(URL), files)
                 return load(self, path, schema)
 
             else:
@@ -94,7 +126,7 @@ class Folder(IOInterface):
 class Dict(IOInterface):
 
     def load(self, URL, schema):
-        data = schema.getresource(URL)
+        data = schema.getresource(get_path(URL))
         schema.validate(data)
         return data
 
@@ -103,56 +135,19 @@ class Dict(IOInterface):
         schema.validate(result)
         print result
 
-class CanopsisStorage(IOInterface):
 
-    def load(self, URL, query):
-        mystorage = Middleware.get_middleware_by_uri(URL)
-        mystorage.connect()
+class Storage(IOInterface):
 
-        cursor = mystorage.find_elements(query)
-        for data in cursor:
-            return data
+    def load(self, URL):
+        data = mystorage.getItem(URL)
+        return data
 
     def transformation(self, transfo_cls, URL, query=None):
-        mystorage = Middleware.get_middleware_by_uri(URL)
-        mystorage.connect()
-
-        cursor = mystorage.find_elements(query)
-        for data in cursor:
-            result = transfo_cls.apply_patch(data)
-            return result
+        result = transfo_cls.apply_patch(data)
+        return result
 
     def save(self, result, URL):
-        mystorage = Middleware.get_middleware_by_uri(URL)
-        mystorage.connect()
-        mystorage.put_elements(result, URL)
-
-
-class MigrationFactory(object):
-    """instanciate the behavior class with the URL protocol
-    it's possible to override the __setitem__ and the __getitem__
-    by the register"""
-
-    def __init__(self):
-        self.URL = {'file':'File', 'folder':'Folder', 'dict':'Dict', 'mongodb-default':'CanopsisStorage'}
-
-    """take URI in parameter
-    URI = protocol(*://)domain name(*.*.com)path(/...)"""
-    def get(self, URI):
-        protocol = get_protocol(URI)
-
-        if self.URL[protocol] == 'File':
-            return File()
-        elif self.URL[protocol] == 'Dict':
-            return Dict()
-        elif self.URL[protocol] == 'CanopsisStorage':
-            return CanopsisStorage()
-        else:
-            raise Exception('Incorrect URL')
-
-    def register(self, protocol, cls):
-
-        self.URL[protocol] = cls
+        mystorage.setItem(URL, result)
 
 
 def get_protocol(URI):
@@ -183,13 +178,13 @@ def migrate(path_transfo):
     output = schema_transfo['output']
     path_v1 = schema_transfo['path_v1']
     path_v2 = schema_transfo['path_v2']
-    query = schema_transfo['filter']
 
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
-    myinp = MigrationFactory().get(inp)
-    result = myinp.transformation(transfo, inp)
+    myinp = MigrationFactory().register(MigrationFactory().get(inp), File)
+    data = myinp.load(inp, schema)
 
-    myout = MigrationFactory().get(output)
-    myout.save(result, get_path(output), schema)
+    myout = MigrationFactory().register(MigrationFactory().get(output), File)
+    result = myout.transformation(data, transfo, schema)
+    myout.save(result, output, schema)

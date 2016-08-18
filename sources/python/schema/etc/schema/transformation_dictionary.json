@@ -1,34 +1,34 @@
 {
-	"inplace": "True",
-	"patch": {
-		"add": {
-			"path": "/test",
-			"value": "TT",
-			"op": "add"
-		},
-		"add1": {
-			"path": "/info",
-			"value": "{entity_id:'bb'}",
-			"op": "add"
-		},
-		"remove": {
-			"path": "/essai",
-			"op": "remove"
-		},
-		"replace": {
-			"path": "/version",
-			"value": "2.0.0",
-			"op": "replace"
-		}
-	},
-	"filter": {
-		"info.eids": {
-			"$exists": false
-		}
-	},
-	"schema_class": "JsonSchema",
-	"input": "mongodb-default://",
-	"output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json",
-	"path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json",
-	"path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
+    "filter": {
+        "info.eids": {
+            "$exists": false
+        }
+    }, 
+    "inplace": "True", 
+    "patch": {
+        "add": {
+            "path": "/test", 
+            "value": "TT", 
+            "op": "add"
+        }, 
+        "remove": {
+            "path": "/essai", 
+            "op": "remove"
+        }, 
+        "add1": {
+            "path": "/info", 
+            "value": "{'entity_id':'bb'}", 
+            "op": "add"
+        }, 
+        "replace": {
+            "path": "/version", 
+            "value": "2.0.0", 
+            "op": "replace"
+        }
+    }, 
+    "schema_class": "JsonSchema", 
+    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json", 
+    "input": "dict:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data.json", 
+    "path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json", 
+    "path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
 }
