@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
-from canopsis.middleware.core import Middleware
 
 import urlparse
 import os
@@ -127,31 +126,15 @@ class Dict(IOInterface):
 class Storage(IOInterface):
     """describe load and save functions for storage protocol"""
 
+    def __init__(self):
+        super (middleware_uri, self).__init__()
+
+        self.storage = middleware_uri
+
     def load(self, URL, schema):
-        uri = urlparse.urlsplit(URL)
-        store = uri[1]
 
-        middleware_uri = store + get_path(URL)
-
-        self.storage = Middleware.get_middleware_by_uri(middleware_uri)
-
-        data = self.storage.get_elements()
+        data = self.storage.get_elements(id=schema['id'])
         return data
-
-    def transformation(self, URL, data, transfo_cls, schema_cls):
-
-        uri = urlparse.urlsplit(URL)
-        store = uri[1]
-
-        middleware_uri = store + get_path(URL)
-
-        self.storage = Middleware.get_middleware_by_uri(middleware_uri)
-
-        for files in data:
-            result = transfo_cls.apply_patch(files)
-            schema_cls.validate(result)
-
-            return result
 
     def save(self, result, URL):
         self.storage.put_elements(result, id=result['id'])
