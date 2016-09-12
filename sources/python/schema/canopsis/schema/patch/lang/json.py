@@ -47,4 +47,3 @@ class JSONPatch(Patch):
 
         with open('output', "w") as f:
             jdon.dump(new_data, output, sort_keys = True, indent = 2, separators = (',', ':'))
-

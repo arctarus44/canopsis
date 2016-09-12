@@ -54,7 +54,7 @@ class JsonSchema(Schema):
         del self._rsc[key]
 
     def save(self, data, output):
-        #save jsondata in the correct folder
+        #save json data in the correct folder
 
         with open(output, "w") as f:
             dump(data, f, indent=4)

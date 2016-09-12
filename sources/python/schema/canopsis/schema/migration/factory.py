@@ -1,14 +1,31 @@
 # -*- coding: utf-8 -*-
+# --------------------------------
+# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
+#
+# This file is part of Canopsis.
+#
+# Canopsis is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Canopsis is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------
+from canopsis.middleware.core import Middleware
 
 import urlparse
+import os
 
 
 class MigrationFactory(object):
     """instanciate the behavior class with the URL protocol
-    it's possible to override the __setitem__ and the __getitem__
-    by the register"""
-
-    """take URI in parameter
+    take URI in parameter
     URI = protocol(*://)domain name(*.*.com)path(/...)"""
 
     def __init__(self):
@@ -16,26 +33,26 @@ class MigrationFactory(object):
 
     def get(self, URI):
         protocol = get_protocol(URI)
-        return protocol
+        return self.URL[protocol.lower()]
 
-    #on retourne cls pour pouvoir utiliser register en tant que décorateur
+    #on retourne cls() pour pouvoir utiliser register en tant que décorateur
     def register(self, protocol, cls):
-        self.URL[protocol] = cls()
+        self.URL[protocol.lower()] = cls()
         return cls()
 
+GLOBALFACTORY = MigrationFactory()
 
 class MetaMigration(type):
-    """Metaclasse pour les IOInterfaces.
-    Elle va écrire dans le dictionnaire URL à chaque fois qu'une classe utilisant cette metaclasse sera créée"""
+    """MetaMigration is a metaclass
+    it will be writting in URL for every class using it"""
 
     def __init__(cls, protocol, bases, dict):
         type.__init__(cls, protocol, bases, dict)
-        newfactory = MigrationFactory()
-        newfactory.register(protocol, cls)
+        GLOBALFACTORY.register(protocol, cls)
 
 
 class IOInterface(object):
-    """abstract class to describe behavior functions
+    """abstract class to describe function behavior
     of the different Input and Output for migration"""
 
     __metaclass__ = MetaMigration
@@ -43,15 +60,17 @@ class IOInterface(object):
     def load(self, URL):
         raise NotImplementedError()
 
-    def transformation(self, data):
-        raise NotImplementedError()
+    def transformation(self, data, transfo_cls, schema_cls):
+        result = transfo_cls.apply_patch(data)
+        schema_cls.validate(result)
+        return result
 
     def save(self, result, URL):
         raise NotImplementedError()
 
 
-#Input File behavior class
 class File(IOInterface):
+    """describe load and save functions for file protocol"""
 
     def load(self, URL, schema):
 
@@ -59,19 +78,13 @@ class File(IOInterface):
         schema.validate(data)
         return data
 
-    def transformation(self, data, transfo_cls, schema):
-
-        result = transfo_cls.apply_patch(data)
-        schema.validate(result)
-        return result
-
     def save(self, result, URL, schema):
 
         schema.save(result, get_path(URL))
 
 
-#Input Folder behavior class
 class Folder(IOInterface):
+    """describe load and save functions for folder protocol"""
 
     def load(self, URL, schema):
 
@@ -90,22 +103,15 @@ class Folder(IOInterface):
             else:
                 raise Exception('No such file or directory')
 
-
-    def transformation(self, data, transfo_cls, schema):
-
-        result = transfo_cls.apply_patch(data)
-        schema.validate(result)
-        return result
-
     def save(self, result, URL, schema):
 
         name = result['name']
-        path = os.path.join(URL, name)
+        path = os.path.join(get_path(URL), name)
         schema.save(result, path)
 
 
-#Input Dict behavior class
 class Dict(IOInterface):
+    """describe load and transformation for dict protocol"""
 
     def load(self, URL, schema):
         data = schema.getresource(get_path(URL))
@@ -118,19 +124,37 @@ class Dict(IOInterface):
         print result
 
 
-#Input Storage behavior class
 class Storage(IOInterface):
+    """describe load and save functions for storage protocol"""
 
-    def load(self, URL):
-        data = mystorage.getItem(URL)
+    def load(self, URL, schema):
+        uri = urlparse.urlsplit(URL)
+        store = uri[1]
+
+        middleware_uri = store + get_path(URL)
+
+        self.storage = Middleware.get_middleware_by_uri(middleware_uri)
+
+        data = self.storage.get_elements()
         return data
 
-    def transformation(self, transfo_cls, URL, query=None):
-        result = transfo_cls.apply_patch(data)
-        return result
+    def transformation(self, URL, data, transfo_cls, schema_cls):
+
+        uri = urlparse.urlsplit(URL)
+        store = uri[1]
+
+        middleware_uri = store + get_path(URL)
+
+        self.storage = Middleware.get_middleware_by_uri(middleware_uri)
+
+        for files in data:
+            result = transfo_cls.apply_patch(files)
+            schema_cls.validate(result)
+
+            return result
 
     def save(self, result, URL):
-        mystorage.setItem(URL, result)
+        self.storage.put_elements(result, id=result['id'])
 
 
 def get_protocol(URI):

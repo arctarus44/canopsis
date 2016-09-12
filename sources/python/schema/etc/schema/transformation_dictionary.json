@@ -1,10 +1,5 @@
 {
-    "filter": {
-        "info.eids": {
-            "$exists": false
-        }
-    }, 
-    "inplace": "True", 
+    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json", 
     "patch": {
         "add": {
             "path": "/test", 
@@ -26,9 +21,7 @@
             "op": "replace"
         }
     }, 
-    "schema_class": "JsonSchema", 
-    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json", 
-    "input": "dict:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data.json", 
     "path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json", 
+    "input": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data.json", 
     "path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
 }

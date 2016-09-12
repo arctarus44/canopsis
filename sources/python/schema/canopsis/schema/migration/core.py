@@ -21,9 +21,7 @@
 from canopsis.schema.core import Schema
 from canopsis.schema.lang.json import JsonSchema
 from canopsis.schema.transformation.core import Transformation
-from canopsis.schema.migration.factory import MigrationFactory, MetaMigration, IOInterface, File, Folder, Dict, Storage
-import os
-import urlparse
+from canopsis.schema.migration.factory import GLOBALFACTORY
 
 
 def migrate(path_transfo):
@@ -45,9 +43,9 @@ def migrate(path_transfo):
     schema_V1 = schema.getresource(path_v1)
     schema_V2 = schema.getresource(path_v2)
 
-    myinp = MigrationFactory().register(MigrationFactory().get(inp), File)
+    myinp = GLOBALFACTORY.get(inp)
     data = myinp.load(inp, schema)
+    result = myinp.transformation(inp, data, transfo, schema)
 
-    myout = MigrationFactory().register(MigrationFactory().get(output), File)
-    result = myout.transformation(data, transfo, schema)
+    myout = GLOBALFACTORY.get(output)
     myout.save(result, output, schema)

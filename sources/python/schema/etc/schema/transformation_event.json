@@ -1,0 +1,67 @@
+{
+    "patch": 
+        {"remove": {
+            "path": "/categories",
+            "op": "remove"
+        },
+        "remove1": {
+            "path": "/schowEditButton",
+            "op": "remove"
+        },
+
+        "add": {
+            "path": "/event_type",
+            "value": "{'enum': ['check'],'required': true}",
+            "op": "add"
+        },
+        "add1": {
+            "path": "/state",
+            "value": "{'type': 'integer','minimum': 0,'maximum': 3,'required': true}",
+            "op": "add"
+        },
+        "add2": {
+            "path": "/state_type",
+            "value": "{'type': 'integer','minimum': 0,'maximum': 1,'required': true}",
+            "op": "add"
+        },
+        "add3": {
+            "path": "/schedule",
+            "value": "{'type': 'boolean'}",
+            "op": "add"
+        },
+        "add4": {
+            "path": "/check_type",
+            "value": "{'type': 'string'}",
+            "op": "add"
+        },
+        "add5": {
+            "path": "/current_attempt",
+            "value": "{'type': 'integer'}",
+            "op": "add"
+        },
+        "add6": {
+            "path": "/max_attempts",
+            "value": "{'type': 'integer'}",
+            "op": "add"
+        },
+        "add7": {
+            "path": "/execution_time",
+            "value": "{'type': 'integer'}",
+            "op": "add"
+        },
+        "add8": {
+            "path": "/latency",
+            "value": "{'type': 'integer'}",
+            "op": "add"
+        },
+        "add9": {
+            "path": "/command_name",
+            "value": "{'type': 'string'}",
+            "op": "add"
+        }
+    },
+    "output": "storage://mongodb-time-alarm://",
+    "input": "storage://mongodb-default-eventslog://",
+    "path_v1": "/opt/canopsis/etc/schema.d/crecord.event.eventlog.json",
+    "path_v2": "/opt/canopsis/etc/schema.d/cevent.check.json"
+}

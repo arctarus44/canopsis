@@ -39,8 +39,9 @@ Contents
 Installation
 ------------
 
-The migration can be use in canopsis.
-To use the migration you **SHOULD** launch a script which describes different operations.
+The migration can be use in canopsis and without it.
+To use the migration you **COULD** launch a script which describes different operations or call the migrate() function.
+This function take the path to the transformation document in parameter.
 
 
  .. _ED__Migration__Use:
@@ -50,7 +51,7 @@ Use
 
 The migration is describes in the migrate function.
 You can call it or launch it with a script wich will describe your preferences.
-In the script you can call migrate() and the edition module to write your own transformation patch.
+In the script you can call migrate().
 
 
  .. _ED__Migration__Requirement:
@@ -78,11 +79,10 @@ In the transformation document you **MUST** write :
 
  - **input** : URI to the data to migrate (ex: file uri)
  - **output** : URI to the migrated data folder (ex: file uri)
- - **filter** : mongodb query to select data in the storage
- - **inplace** : boolean to precise if you want to replace the initial data by the migrated data
  - **path_V1** : path to the validation schema of the first data version
  - **path_V2** : path to the validation schema of the second data version
  - **schema_class** : the good  type class(JsonSchema, XML, ...)
+ - **patch** : the patch **MUST** contain operation to apply on data to transform them
 
 
 construction of URI
@@ -90,5 +90,3 @@ construction of URI
 
 for migration tool, URI are on standard format
 URL = protocol(*://)domain name(*.*.com)path(/...)"""
-
-You can create your own protocol
