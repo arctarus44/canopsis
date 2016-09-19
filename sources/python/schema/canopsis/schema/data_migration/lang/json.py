@@ -20,7 +20,7 @@
 
 from __future__ import absolute_import
 
-from canopsis.schema.core import Schema
+from canopsis.schema.data_migration.core import Schema
 
 from json import load, dump
 from jsonschema import validate

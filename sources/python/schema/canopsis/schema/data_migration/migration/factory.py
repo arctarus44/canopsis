@@ -132,7 +132,6 @@ class Storage(IOInterface):
         self.storage = middleware_uri
 
     def load(self, URL, schema):
-
         data = self.storage.get_elements(id=schema['id'])
         return data
 

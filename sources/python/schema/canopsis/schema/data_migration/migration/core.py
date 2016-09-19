@@ -18,10 +18,10 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.core import Schema
-from canopsis.schema.lang.json import JsonSchema
-from canopsis.schema.transformation.core import Transformation
-from canopsis.schema.migration.factory import GLOBALFACTORY
+from canopsis.schema.data_migration.core import Schema
+from canopsis.schema.data_migration.lang.json import JsonSchema
+from canopsis.schema.data_migration.transformation.core import Transformation
+from canopsis.schema.data_migration.migration.factory import GLOBALFACTORY
 
 
 def migrate(path_transfo):

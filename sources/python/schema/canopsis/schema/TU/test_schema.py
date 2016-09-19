@@ -22,10 +22,9 @@
 test the correct running of Schema API
 """
 
-from canopsis.middleware.core import Middleware
-from canopsis.schema.core import Schema
-from canopsis.schema.lang.json import JsonSchema
-from canopsis.schema.transformation.core import Transformation
+from data_migration.core import Schema
+from data_migration.lang.json import JsonSchema
+from data_migration.transformation.core import Transformation
 
 from unittest import main, TestCase, SkipTest
 import jsonpatch

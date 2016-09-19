@@ -18,8 +18,8 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.patch.core import Patch, registerpatch
-from canopsis.schema.lang.json import JsonSchema
+from canopsis.schema.data_migration.patch.core import Patch, registerpatch
+from canopsis.schema.data_migration.lang.json import JsonSchema
 
 import jsonpatch
 import json

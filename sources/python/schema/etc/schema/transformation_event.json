@@ -60,8 +60,8 @@
             "op": "add"
         }
     },
-    "output": "storage://mongodb-time-alarm://",
-    "input": "storage://mongodb-default-eventslog://",
+    "output": "Storage:///mongodb-time-alarm",
+    "input": "Storage:///mongodb-default-eventslog",
     "path_v1": "/opt/canopsis/etc/schema.d/crecord.event.eventlog.json",
     "path_v2": "/opt/canopsis/etc/schema.d/cevent.check.json"
 }

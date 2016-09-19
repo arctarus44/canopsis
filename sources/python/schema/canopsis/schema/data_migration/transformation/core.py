@@ -18,9 +18,9 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-from canopsis.schema.patch.core import getpatch
-from canopsis.schema.patch.core import Patch
-from canopsis.schema.lang.json import JsonSchema
+from canopsis.schema.data_migration.patch.core import getpatch
+from canopsis.schema.data_migration.patch.core import Patch
+from canopsis.schema.data_migration.lang.json import JsonSchema
 
 class Transformation(object):
 
