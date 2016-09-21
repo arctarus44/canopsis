@@ -124,19 +124,38 @@ class Dict(IOInterface):
 
 
 class Storage(IOInterface):
-    """describe load and save functions for storage protocol"""
 
+    def load(self, url, query = None):
+        store = get_path(url) + '://'
+
+        mystorage = Middleware.get_middleware_by_uri(store)
+        mystorage.connect
+
+        cursor = self.mystorage.find_elements(query)
+
+        for data in cursor:
+            return data
+
+    def save(self, result, url):
+
+        store = get_path(url) + '://'
+        mystorage = Middleware.get_middleware_by_uri(store)
+        mystorage.connect
+
+        self.mystorage.put_elements(result)
+
+"""class Storage(IOInterface):
     def __init__(self):
         super (middleware_uri, self).__init__()
 
-        self.storage = middleware_uri
+        self.storage = get_middleware_by_uri(middleware_uri)
 
     def load(self, URL, schema):
         data = self.storage.get_elements(id=schema['id'])
         return data
 
     def save(self, result, URL):
-        self.storage.put_elements(result, id=result['id'])
+        self.storage.put_elements(result, id=result['id'])"""
 
 
 def get_protocol(URI):
