@@ -22,6 +22,12 @@
 import json
 import jsonpatch
 
+def create(path, name):
+
+    doc_transfo = {}
+    with open(path+"//"+name, "w") as f:
+        json.dump(doc_transfo, f, indent=4)
+
 def add(path_transfo, path, value, new='add'):
     """Function to add field in the transformation patch
     parameters : path_transfo : path to the transformation document
@@ -41,6 +47,26 @@ def add(path_transfo, path, value, new='add'):
     dc_patch = doc_transfo['patch']
     dc_patch[new] = add_prop
     doc_transfo['patch'] = dc_patch
+
+    with open(path_transfo, "w") as f:
+        json.dump(doc_transfo, f, indent=4)
+
+def add_query(path_transfo, query):
+
+    with open(path_transfo, "r") as f:
+        doc_transfo = json.load(f)
+
+    doc_transfo['query'] = query
+
+    with open(path_transfo, "w") as f:
+        json.dump(doc_transfo, f, indent=4)
+
+def add_entry(path_transfo, type_, value):
+
+    with open(path_transfo, "r") as f:
+        doc_transfo = json.load(f)
+
+    doc_transfo[type_] = value
 
     with open(path_transfo, "w") as f:
         json.dump(doc_transfo, f, indent=4)

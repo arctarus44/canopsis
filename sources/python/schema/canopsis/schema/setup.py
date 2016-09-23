@@ -21,28 +21,30 @@
 
 NAME = 'data_migration'  # library name
 
-KEYWORDS = [
-    'schema', 'migration', 'lightweight', 'interoperability', 'patch']
+KEYWORDS = 'schema migration lightweight interoperability patch'
 
 DESCRIPTION = 'lighweight, interoperable and simple data migration tool'
 
 VERSION = '0.1'
 
-DEPENDENCIES = ['b3j0f.conf']
-URL = ,
+DEPENDENCIES = ['b3j0f.conf', 'jsonschema', 'jsonpatch']
+URL = 'https://git.canopsis.net/jvanglabeke/data_migration.git',
+
+from setuptools import setup, find_packages
 
 setup(
     name=NAME,
     version = VERSION,
+    url = URL,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    author='julie vanglabeke',
+    author='lyly',
     author_email='julievangla@gmail.com',
     description=DESCRIPTION,
-    license='AGPL License',
+    license='GNU Affero General Public License v3',
     classifiers=[
         'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: AGPL License',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
         'Natural Language :: French',
         'Operating System :: OS Independent',
         'Topic :: Utilities',

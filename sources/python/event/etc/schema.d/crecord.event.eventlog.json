@@ -1,6 +1,6 @@
 {
 	"type": "object",
-"id":"eventlog",	
+"id":"eventlog",
 "categories": [{
 		"title": "General",
 		"keys":["timestamp", "component", "resource", "state", "output"]

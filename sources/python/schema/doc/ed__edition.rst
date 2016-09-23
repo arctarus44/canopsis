@@ -39,7 +39,7 @@ Use
 ---
 
 To use this module :
- - load the module and his functions (from schema.edit import add, move, remove, replace, copy)
+ - load the module and its functions (from schema.edit import add, move, remove, replace, copy)
  - call the function with correct parameters
 
 You **SHOULD** write a script to join different operations and write the transformation patch in only one time.
@@ -113,3 +113,57 @@ Parameters :
  - value : value to set the field to replace
  - new : default = 'function name', use it to write several operations 'replace'
 
+
+ .. _ED__Edition__Add_query:
+
+Add query
+---------
+
+Function to add a field in the transformation patch
+
+Parameters :
+ - path_transfo : path to the transformation document
+ - query : value of the requeste
+
+
+  .. _ED__Edition__Add_entry:
+
+Add entry
+---------
+
+Function to add a field in the transformation patch
+
+Parameters :
+ - path_transfo : path to the transformation document
+ - type : precise if you want to write input, output, path, ...
+ - value : value to set the field to create
+
+
+ .. _ED__Edition__How_To:
+
+How To
+------
+
+Before write into your transformation document, you **MUST** create it
+
+To write add patch operation:
+add('/home/myfolder/mydocument.json', '/field-to-add', 'myvalue', add)
+
+To write copy patch operation:
+copy('/home/myfolder/mydocument.json', '/field-from_copy', '/field-to-copy', copy)
+
+To write move patch operation:
+add('/home/myfolder/mydocument.json', '/field-to-remove', remove)
+
+To write remove patch operation:
+add('/home/myfolder/mydocument.json', '/field-from-move', '/field-to-move', move)
+
+To write replace patch operation:
+add('/home/myfolder/mydocument.json', '/field', 'myvalue', replace)
+this command replace the value of the field in parameter
+
+To add a query:
+add_query('/home/myfolder/mydocument.json', 'query-value')
+
+To add a field:
+add_entry('/home/myfolder/mydocument.json', 'field_name', 'field_value')

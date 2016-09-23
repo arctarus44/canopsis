@@ -1,27 +1,17 @@
-{
-    "output": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data2.json", 
+{ 
     "patch": {
-        "add": {
-            "path": "/test", 
-            "value": "TT", 
-            "op": "add"
-        }, 
         "remove": {
-            "path": "/essai", 
+            "path": "/output", 
             "op": "remove"
-        }, 
-        "add1": {
-            "path": "/info", 
-            "value": "{'entity_id':'bb'}", 
-            "op": "add"
-        }, 
-        "replace": {
-            "path": "/version", 
-            "value": "2.0.0", 
-            "op": "replace"
         }
     }, 
-    "path_v1": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V1_schema.json", 
-    "input": "file:///home/julie/Documents/canopsis/sources/python/schema/etc/schema/data/data.json", 
-    "path_v2": "/home/julie/Documents/canopsis/sources/python/schema/etc/schema/V2_schema.json"
+    "query": {
+        "output": {
+            "$exists": true
+        }
+    }, 
+    "output": "mongodb:///mongodb-default-alarmtmpcheck", 
+    "input": "mongodb:///mongodb-default-events?table=events", 
+    "path_v1": "/home/julie/Documents/dm/etc/schema/event.json", 
+    "path_v2": "/home/julie/Documents/dm/etc/schema/event_check.json"
 }

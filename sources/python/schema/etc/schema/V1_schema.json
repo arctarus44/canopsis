@@ -1,18 +1,12 @@
 {
   "$schema": "http://canopsis.org/base_schema.json",
   "id":"http://canopsis.org/V1.json",
-  "title": "V1",
+  "name": "V1",
   "description": "exemple schema v1",
   "type": "object",
 
   "properties": {
-      "version":{"type":"string"},"info": {
-      "type": "object",
-      "properties": {
-        "eids": {
-          "type": "string"
-        }
-      },
+      "version":{"type":"string"},
 
   }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "http://canopsis.org/base_schema.json",
   "id":"http://canopsis.org/V2.json",
-  "title": "V2",
+  "name": "V2",
   "description": "exemple schema v2",
   "type": "object",
 

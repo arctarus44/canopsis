@@ -1,0 +1,35 @@
+{
+    "patch":{
+        "remove1":{
+            "path":"/condition",
+            "op":"remove"
+        },
+
+        "remove2":{
+            "path":"/action",
+            "op":"remove"
+            },
+
+        "add1":{
+            "path":"/label",
+            "value":"{'type':'string'}",
+            "op":"add"
+        },
+
+        "add2":{
+            "path":"/type",
+            "value":"{'default':'topologylabel'}",
+            "op":"add"
+        },
+        "add3":{
+            "path":"/categories",
+            "value":"[{'keys':'label'}], 'title':'General'",
+            "op":"add"
+        }
+       },
+
+    "output": "mongodb://mongodb-default-topology",
+    "input": "mongodb://mongodb-default-topology",
+    "path_v1": "/home/julie/Documents/dm/etc/schema/schema_topologyv1.json",
+    "path_v2": "/home/julie/Documents/dm/etc/schema/schema_topologylabel.json"
+}

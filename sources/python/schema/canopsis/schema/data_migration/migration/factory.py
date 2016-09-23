@@ -1,23 +1,4 @@
-# -*- coding: utf-8 -*-
-# --------------------------------
-# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
-#
-# This file is part of Canopsis.
-#
-# Canopsis is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Canopsis is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
-# ---------------------------------
-
+from canopsis.middleware.core import Middleware
 import urlparse
 import os
 
@@ -31,10 +12,21 @@ class MigrationFactory(object):
         self.URL = {}
 
     def get(self, URI):
-        protocol = get_protocol(URI)
-        return self.URL[protocol.lower()]
 
-    #on retourne cls() pour pouvoir utiliser register en tant que décorateur
+        protocol = get_protocol(URI)
+
+        try:
+            return self.URL[protocol.lower()]
+
+        except KeyError:
+            for proto in self.URL:
+                if protocol.lower().startswith(proto):
+                    return self.URL[protocol.lower()]
+
+            else:
+                raise KeyError('No IOFacftory found for {0}'.format(URI))
+
+    #on retourne cls() pour pouvoir utiliser register en tant que decorateur
     def register(self, protocol, cls):
         self.URL[protocol.lower()] = cls()
         return cls()
@@ -49,12 +41,17 @@ class MetaMigration(type):
         type.__init__(cls, protocol, bases, dict)
         GLOBALFACTORY.register(protocol, cls)
 
+        for protocol in cls.__protocols__:
+            GLOBALFACTORY.register(protocol, cls)
+
 
 class IOInterface(object):
     """abstract class to describe function behavior
     of the different Input and Output for migration"""
 
     __metaclass__ = MetaMigration
+
+    __protocols__ = []
 
     def load(self, URL):
         raise NotImplementedError()
@@ -122,40 +119,28 @@ class Dict(IOInterface):
         schema.validate(result)
         print result
 
-
 class Storage(IOInterface):
 
-    def load(self, url, query = None):
-        store = get_path(url) + '://'
+    __protocols__ = ['mongodb', 'influxdb']
 
-        mystorage = Middleware.get_middleware_by_uri(store)
-        mystorage.connect
+    def load(self, url, schema, query=None):
+        midurl = '{0}://'.format(get_path(url)[1:])
+        midargs = get_params(url)
 
-        cursor = self.mystorage.find_elements(query)
+        mystorage = Middleware.get_middleware_by_uri(midurl, **midargs)
 
-        for data in cursor:
-            return data
+        #mystorage.connect
+
+        cursor = mystorage.find_elements(query=query)
+
+        return list(cursor)
 
     def save(self, result, url):
+        midurl = '{0}://'.format(get_path(url)[1:])
+        midargs = get_params(url)
 
-        store = get_path(url) + '://'
-        mystorage = Middleware.get_middleware_by_uri(store)
-        mystorage.connect
-
-        self.mystorage.put_elements(result)
-
-"""class Storage(IOInterface):
-    def __init__(self):
-        super (middleware_uri, self).__init__()
-
-        self.storage = get_middleware_by_uri(middleware_uri)
-
-    def load(self, URL, schema):
-        data = self.storage.get_elements(id=schema['id'])
-        return data
-
-    def save(self, result, URL):
-        self.storage.put_elements(result, id=result['id'])"""
+        mystorage = Middleware.get_middleware_by_uri(midurl, **midargs)
+        mystorage.put_elements(result)#~, _id=result['id'])
 
 
 def get_protocol(URI):
@@ -173,3 +158,11 @@ def get_path(url):
     path = uri[2]
 
     return path
+
+def get_params(url):
+    """This function take the params from uri in parameter
+    and return it"""
+    uri = urlparse.urlsplit(url)
+    params = uri[3]
+
+    return dict(urlparse.parse_qsl(params))

@@ -1,67 +1,125 @@
 {
-    "patch": 
-        {"remove": {
-            "path": "/categories",
-            "op": "remove"
-        },
-        "remove1": {
-            "path": "/schowEditButton",
-            "op": "remove"
-        },
-
-        "add": {
-            "path": "/event_type",
-            "value": "{'enum': ['check'],'required': true}",
-            "op": "add"
-        },
-        "add1": {
-            "path": "/state",
-            "value": "{'type': 'integer','minimum': 0,'maximum': 3,'required': true}",
-            "op": "add"
-        },
-        "add2": {
-            "path": "/state_type",
-            "value": "{'type': 'integer','minimum': 0,'maximum': 1,'required': true}",
-            "op": "add"
-        },
-        "add3": {
-            "path": "/schedule",
-            "value": "{'type': 'boolean'}",
-            "op": "add"
-        },
-        "add4": {
-            "path": "/check_type",
-            "value": "{'type': 'string'}",
-            "op": "add"
-        },
-        "add5": {
-            "path": "/current_attempt",
-            "value": "{'type': 'integer'}",
-            "op": "add"
-        },
-        "add6": {
-            "path": "/max_attempts",
-            "value": "{'type': 'integer'}",
-            "op": "add"
-        },
-        "add7": {
-            "path": "/execution_time",
-            "value": "{'type': 'integer'}",
-            "op": "add"
-        },
-        "add8": {
-            "path": "/latency",
-            "value": "{'type': 'integer'}",
-            "op": "add"
-        },
-        "add9": {
-            "path": "/command_name",
-            "value": "{'type': 'string'}",
-            "op": "add"
-        }
-    },
-    "output": "Storage:///mongodb-time-alarm",
-    "input": "Storage:///mongodb-default-eventslog",
-    "path_v1": "/opt/canopsis/etc/schema.d/crecord.event.eventlog.json",
-    "path_v2": "/opt/canopsis/etc/schema.d/cevent.check.json"
+	"patch": {
+		"remove3": {
+			"path": "/_id",
+			"op": "remove"
+		},
+		"remove4": {
+			"path": "/status",
+			"op": "remove"
+		},
+		"remove5": {
+			"path": "/event_type",
+			"op": "remove"
+		},
+		"remove6": {
+			"path": "/crecord_type",
+			"op": "remove"
+		},
+		"remove7": {
+			"path": "/crecord_write_time",
+			"op": "remove"
+		},
+		"remove8": {
+			"path": "/enable",
+			"op": "remove"
+		},
+		"remove10": {
+			"path": "/tags",
+			"op": "remove"
+		},
+		"remove11": {
+			"path": "/state_type",
+			"op": "remove"
+		},
+		"remove12": {
+			"path": "/downtime",
+			"op": "remove"
+		},
+		"remove13": {
+			"path": "/perf_data_array",
+			"op": "remove"
+		},
+		"remove14": {
+			"path": "/crecord_name",
+			"op": "remove"
+		},
+		"remove15": {
+			"path": "/long_output",
+			"op": "remove"
+		},
+		"remove16": {
+			"path": "/ts_first_stealthy",
+			"op": "remove"
+		},
+		"remove17": {
+			"path": "/component_problem",
+			"op": "remove"
+		},
+		"remove18": {
+			"path": "/rk",
+			"op": "remove"
+		},
+		"remove19": {
+			"path": "/bagot_freq",
+			"op": "remove"
+		},
+		"remove20": {
+			"path": "/ts_first_bagot",
+			"op": "remove"
+		},
+		"remove21": {
+			"path": "/event_id",
+			"op": "remove"
+		},
+		"remove22": {
+			"path": "/previous_state",
+			"op": "remove"
+		},
+		"remove23": {
+			"path": "/previous_state_change_ts",
+			"op": "remove"
+		},
+		"remove24": {
+			"path": "/ticket_declared_date",
+			"op": "remove"
+		},
+		"remove25": {
+			"path": "/ticket_date",
+			"op": "remove"
+		},
+		"remove26": {
+			"path": "/ticket",
+			"op": "remove"
+		},
+		"remove27": {
+			"path": "/ticket_declared_author",
+			"op": "remove"
+		},
+		"remove28": {
+			"path": "/pass_status",
+			"op": "remove"
+		},
+		"remove29": {
+			"path": "/last_state_change",
+			"op": "remove"
+		},
+		"move":{
+			"from":"/timestamp",
+			"path":"/_id",
+			"op":"move"
+		}
+		
+	},
+	"query":{
+		"event_type":"check",
+		"ticket": {"$exists": true},
+		"ticket_declared_date": {"$exists": true},
+		"ticket_date": {"$exists": true},
+		"ticket_declared_author": {"$exists": true}
+	},
+	"output": "mongodb:///mongodb-default-alarmtmpcheck",
+	"input": "mongodb:///mongodb-default-eventslog?table=events_log",
+	"path_v1": "/home/julie/Documents/dm/etc/schema/event.json",
+	"path_v2": "/home/julie/Documents/dm/etc/schema/event_check.json"
 }

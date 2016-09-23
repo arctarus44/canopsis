@@ -4,7 +4,7 @@
 Migration
 =========
 
-This document describes how use the solution to the interopérability problem
+This document describes how to use the solution to the interoperability problem
 
 .. contents::
    :depth: 3
@@ -90,3 +90,19 @@ construction of URI
 
 for migration tool, URI are on standard format
 URL = protocol(*://)domain name(*.*.com)path(/...)"""
+
+
+ .. _ED__Migration__How_To:
+
+How To
+------
+
+To migrate your data you **MUST** import the library and use the migrate function as following
+
+.. code-block:: python
+
+	from migration import core
+
+	path_transfo = '/home/user/myfolder/data_migration/etc/schema/my_transformation_document.json'
+
+	core.migrate(path_transfo)

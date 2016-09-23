@@ -1,27 +1,7 @@
-# -*- coding: utf-8 -*-
-# --------------------------------
-# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
-#
-# This file is part of Canopsis.
-#
-# Canopsis is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Canopsis is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
-# ---------------------------------
-
-from canopsis.schema.data_migration.core import Schema
-from canopsis.schema.data_migration.lang.json import JsonSchema
-from canopsis.schema.data_migration.transformation.core import Transformation
-from canopsis.schema.data_migration.migration.factory import GLOBALFACTORY
+import core
+from lang.json import JsonSchema
+from transformation.core import Transformation
+from migration.factory import GLOBALFACTORY
 
 
 def migrate(path_transfo):
@@ -44,8 +24,11 @@ def migrate(path_transfo):
     schema_V2 = schema.getresource(path_v2)
 
     myinp = GLOBALFACTORY.get(inp)
-    data = myinp.load(inp, schema)
-    result = myinp.transformation(inp, data, transfo, schema)
+    data = myinp.load(inp, schema, schema_transfo['query'])
+    result = []
+
+    for item in data:
+        result.append(myinp.transformation(item, transfo, schema))
 
     myout = GLOBALFACTORY.get(output)
-    myout.save(result, output, schema)
+    myout.save(result, output)
