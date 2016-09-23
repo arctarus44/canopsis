@@ -91,7 +91,7 @@ Parameters :
 Move
 ----
 
-Function to remove a field in the transformation patch
+Function to move a field in the transformation patch
 
 Parameters :
  - path_transfo : path to the transformation document
@@ -123,7 +123,7 @@ Function to add a field in the transformation patch
 
 Parameters :
  - path_transfo : path to the transformation document
- - query : value of the requeste
+ - query : value of the request
 
 
   .. _ED__Edition__Add_entry:
@@ -152,14 +152,14 @@ add('/home/myfolder/mydocument.json', '/field-to-add', 'myvalue', add)
 To write copy patch operation:
 copy('/home/myfolder/mydocument.json', '/field-from_copy', '/field-to-copy', copy)
 
-To write move patch operation:
-add('/home/myfolder/mydocument.json', '/field-to-remove', remove)
-
 To write remove patch operation:
-add('/home/myfolder/mydocument.json', '/field-from-move', '/field-to-move', move)
+remove('/home/myfolder/mydocument.json', '/field-to-remove', remove)
+
+To write move patch operation:
+move('/home/myfolder/mydocument.json', '/field-from-move', '/field-to-move', move)
 
 To write replace patch operation:
-add('/home/myfolder/mydocument.json', '/field', 'myvalue', replace)
+replace('/home/myfolder/mydocument.json', '/field', 'myvalue', replace)
 this command replace the value of the field in parameter
 
 To add a query:

@@ -39,7 +39,7 @@ Contents
 Installation
 ------------
 
-The migration can be use in canopsis and without it.
+The migration can be used in canopsis and without it.
 To use the migration you **COULD** launch a script which describes different operations or call the migrate() function.
 This function take the path to the transformation document in parameter.
 
@@ -59,11 +59,11 @@ In the script you can call migrate().
 Requirement
 -----------
 
-You **MUST** write 3 documents before launch the migration :
+You **MUST** write 3 documents before launching the migration :
 
  - :ref:`FR::Schema <FR__Data_Schema>` to validate the selected data
  - :ref:`FR::Schema <FR__Data_Schema>` to validate the structure of the migrated data
- - transformation document which will be validate by the :ref:`FR::Schema <FR__Schema_Transformation_Schema>`,
+ - transformation document which will be validated by the :ref:`FR::Schema <FR__Schema_Transformation_Schema>`,
  it describes the operations for the migration.
 
 You **MUST** launch the migration with the migrate function.
