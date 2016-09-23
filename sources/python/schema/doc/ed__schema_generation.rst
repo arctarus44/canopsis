@@ -68,6 +68,7 @@ How To
 to use this library proceed as following:
 
 .. code-block:: python
+
 	import schema_generation
 	import json
 

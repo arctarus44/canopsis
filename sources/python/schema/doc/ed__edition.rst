@@ -144,26 +144,24 @@ Parameters :
 How To
 ------
 
-Before write into your transformation document, you **MUST** create it
+.. code-block:: python
 
-To write add patch operation:
-add('/home/myfolder/mydocument.json', '/field-to-add', 'myvalue', add)
+	import edit
 
-To write copy patch operation:
-copy('/home/myfolder/mydocument.json', '/field-from_copy', '/field-to-copy', copy)
+	path_transfo = '/home/julie/Documents/dm/etc/schema/new.json'
+	path = '/home/julie/Documents/dm/etc/schema/'
 
-To write remove patch operation:
-remove('/home/myfolder/mydocument.json', '/field-to-remove', remove)
-
-To write move patch operation:
-move('/home/myfolder/mydocument.json', '/field-from-move', '/field-to-move', move)
-
-To write replace patch operation:
-replace('/home/myfolder/mydocument.json', '/field', 'myvalue', replace)
-this command replace the value of the field in parameter
-
-To add a query:
-add_query('/home/myfolder/mydocument.json', 'query-value')
-
-To add a field:
-add_entry('/home/myfolder/mydocument.json', 'field_name', 'field_value')
+	edit.create(path, 'new.json')
+	edit.add_entry(path_transfo, 'input', 'mongodb:///mongodb-default-eventslog?table=events_log')
+	edit.add_query(path_transfo, {
+			"event_type":"check",
+			"ticket": {"$exists": True},
+			"ticket_declared_date": {"$exists": True},
+			"ticket_date": {"$exists": True},
+			"ticket_declared_author": {"$exists": True}
+		})
+	edit.add(path_transfo, '/field', 'value')
+	edit.copy(path_transfo, '/field_to_copy', '/copy_of_field')
+	edit.move(path_transfo, '/old_field', '/new_field')
+	edit.remove(path_transfo, '/field_to_delete')
+	edit.replace(path_transfo, '/field_name', 'value')
