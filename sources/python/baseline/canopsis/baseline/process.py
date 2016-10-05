@@ -5,13 +5,15 @@ from canopsis.task.core import register_task
 
 from canopsis.alerts.manager import Baseline
 
+manager = Baseline()
+
 @register_task
 def event_processing(engine, event):
 
-    manager = Baseline()
+    name = event['baseline_name']
+    value = 1
 
-    if match_filter(event):
-        manager.store(event)
+    manager.put(name, value)
 
 @register_task
 def beat_processing(engine):

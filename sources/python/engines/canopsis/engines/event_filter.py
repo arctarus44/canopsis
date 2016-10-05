@@ -83,7 +83,8 @@ class engine(Engine):
         afield = action.get('field', None)
         avalue = action.get('value', None)
 
-        # This mus be a hard check because value can be a boolean or a null integer
+        # This mus be a hard check because value can be a boolean or a null
+        # integer
         if afield is not None and avalue is not None:
             if afield in event and isinstance(event[afield], list):
                 event[afield].append(avalue)
@@ -223,14 +224,23 @@ class engine(Engine):
 
     def a_exec_job(self, event, action, name):
         records = self.storage.find(
-            {'crecord_type': 'job', '_id': action['job'] }
+            {'crecord_type': 'job', '_id': action['job']}
         )
         for record in records:
             job = record.dump()
             job['context'] = event
-            publish(publisher=self.amqp, event=job, rk='Engine_scheduler', exchange='amq.direct')
+            publish(publisher=self.amqp, event=job,
+                    rk='Engine_scheduler', exchange='amq.direct')
             #publish(publisher=self.amqp, event=job, rk='Engine_scheduler')
         return True
+
+    def a_baseline(self, event, actions, name):
+        """a_baseline
+
+        :param event: event who match baseline filter
+        """
+        event['baseline_name'] = name
+        #envoyer l'event sur l'engine baseline
 
     def apply_actions(self, event, actions):
         pass_event = False
@@ -238,9 +248,10 @@ class engine(Engine):
                      'pass': self.a_pass,
                      'override': self.a_modify,
                      'remove': self.a_modify,
-					 'execjob': self.a_exec_job,
-                     'route': self.a_route
-					}
+                     'execjob': self.a_exec_job,
+                     'route': self.a_route,
+                     'baseline': self.a_baseline
+                     }
 
         for name, action in actions:
             if (action['type'] in actionMap):
@@ -410,5 +421,3 @@ class engine(Engine):
             "No default action found. Assuming default action is pass"
         )
         return 'pass'
-
-
