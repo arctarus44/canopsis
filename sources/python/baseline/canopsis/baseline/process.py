@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from canopsis.common.utils import singleton_per_scope
 from canopsis.task.core import register_task
+from canopsis.context.manager import Context
 
-from canopsis.alerts.manager import Baseline
+from canopsis.baseline.manager import Baseline
 
-manager = Baseline()
+baseline_manager = Baseline()
 
 @register_task
-def event_processing(engine, event):
+def event_processing(engine, event, logger=None, **kwargs):
+
+    manager = baseline_manager
 
     name = event['baseline_name']
     value = 1

@@ -8,16 +8,14 @@ from canopsis.configuration.configurable.decorator import (
     add_category, conf_paths
 )
 from canopsis.timeserie.timewindow import get_offset_timewindow, TimeWindow
+from canopsis.context.manager import Context
 
-CONF_PATH = 'baselin/manager.conf'
-CATEGORY = 'BASELINE'
-
-@conf_path(CONF_PATH)
-@add_category(CATEGORY)
+@conf_paths('baseline/baseline.conf')
+@add_category('BASELINE')
 class Baseline(MiddlewareRegistry):
     """Baseline"""
 
-    BASELINE_STORAGE = 'baseline_storage'
+    STORAGE = 'baseline_storage'
     CONTEXT_MANAGER = 'context'
 
     def __init__(self, *args, **kwargs):
@@ -26,14 +24,21 @@ class Baseline(MiddlewareRegistry):
         :param *args:
         :param **kwargs:
         """
-        super(Baseline, self).__init__(self, *args, **kwargs)
+        super(Baseline, self).__init__(*args, **kwargs)
 
     def get_baselines(self, baseline_name, timewindow=None):
         """get_baselines"""
-        self[Baseline.STORAGE].get(self, baseline_name, timewindow=timewindow)
+        if timewindow is None:
+
+            _timewindow = TimeWindow(0,time())
+
+        else:
+            _timewindow = tw
+
+        return self[Baseline.STORAGE].get(data_id=baseline_name, timewindow=_timewindow)
+
 
     def put(self, name, value):
         point = (time(), value)
-        self[Baseline.STORAGE].put(name, point)
-
+        self[Baseline.STORAGE].put(data_id=name, points=[point])
 

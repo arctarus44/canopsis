@@ -240,11 +240,16 @@ class engine(Engine):
         :param event: event who match baseline filter
         """
         event['baseline_name'] = name
-        #envoyer l'event sur l'engine baseline
+
+        f = open('/home/tgosselin/fichierdelog3', 'a')
+        f.write('petit poney {0}\n'.format(event))
+        f.close()
+
+        publish(event=event, publisher=self.amqp, rk='Engine_baseline', exchange='amq.direct')
 
     def apply_actions(self, event, actions):
         pass_event = False
-        actionMap = {'drop': self.a_drop,
+        actionmap = {'drop': self.a_drop,
                      'pass': self.a_pass,
                      'override': self.a_modify,
                      'remove': self.a_modify,
@@ -254,12 +259,12 @@ class engine(Engine):
                      }
 
         for name, action in actions:
-            if (action['type'] in actionMap):
-                ret = actionMap[action['type'].lower()](event, action, name)
+            if (action['type'] in actionmap):
+                ret = actionmap[action['type'].lower()](event, action, name)
                 if ret:
                     pass_event = True
             else:
-                self.logger.warning(u"Unknown action '{}'".format(action))
+                self.logger.warning(u"unknown action '{}'".format(action))
 
         return pass_event
 
