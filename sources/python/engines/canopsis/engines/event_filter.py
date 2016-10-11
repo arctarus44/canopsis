@@ -241,10 +241,6 @@ class engine(Engine):
         """
         event['baseline_name'] = name
 
-        f = open('/home/tgosselin/fichierdelog3', 'a')
-        f.write('petit poney {0}\n'.format(event))
-        f.close()
-
         publish(event=event, publisher=self.amqp, rk='Engine_baseline', exchange='amq.direct')
 
     def apply_actions(self, event, actions):

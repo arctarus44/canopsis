@@ -5,9 +5,6 @@ from canopsis.common.utils import singleton_per_scope
 from canopsis.baseline.manager import Baseline
 from canopsis.timeserie.timewindow import TimeWindow, Period
 
-f = open('/home/tgosselin/fichierdelog3', 'a')
-f.write('coucou \n')
-f.close()
 
 def exports(ws):
     manager = singleton_per_scope(Baseline)
@@ -16,6 +13,28 @@ def exports(ws):
     def baseline(baseline_name, timewindow=None):
         return manager.get_baselines(baseline_name, timewindow=None)
 
-    @route(ws.application.post)
-    def test():
-        return '{"coucou":"voila"}'
+    @route(ws.application.put, payload=[
+        'baseline_name',
+        'mode',
+        'value',
+        'period',
+        'margin',
+        'entity',
+        'resource'])
+    def baselineconf(
+            baseline_name,
+            mode,
+            period,
+            margin,
+            entity,
+            resource,
+            value=None):
+        return manager.add_baselineconf(
+            baseline_name,
+            mode,
+            period,
+            margin,
+            entity,
+            resource,
+            value=value
+            )

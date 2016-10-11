@@ -21,5 +21,6 @@ def event_processing(engine, event, logger=None, **kwargs):
     manager.put(name, value)
 
 @register_task
-def beat_processing(engine):
-    pass
+def beat_processing(engine, logger=None, **kwargs):
+
+    manager.beat()
