@@ -27,8 +27,7 @@ class Baseline(MiddlewareRegistry):
         :param **kwargs:
         """
         super(Baseline, self).__init__(*args, **kwargs)
-
-        self.baselines = {}
+        self.check = True
 
     def get_baselines(self, baseline_name, timewindow=None):
         """get_baselines"""
@@ -65,15 +64,75 @@ class Baseline(MiddlewareRegistry):
             'resource': resource
         }
 
-        self.baselines[baseline_name] = time() + period
+        if self.check:
+            if not len(self[Baseline.CONFSTORAGE].get_elements(query={'_id':'baselines'})) > 0:
+                self[Baseline.CONFSTORAGE].put_element({'_id':'baselines', 'list':[]})
+                self.check = False
 
+        baselines = {}
+        for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id':'baselines'}):
+            baselines = i
+
+        l = baselines['list']
+        l.append({baseline_name: time() + period})
+        #revoir par ce que la on écrase pas mais on ajoute dans la liste bref c'est de la merde'
+        baselines['list'] = l
+        self[Baseline.CONFSTORAGE].put_element(baselines)
         return self[Baseline.CONFSTORAGE].put_element(element, _id=baseline_name)
 
     def beat(self):
         now = time()
-        for baseline_name , timestamp in self.baselines.items():
-            if now > timestam:
-                self.check_baseline(baseline_name)
+        baselines = {}
+        for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id':'baselines'}):
+            baselines = i
+        baseline_list = baselines['list']
 
-    def check_baseline(self, baseline_name):
-        pass
+        for i in baseline_list:
+            if now > i.items()[0][1]:
+                self.logger.error('voila on est bon on doit checker')
+        #continuer ici/revoir le check pour ensuite passer a check baseline et on sera pas mal
+
+
+
+
+        """
+        for baseline_name, timestamp in self.baselines.items():
+            f = open('/home/tgosselin/fichierdelog3', 'a')
+            f.write('for en beat\n')
+            f.close()
+            if now > timestamp:
+                f = open('/home/tgosselin/fichierdelog3', 'a')
+                f.write('on check !\n')
+                f.close()
+                self.check_baseline(baseline_name, timestamp)
+            else:
+                f = open('/home/tgosselin/fichierdelog3', 'a')
+                f.write('on check pas encore \n')
+                f.close()
+                f = open('/home/tgosselin/fichierdelog3', 'a')
+                f.write('fin du beat manager\n')
+                f.close()
+        """
+    def check_baseline(self, baseline_name, timestamp):
+        f = open('/home/tgosselin/fichierdelog3', 'a')
+        f.write('check baseline\n')
+        f.close()
+        conf = self[Baseline.CONFSTORAGE].get_elements(
+            query={"_id": baseline_name})
+        baselineconf = {}
+
+        for i in conf:
+            baselineconf = i
+
+        timewindow = TimeWindow(
+            start=timestamp - conf['period'], stop=timestamp)
+        """
+        result = self.get_baselines(baseline_name, timewindow)
+
+        f = open('/home/tgosselin/fichierdelog3', 'a')
+        f.write('a{0}\n'.format(result))
+        f.close()
+        """
+    # chopper la config de la baseline a checker dans mongo donc un petit get qui va bien
+    # faire la requete des métrique a chopper en fonction de la config travailler le get avec la time window
+    # déclencher l'alarme remettre le compteur a jour etc

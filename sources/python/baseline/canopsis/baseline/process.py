@@ -22,5 +22,9 @@ def event_processing(engine, event, logger=None, **kwargs):
 
 @register_task
 def beat_processing(engine, logger=None, **kwargs):
+    
+    f = open('/home/tgosselin/fichierdelog3', 'a')
+    f.write('coucou\n')
+    f.close()
 
-    manager.beat()
+    baseline_manager.beat()
