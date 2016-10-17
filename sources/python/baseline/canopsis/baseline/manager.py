@@ -124,21 +124,64 @@ class Baseline(MiddlewareRegistry):
             if baseline_name in i:
                 index = k
 
-        baseline_list[index][baseline_name] = baseline_list[index][baseline_name] + period
+        baseline_list[index][baseline_name] = baseline_list[
+            index][baseline_name] + period
         baselines['list'] = baseline_list
         self[Baseline.CONFSTORAGE].put_element(baselines)
 
     def check_baseline(self, baseline_name, timestamp):
-        #get baseline config in db
+
         baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
 
-        if baseline_conf['mode'] ==  'static':
-            tw = TimeWindow(start=timestamp - baseline_conf['period'], stop=timestamp)
-            self.logger.error(self.get_baselines(baseline_name, tw))
-        else:
-            pass
-        #faire les truc autre que static
+        tw = TimeWindow(start=timestamp -
+                        baseline_conf['period'], stop=timestamp)
+        values = self.get_baselines(baseline_name, tw)
 
-    # déclencher l'alarme remettre le compteur a jour etc
+        reference = []
+
+        if baseline_conf['mode'] == 'static':
+
+            reference_value = baseline_conf['value']
+            margin_up = float(
+                baseline_conf['value'] + baseline_conf['value'] * baseline_conf['margin'] / 100)
+            margin_down = float(
+                baseline_conf['value'] - baseline_conf['value'] * baseline_conf['margin'] / 100)
+
+            if len(values) > margin_up or len(values) < margin_down:
+                self.send_alarm(baseline_conf['entity'], baseline_conf['resource'])
+
+        elif baseline_conf['mode'] == 'floatting':
+
+            tw_start = timestamp - 2 * baseline_conf['period']
+            tw_stop = timestamp - baseline_conf['period']
+
+        elif baseline_conf['mode'] == 'fix_last':
+
+            tw_start = baseline_conf['tw_start']
+            tw_stop = baseline_conf['tw_stop']
+
+        elif baseline_conf['mode'] == 'fix':
+
+            tw_start = baseline_conf['tw_start']
+            tw_stop = baseline_conf['tw_stop']
+
+        tw = TimeWindow(start=tw_start, stop=tw_stop)
+        reference = self.get_baselines(baseline_name, timewindow=tw)
+
+        margin_up = float(
+            len(reference) + len(reference) * baseline_conf['margin'] / 100)
+        margin_down = float(
+            len(reference) - len(reference) * baseline_conf['margin'] / 100)
+
+        if len(values) > margin_up or len(values) < margin_down:
+            self.send_alarm(baseline_conf['entity'], baseline_conf['resource'])
+        elif baseline_conf['fix_last']:
+            baseline_conf['tw_start'] = timestamp - baseline_conf['period']
+            baseline_conf['tw_stop'] = time_stamp
+            self[Baseline.CONFSTORAGE].put_element(baseline_conf)
+
+    def send_alarm(self, entity, resource):
+        self.logger.error('alarm alarm alarm alarm!!!\n')
+        # envoyer l'alarme
