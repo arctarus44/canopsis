@@ -31,8 +31,8 @@ from six import string_types
 CONF_PATH = 'sysreq/middleware.conf'
 CATEGORY = 'SYSREQ'
 CONTENT = [
-    Parameter(name='middlewares', type=Array(string_types)),
-    Parameter(name='managers', type=Array(string_types))
+    Parameter(name='middlewares', ptype=Array(string_types)),
+    Parameter(name='managers', ptype=Array(string_types))
 ]
 
 
