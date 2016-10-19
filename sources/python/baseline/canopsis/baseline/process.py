@@ -14,17 +14,39 @@ baseline_manager = Baseline()
 def event_processing(engine, event, logger=None, **kwargs):
 
     manager = baseline_manager
-
     name = event['baseline_name']
-    value = 1
 
-    manager.put(name, value)
+    if manager.check_frequency(name):
+
+        value = 1
+
+        manager.put(name, value)
+
+    else:
+
+        if 'perf_data' in event:
+
+            value = event['perf_data']
+            manager.put(name, value)
+
+        elif 'perf_data_array' in event:
+
+            value_name = manager.get_value_name(name)
+            value = None
+            for i in event['perf_data_array']:
+                if i['metric'] == value_name:
+                    value = i['value']
+
+            if value = None:
+                print('bad baseline configuration')
+                raise Exception
+
+            manager.put(name, value)
+        else:
+            print('to build a baseline based on value, a perf_data event is needed')
+
 
 @register_task
 def beat_processing(engine, logger=None, **kwargs):
-    
-    f = open('/home/tgosselin/fichierdelog3', 'a')
-    f.write('coucou\n')
-    f.close()
 
     baseline_manager.beat()

@@ -44,6 +44,18 @@ class Baseline(MiddlewareRegistry):
             data_id=baseline_name,
             timewindow=_timewindow)
 
+    def get_value_name(self, baseline_name):
+        baseline_conf = None
+        for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
+            baseline_conf = i
+        return baseline_conf['value_name']
+
+    def check_frequency(self, baseline_name):
+        baseline_conf = None
+        for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
+            baseline_conf = i
+        return baseline_conf['check_frequency'] == 'true'
+
     def put(self, name, value):
         point = (time(), value)
         self[Baseline.STORAGE].put(data_id=name, points=[point])
@@ -189,6 +201,7 @@ class Baseline(MiddlewareRegistry):
 
         if len(values) > margin_up or len(values) < margin_down:
             self.send_alarm(baseline_conf['entity'], baseline_conf['resource'])
+
         elif baseline_conf['mode'] == 'fix_last':
             baseline_conf['tw_start'] = timestamp - baseline_conf['period']
             baseline_conf['tw_stop'] = time_stamp
@@ -208,3 +221,30 @@ class Baseline(MiddlewareRegistry):
         }
 
         publish(alarm_event, Amqp())
+
+    def values_sum(self, values):
+        ret_val = 0
+        for i in values:
+            ret_val = ret_val + i[1]
+        return ret_val
+
+    def value_average(self, values):
+        ret_val = 0
+        k = 0
+        for k, i in enumerate(values):
+            ret_val = ret_val + i[1]
+        return ret_val / K
+
+    def value_max(self, values):
+        ret_val = 0
+        for i in values:
+            if i[1] > ret_val:
+                ret_val = i[1]
+        return ret_val
+
+    def valus_min(self, values):
+        ret_val = values[0][1]
+        for i[1] in values:
+            if i[1] < ret_val:
+                ret_val = i[1]
+
