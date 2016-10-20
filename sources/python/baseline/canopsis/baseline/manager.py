@@ -45,16 +45,17 @@ class Baseline(MiddlewareRegistry):
             timewindow=_timewindow)
 
     def get_value_name(self, baseline_name):
-        baseline_conf = None
+        baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
         return baseline_conf['value_name']
 
     def check_frequency(self, baseline_name):
-        baseline_conf = None
+        baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
-        return baseline_conf['check_frequency'] == 'true'
+
+        return baseline_conf['check_frequency']
 
     def put(self, name, value):
         point = (time(), value)
@@ -66,8 +67,9 @@ class Baseline(MiddlewareRegistry):
         mode,
         period,
         margin,
-        entity,
+        component,
         resource,
+        check_frequency,
         value=None
     ):
         element = {
@@ -76,8 +78,9 @@ class Baseline(MiddlewareRegistry):
             'value': value,
             'period': period,
             'margin': margin,
-            'entity': entity,
-            'resource': resource
+            'component': component,
+            'resource': resource,
+            'check_frequency': check_frequency
         }
 
         result = self[Baseline.CONFSTORAGE].put_element(
@@ -87,6 +90,24 @@ class Baseline(MiddlewareRegistry):
         self.manage_baselines_list(element)
 
         return result
+
+    def remove_baselineconf(self, baseline_name):
+
+        baselines = {}
+        for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': 'baselines'}):
+            baselines = i
+
+        l = baselines['list']
+        index = -1
+        for k, i in enumerate(l):
+            if baseline_name in i:
+                index = k
+
+        l.pop(index)
+        baselines['list'] = l
+        self[Baseline.CONFSTORAGE].put_element(baselines)
+
+        return self[Baseline.CONFSTORAGE].remove_elements(ids=baseline_name)
 
     def manage_baselines_list(self, element):
 
@@ -108,7 +129,8 @@ class Baseline(MiddlewareRegistry):
                 period = 2 * element['period']
                 l.append({element['baseline_name']: time() + period})
             else:
-                l.append({element['baseline_name']: time() + element['period']})
+                l.append({element['baseline_name']
+                         : time() + element['period']})
         else:
             l[index][element['baseline_name']] = time() + element['period']
 
@@ -116,11 +138,14 @@ class Baseline(MiddlewareRegistry):
         self[Baseline.CONFSTORAGE].put_element(baselines)
 
     def beat(self):
+
         now = time()
         baselines = {}
+        baseline_list = []
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': 'baselines'}):
             baselines = i
-        baseline_list = baselines['list']
+        if not baselines == {}:
+            baseline_list = baselines['list']
 
         for i in baseline_list:
             if now > i.items()[0][1]:
@@ -154,6 +179,10 @@ class Baseline(MiddlewareRegistry):
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
 
+        aggregation_method = 'sum'
+        if 'aggregation_method' in baseline_conf:
+            aggregation_method = baseline_conf['aggregation_method']
+
         tw = TimeWindow(start=timestamp -
                         baseline_conf['period'], stop=timestamp)
         values = self.get_baselines(baseline_name, tw)
@@ -171,9 +200,9 @@ class Baseline(MiddlewareRegistry):
             margin_down = float(
                 baseline_conf['value'] - baseline_conf['value'] * baseline_conf['margin'] / 100)
 
-            if len(values) > margin_up or len(values) < margin_down:
+            if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
                 self.send_alarm(
-                    baseline_conf['entity'], baseline_conf['resource'])
+                    baseline_conf['component'], baseline_conf['resource'])
             return
 
         elif baseline_conf['mode'] == 'floatting':
@@ -193,30 +222,28 @@ class Baseline(MiddlewareRegistry):
 
         tw = TimeWindow(start=tw_start, stop=tw_stop)
         reference = self.get_baselines(baseline_name, timewindow=tw)
-
         margin_up = float(
-            len(reference) + len(reference) * baseline_conf['margin'] / 100)
+            self.aggregation(reference, aggregation_method) + self.aggregation(reference, aggregation_method) * baseline_conf['margin'] / 100)
         margin_down = float(
-            len(reference) - len(reference) * baseline_conf['margin'] / 100)
+            self.aggregation(reference, aggregation_method) - self.aggregation(reference, aggregation_method) * baseline_conf['margin'] / 100)
 
-        if len(values) > margin_up or len(values) < margin_down:
-            self.send_alarm(baseline_conf['entity'], baseline_conf['resource'])
+        if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
+            self.send_alarm(
+                baseline_conf['component'], baseline_conf['resource'])
 
         elif baseline_conf['mode'] == 'fix_last':
             baseline_conf['tw_start'] = timestamp - baseline_conf['period']
             baseline_conf['tw_stop'] = time_stamp
             self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
-    def send_alarm(self, entity, resource):
-        self.logger.error('alarm alarm alarm alarm!!!\n')
+    def send_alarm(self, component, resource):
         alarm_event = {
-            "component": "test",
-            "resource": "rfeeder",
+            "component": component,
+            "resource": resource,
             "source_type": "resource",
             "event_type": "check",
-            "connector": "feeder",
-            "connector_name": "namefeeder",
-            "output": "output",
+            "connector": "baseline_engine",
+            "connector_name": "baseline",
             "state": 3
         }
 
@@ -247,4 +274,19 @@ class Baseline(MiddlewareRegistry):
         for i[1] in values:
             if i[1] < ret_val:
                 ret_val = i[1]
+        return ret_val
 
+    def aggregation(self, values, aggregation_method):
+
+        ret_val = 0
+        if aggregation_method == 'sum':
+            return self.values_sum(values)
+
+        elif aggregation_method == 'average':
+            return self.value_average(values)
+
+        elif aggregation_method == 'min':
+            return self.valus_min(values)
+
+        elif aggregation_method == 'max':
+            return self.value_max(values)

@@ -19,22 +19,29 @@ def exports(ws):
         'value',
         'period',
         'margin',
-        'entity',
-        'resource'])
+        'component',
+        'resource',
+        'check_frequency'])
     def baselineconf(
             baseline_name,
             mode,
             period,
             margin,
-            entity,
+            component,
             resource,
+            check_frequency,
             value=None):
         return manager.add_baselineconf(
             baseline_name,
             mode,
             period,
             margin,
-            entity,
+            component,
             resource,
+            check_frequency,
             value=value
             )
+
+    @route(ws.application.delete, payload=['baseline_name'])
+    def baselineconf(baseline_name):
+        return manager.remove_baselineconf(baseline_name)

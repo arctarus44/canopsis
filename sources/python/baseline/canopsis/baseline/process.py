@@ -37,7 +37,7 @@ def event_processing(engine, event, logger=None, **kwargs):
                 if i['metric'] == value_name:
                     value = i['value']
 
-            if value = None:
+            if value == None:
                 print('bad baseline configuration')
                 raise Exception
 
