@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # --------------------------------
-# Copyright (c) 2016 "Capensis" [http://www.capensis.com]
+# Copyright (c) 2015 "Capensis" [http://www.capensis.com]
 #
 # This file is part of Canopsis.
 #
@@ -18,6 +19,14 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-# hack for attaching this project to canopsis package
-from pkgutil import extend_path
-__path__ = extend_path(__path__, __name__)
+from canopsis.common.setup import setup
+
+install_requires = [
+    'canopsis.common',
+    'canopsis.middleware'
+]
+
+setup(
+    description='Canopsis System Requester',
+    install_requires=install_requires,
+    keywords='sysreq')
