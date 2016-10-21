@@ -55,7 +55,7 @@ class Baseline(MiddlewareRegistry):
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
 
-        return baseline_conf['check_frequency']
+        return baseline_conf['check_frequency'] == 'true'
 
     def put(self, name, value):
         point = (time(), value)
@@ -70,7 +70,9 @@ class Baseline(MiddlewareRegistry):
         component,
         resource,
         check_frequency,
-        value=None
+        value,
+        aggregation_method='sum',
+        value_name=None
     ):
         element = {
             'baseline_name': baseline_name,
@@ -80,7 +82,9 @@ class Baseline(MiddlewareRegistry):
             'margin': margin,
             'component': component,
             'resource': resource,
-            'check_frequency': check_frequency
+            'check_frequency': check_frequency,
+            'aggregation_method': aggregation_method,
+            'value_name': value_name
         }
 
         result = self[Baseline.CONFSTORAGE].put_element(
@@ -260,7 +264,7 @@ class Baseline(MiddlewareRegistry):
         k = 0
         for k, i in enumerate(values):
             ret_val = ret_val + i[1]
-        return ret_val / K
+        return ret_val / k
 
     def value_max(self, values):
         ret_val = 0
@@ -269,9 +273,9 @@ class Baseline(MiddlewareRegistry):
                 ret_val = i[1]
         return ret_val
 
-    def valus_min(self, values):
+    def value_min(self, values):
         ret_val = values[0][1]
-        for i[1] in values:
+        for i in values:
             if i[1] < ret_val:
                 ret_val = i[1]
         return ret_val
@@ -286,7 +290,7 @@ class Baseline(MiddlewareRegistry):
             return self.value_average(values)
 
         elif aggregation_method == 'min':
-            return self.valus_min(values)
+            return self.value_min(values)
 
         elif aggregation_method == 'max':
             return self.value_max(values)

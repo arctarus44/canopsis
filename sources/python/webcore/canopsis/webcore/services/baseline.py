@@ -21,7 +21,9 @@ def exports(ws):
         'margin',
         'component',
         'resource',
-        'check_frequency'])
+        'check_frequency',
+        'aggregation_method',
+        'value_name'])
     def baselineconf(
             baseline_name,
             mode,
@@ -30,7 +32,9 @@ def exports(ws):
             component,
             resource,
             check_frequency,
-            value=None):
+            value,
+            aggregation_method='sum',
+            value_name=None):
         return manager.add_baselineconf(
             baseline_name,
             mode,
@@ -39,7 +43,9 @@ def exports(ws):
             component,
             resource,
             check_frequency,
-            value=value
+            value,
+            aggregation_method,
+            value_name
             )
 
     @route(ws.application.delete, payload=['baseline_name'])
