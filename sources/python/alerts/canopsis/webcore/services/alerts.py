@@ -19,24 +19,24 @@
 # ---------------------------------
 from __future__ import unicode_literals
 
+from canopsis.common.utils import singleton_per_scope
 from canopsis.common.ws import route
 from canopsis.alerts.manager import Alerts
 
 
 def exports(ws):
-
-    am = Alerts()
+    am = singleton_per_scope(Alerts)
 
     @route(
-            ws.application.get,
-            name='alerts/alarms',
-            payload=['resolved', 'tags', 'exclude_tags'],
+        ws.application.get,
+        name='alerts/alarms',
+        payload=['resolved', 'tags', 'exclude_tags'],
     )
     def get_alarms(
-            resolved=False,
-            tags=None,
-            exclude_tags=None,
-            snoozed=False,
+        resolved=False,
+        tags=None,
+        exclude_tags=None,
+        snoozed=False,
     ):
         """
         Get alarms
@@ -64,15 +64,15 @@ def exports(ws):
         return alarms
 
     @route(
-            ws.application.get,
-            name='alerts/count',
-            payload=['start', 'stop', 'limit', 'select'],
+        ws.application.get,
+        name='alerts/count',
+        payload=['start', 'stop', 'limit', 'select'],
     )
     def count_by_period(
-            start,
-            stop,
-            limit=100,
-            select=None,
+        start,
+        stop,
+        limit=100,
+        select=None,
     ):
         """
         Count alarms that have been opened during (stop - start) period.

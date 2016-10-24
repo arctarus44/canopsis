@@ -23,17 +23,12 @@ from canopsis.common.setup import setup
 
 install_requires = [
     'canopsis.common',
-    'canopsis.configuration',
-    'canopsis.middleware',
-    'canopsis.task',
-    'canopsis.event',
-    'canopsis.check',
-    'canopsis.timeserie',
-    'b3j0f.requester'
+    'canopsis.middleware'
 ]
 
+
 setup(
-    description='Canopsis sysreq management',
+    description='Canopsis System Requester',
     install_requires=install_requires,
     keywords='sysreq'
 )

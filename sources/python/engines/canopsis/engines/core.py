@@ -170,6 +170,14 @@ class Engine(object):
                 self.exchange_name
             )
 
+            if self.autonext:
+                self.new_amqp_queue(
+                    self.amqp_queue,
+                    [],
+                    self.on_amqp_event,
+                    'amq.direct'
+                )
+
         self.amqp.start()
 
         self.pre_run()
