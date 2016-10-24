@@ -39,6 +39,59 @@ in the canopsis ui, there is a configuration menu to configure baseline options:
 
 Backend Baseline
 
+Install
+-------
+
+in etc/engines/baseline.ini
+
+.. code-block:: bash
+
+    [program:engine-baseline]
+
+    autostart=false
+
+    directory=%(ENV_HOME)s
+    numprocs=1
+    process_name=%(program_name)s-%(process_num)d
+
+    command=engine-launcher -e dynamic -n baseline -w %(process_num)d -l info
+
+    stdout_logfile=%(ENV_HOME)s/var/log/engines/baseline.log
+    stderr_logfile=%(ENV_HOME)s/var/log/engines/baseline.log
+
+add "engine-baseline" in etc/supervisord.d/amqp2engines.conf
+
+.. code-block:: bash
+
+    [group:amqp2engines]
+
+    autostart=false
+
+    programs=engine-cleaner-events,engine-event-filter,engine-downtime,engine-acknowledgement,engine-cancel,engine-ticket,engine-tag,engine-eventstore,engine-cleaner-alerts,engine-selector,engine-collectdgw,engine-scheduler,taskhandler-mail,engine-perfdata,engine-context,engine-serie,engine-topology,engine-linklist,taskhandler-linklist,taskhandler-dataclean,engine-baseline
+
+in etc/amqp2engines.conf, add the following conf:
+
+.. code-block:: bash
+
+    [engine:baseline]
+
+    event_processing=canopsis.baseline.process.event_processing
+    beat_processing=canopsis.baseline.process.beat_processing
+
+To finish the setup, you just need to (re)start ̀ amqp2engines` service 
+
+.. code-block:: bash
+
+    $ service amqp2engines restart
+
+
+You can see if snmp engine is started 
+
+.. code-block:: bash
+
+    $ service amqp2engines status
+
+
 Baseline engine
 ---------------
 
