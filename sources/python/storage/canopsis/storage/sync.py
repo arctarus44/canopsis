@@ -20,24 +20,27 @@
 
 """Storage synchronization module."""
 
-from canopsis.configuration.model import Parameter, Configuration
+from b3j0f.conf import Configurable, category, Parameter, Array
 from canopsis.middleware.registry import MiddlewareRegistry
 
+from six import string_types
 
+CONF_PATH = 'middleware/sync.conf'
+CATEGORY = 'SYNC'
+CONTENT = [
+    Parameter(name='source'),
+    Parameter(name='targets', ptype=Array(string_types))
+]
+
+
+@Configurable(paths=CONF_PATH, conf=category(CATEGORY, *CONTENT))
 class Synchronizer(MiddlewareRegistry):
     """Synchronize data from a source storage to target storages.
 
     Targets must respect a common storage type with the source storage.
     """
 
-    CONF_FILE = 'middleware/sync.conf'
-
-    SOURCE = 'source'
-    TARGETS = 'targets'
-
-    CATEGORY = 'SYNC_MIDDLEWARE'
-
-    def __init__(self, source, targets, *args, **kwargs):
+    def __init__(self, source=None, targets=None, *args, **kwargs):
         """
 
         :param source: source storage to synchronize with targets
@@ -52,69 +55,9 @@ class Synchronizer(MiddlewareRegistry):
         self.source = source
         self.targets = targets
 
-    @property
-    def source(self):
-        """Get source storage.
-        """
-
-        return self._source
-
-    @source.setter
-    def source(self, value):
-        """Change of source storage.
-        """
-
-        self._source = value
-
-    @property
-    def targets(self):
-        """Get target storage types.
-        """
-
-        return self._targets
-
-    @targets.setter
-    def targets(self, value):
-        """Change of target storage types.
-        """
-
-        self._targets = value
-
     def copy(self, source=None, targets=None):
         """
         Copy content of source storage to target storages
         """
 
         raise NotImplementedError()
-
-    def _get_conf_files(self, *args, **kwargs):
-
-        result = super(Synchronizer, self)._get_conf_files(*args, **kwargs)
-
-        result.append(Synchronizer.CONF_FILE)
-
-        return result
-
-    def _conf(self, *args, **kwargs):
-
-        result = super(Synchronizer, self)._conf(*args, **kwargs)
-
-        result.add_unified_category(
-            name=Synchronizer.CATEGORY,
-            new_content=(
-                Parameter(Synchronizer.SOURCE),
-                Parameter(Synchronizer.TARGETS)
-            )
-        )
-
-        return result
-
-    def _configure(self, conf, *args, **kwargs):
-
-        super(Synchronizer, self)._configure(conf=conf, *args, **kwargs)
-
-        values = conf[Configuration.VALUES]
-
-        # set shared
-        self._update_parameter(values, Synchronizer.SOURCE)
-        self._update_parameter(values, Synchronizer.TARGETS)
