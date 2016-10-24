@@ -42,34 +42,6 @@ class BaseTest(TestCase):
 
 class TestManager(BaseTest):
 
-    def test_get_baselines(self):
-        #raise NotImplementedError
-        pass
-
-    def test_add_baseline_conf(self):
-        #raise NotImplementedError
-        pass
-
-    def test_put(self):
-        #raise NotImplementedError
-        pass
-
-    def test_manage_baselines_list(self):
-        #raise NotImplementedError
-        pass
-
-    def test_beat(self):
-        #raise NotImplementedError
-        pass
-
-    def test_reset_timestamp(self):
-        #raise NotImplementedError
-        pass
-
-    def test_check_baseline(self):
-        #raise NotImplementedError
-        pass
-
     def test_value_sum(self):
        l = [[325131,1],[32131321312,2],[3215,3],[0,4],[6554,5],[654,6],[654546,0]]
        self.assertEqual(self.manager.values_sum(l), 21)
