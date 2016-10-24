@@ -32,7 +32,13 @@ class Baseline(MiddlewareRegistry):
         super(Baseline, self).__init__(*args, **kwargs)
 
     def get_baselines(self, baseline_name, timewindow=None):
-        """get_baselines"""
+        """get_baselines
+
+        get list of values, timestamp in database
+
+        :param baseline_name:
+        :param timewindow: a time window
+        """
         if timewindow is None:
 
             _timewindow = TimeWindow(0, time())
@@ -45,12 +51,24 @@ class Baseline(MiddlewareRegistry):
             timewindow=_timewindow)
 
     def get_value_name(self, baseline_name):
+        """get_value_name
+
+        get in database the value name to check for the baseline
+
+        :param baseline_name:
+        """
         baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
         return baseline_conf['value_name']
 
     def check_frequency(self, baseline_name):
+        """check_frequency
+
+         check in baseline conf if baseline is based on frequency or values of events
+
+        :param baseline_name:
+        """
         baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
@@ -58,6 +76,11 @@ class Baseline(MiddlewareRegistry):
         return baseline_conf['check_frequency'] == 'true'
 
     def put(self, name, value):
+        """put
+
+        :param name:  baseline name
+        :param value:
+        """
         point = (time(), value)
         self[Baseline.STORAGE].put(data_id=name, points=[point])
 
@@ -74,6 +97,19 @@ class Baseline(MiddlewareRegistry):
         aggregation_method='sum',
         value_name=None
     ):
+        """add_baselineconf
+
+        :param baseline_name:
+        :param mode:
+        :param period:
+        :param margin:
+        :param component:
+        :param resource:
+        :param check_frequency:
+        :param value:
+        :param aggregation_method:
+        :param value_name:
+        """
         element = {
             'baseline_name': baseline_name,
             'mode': mode,
@@ -96,6 +132,12 @@ class Baseline(MiddlewareRegistry):
         return result
 
     def remove_baselineconf(self, baseline_name):
+        """remove_baselineconf
+
+        remove baseline conf in database
+
+        :param baseline_name:
+        """
 
         baselines = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': 'baselines'}):
@@ -114,6 +156,12 @@ class Baseline(MiddlewareRegistry):
         return self[Baseline.CONFSTORAGE].remove_elements(ids=baseline_name)
 
     def manage_baselines_list(self, element):
+        """manage_baselines_list
+
+        manage in database the list of running baselines with end period timestamp
+
+        :param element: a baseline conf element
+        """
 
         if not len(self[Baseline.CONFSTORAGE].get_elements(query={'_id': 'baselines'})) > 0:
             self[Baseline.CONFSTORAGE].put_element(
@@ -142,6 +190,7 @@ class Baseline(MiddlewareRegistry):
         self[Baseline.CONFSTORAGE].put_element(baselines)
 
     def beat(self):
+        """beat"""
 
         now = time()
         baselines = {}
@@ -157,6 +206,12 @@ class Baseline(MiddlewareRegistry):
                 self.check_baseline(i.items()[0][0], i.items()[0][1])
 
     def reset_timestamp(self, baseline_name):
+        """reset_timestamp
+
+        set timestamp in database to define the end of the next period
+
+        :param baseline_name:
+        """
         baseline = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline = i
@@ -178,6 +233,13 @@ class Baseline(MiddlewareRegistry):
         self[Baseline.CONFSTORAGE].put_element(baselines)
 
     def check_baseline(self, baseline_name, timestamp):
+        """check_baseline
+
+        check if the baseline is ok or not
+
+        :param baseline_name:
+        :param timestamp: end period timestamp
+        """
 
         baseline_conf = {}
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
@@ -241,6 +303,13 @@ class Baseline(MiddlewareRegistry):
             self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
     def send_alarm(self, component, resource):
+        """send_alarm
+
+        send an alarm if the baseline is not normal
+
+        :param component: alarm's component
+        :param resource: alarm's resource
+        """
         alarm_event = {
             "component": component,
             "resource": resource,
@@ -254,12 +323,24 @@ class Baseline(MiddlewareRegistry):
         publish(alarm_event, Amqp())
 
     def values_sum(self, values):
+        """values_sum
+
+        :param values: values list
+        :return: the sum of values list
+        :rtype: float
+        """
         ret_val = 0
         for i in values:
             ret_val = ret_val + i[1]
         return ret_val
 
     def value_average(self, values):
+        """value_average
+
+        :param values: value list
+        :return: the avergae of  list values
+        :rtype: float
+        """
         ret_val = 0
         k = 0
         for k, i in enumerate(values):
@@ -267,6 +348,12 @@ class Baseline(MiddlewareRegistry):
         return ret_val / k
 
     def value_max(self, values):
+        """value_max
+
+        :param values: values list
+        :return: the max values of the list
+        :rtype: float
+        """
         ret_val = 0
         for i in values:
             if i[1] > ret_val:
@@ -274,6 +361,12 @@ class Baseline(MiddlewareRegistry):
         return ret_val
 
     def value_min(self, values):
+        """value_min
+
+        :param values:list
+        :return: the min value of the list
+        :rtype: float
+        """
         ret_val = values[0][1]
         for i in values:
             if i[1] < ret_val:
@@ -281,6 +374,14 @@ class Baseline(MiddlewareRegistry):
         return ret_val
 
     def aggregation(self, values, aggregation_method):
+        """aggregation
+
+        :param values: list of values and timestamp from baseline events
+        :param aggregation_method: str 
+
+        :return: aggregated values
+        :rtype: float
+        """
 
         ret_val = 0
         if aggregation_method == 'sum':
