@@ -50,7 +50,7 @@ chardet==2.3.0
 b3j0f.annotation==0.3.6
 b3j0f.aop==0.8.4
 b3j0f.conf==0.3.22
-b3j0f.schema==0.0.2
+b3j0f.schema==0.0.4
 b3j0f.utils==1.4.4
 b3j0f.schema==0.0.3
 b3j0f.requester==0.0.3

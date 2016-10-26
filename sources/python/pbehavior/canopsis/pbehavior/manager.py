@@ -35,7 +35,7 @@ from dateutil.rrule import rrulestr
 from calendar import timegm
 
 from b3j0f.requester import (
-    CreateAnnotation, UpdateAnnotation, DeleteAnnotation, UpdateAnnotation
+    CreateAnnotation, ReadAnnotation, DeleteAnnotation, UpdateAnnotation
 )
 from b3j0f.requester.driver.custom import datafromgateway
 
