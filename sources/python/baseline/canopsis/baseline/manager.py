@@ -373,6 +373,17 @@ class Baseline(MiddlewareRegistry):
                 ret_val = i[1]
         return ret_val
 
+    def value_diff(self, values):
+        """value_diff
+
+        :param values:list of values
+        :return: difference between max and min
+        :rtype: float
+        """
+        value_max = self.value_max(values)
+        value_min = self.value_min(values)
+        return value_max - value_min
+
     def aggregation(self, values, aggregation_method):
         """aggregation
 
@@ -395,3 +406,6 @@ class Baseline(MiddlewareRegistry):
 
         elif aggregation_method == 'max':
             return self.value_max(values)
+
+        elif aggregation_method == 'diff'
+            return self.value_diff(values)
