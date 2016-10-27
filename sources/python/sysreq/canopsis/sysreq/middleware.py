@@ -27,6 +27,12 @@ from b3j0f.utils.path import lookup
 from canopsis.middleware.core import Middleware
 from six import string_types
 
+try:
+    from threading import Thread
+
+except ImportError:
+    from dummy_threading import Thread
+
 
 CONF_PATH = 'sysreq/middleware.conf'
 CATEGORY = 'SYSREQ'
@@ -60,10 +66,17 @@ class SysReq(Middleware):
 
         self._middlewares = []
 
+        threads = []
+
         for middleware in value:
             if isinstance(middleware, string_types):
-                middleware = Middleware.get_middleware_by_uri(middleware)
-                self._middlewares.append(middleware)
+                thread = Thread(
+                    target=lambda: self._middlewares.append(
+                        Middleware.get_middleware_by_uri(middleware)
+                    )
+                )
+                thread.start()
+                threads.append(thread)
 
             elif isinstance(middleware, Middleware):
                 self._middlewares.append(middleware)
@@ -74,6 +87,9 @@ class SysReq(Middleware):
                         middleware.__class__.__name__
                     )
                 )
+
+        for thread in threads:
+            thread.join()
 
         self.dirty = True
 
@@ -91,12 +107,21 @@ class SysReq(Middleware):
 
         self._managers = []
 
+        threads = []
+
         for manager in value:
             if isinstance(manager, string_types):
                 cls = lookup(manager)
-                manager = cls()
 
-            self._managers.append(manager)
+                thread = Thread(target=lambda: self._managers.append(cls()))
+                thread.start()
+                threads.append(thread)
+
+            else:
+                self._managers.append(manager)
+
+        for thread in threads:
+            thread.join()
 
         self.dirty = True
 

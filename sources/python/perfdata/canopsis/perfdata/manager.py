@@ -204,9 +204,9 @@ class PerfData(MiddlewareRegistry):
         """Put a (list of) couple (timestamp, value), a tags into
         rated_documents.
 
-        kwargs will be added to all document in order to extend timed documents.
+        kwargs will be added to all document in order to extend timed documents
 
-        :param iterable points: points to put. One point (timestamp, value) or
+        :param list points: points to put. One point (timestamp, value) or
             points (timestamp, values)+.
         """
 

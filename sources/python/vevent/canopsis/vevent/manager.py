@@ -188,7 +188,7 @@ class VEventManager(MiddlewareRegistry):
         :param int skip: first element index among searched list.
         :param sort: contains a list of couples of field (name, ASC/DESC)
             or field name which denots an implicitelly ASC order.
-        :type sort: list of {(str, {ASC, DESC}}), or str}
+        :type sort: list
         :param dict projection: key names to keep from elements.
         :param bool with_count: If True (False by default), add count to the
             result.
@@ -227,7 +227,7 @@ class VEventManager(MiddlewareRegistry):
         :param int skip: first element index among searched list.
         :param sort: contains a list of couples of field (name, ASC/DESC)
             or field name which denots an implicitelly ASC order.
-        :type sort: list of {(str, {ASC, DESC}}), or str}
+        :type sort: list
         :param dict projection: key names to keep from elements.
         :param bool with_count: If True (False by default), add count to the
             result.
