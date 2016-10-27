@@ -183,7 +183,7 @@ class Period(object):
         """Get a delta object in order to add/remove a period on a datetime.
 
         :return: delta object in order to add/remove a period on a datetime.
-        :rtype: relativedelta
+        :rtype: rd
         """
 
         unit_values = self.unit_values
@@ -202,13 +202,11 @@ class Period(object):
         :param long timestamp: timestamp to round.
         :param bool next_period: computes current period next timestamp.
 
-
         Example: Let a timestamp ``t`` related to the date: 2015/03/04 15:05.
         r = Period(week=1).round_timestamp(timestamp=t)
         In this case, r corresponds to "2015/03/01 15:05".
         If normalize equals True, r corresponds to "2015/03/01 00:00"
         """
-
         datetime = dt.utcfromtimestamp(float(timestamp))
         datetime = self.round_datetime(
             datetime=datetime, next_period=next_period
@@ -229,7 +227,7 @@ class Period(object):
         Normalize unsure to set to 0 for not given units under the minimal
         unit.
 
-        :param datetime datetime: datetime to round.
+        :param dt datetime: datetime to round.
         :param bool next_period: computes current period next timestamp.
 
         Example: Let a datetime ``d`` related to the date: 2015/03/04 15:05.
@@ -238,7 +236,6 @@ class Period(object):
         monday before 2015/03/01.
         If normalize equals True, r corresponds to "2015/m/d 00:00"
         """
-
         result = None
 
         params = {}
@@ -288,13 +285,13 @@ class Period(object):
         return result
 
     def get_max_unit(self):
-        """Get a dictionary which contains a unit and a value
-        where unit is the last among Period.UNITS.
+        """Get a dictionary which contains a unit and a value.
+
+        Where unit is the last among Period.UNITS.
 
         Example: period=Period(minute=10, hour=13)
         period.get_max_unit()  # equals {'hour': 13}
         """
-
         result = None
 
         units = list(Period.UNITS)
@@ -307,9 +304,7 @@ class Period(object):
         return result
 
     def copy(self):
-        """Get a period which is a copy of self.
-        """
-
+        """Get a period which is a copy of self."""
         result = Period(**self.unit_values)
 
         return result
@@ -390,16 +385,14 @@ class Interval(object):
 
     def __contains__(self, numbers_or_intervals):
         """True if input values or intervals are in this interval.
+
         values_or_interval must be numbers or Intervals.
         """
-
         # return False by default.
         result = False
 
         def check_number_or_interval(number_or_interval, pos=None):
-            """Check if input number_or_interval is in self.sub_intervals.
-            """
-
+            """Check if input number_or_interval is in self.sub_intervals."""
             result = False
 
             if isinstance(number_or_interval, Iterable) \
