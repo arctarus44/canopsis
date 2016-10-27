@@ -648,7 +648,7 @@ class Middleware(Configurable):
 
         :return: set of protocols registered in the class tree
          of input cls
-        :rtype: set([str])
+        :rtype: set
         """
 
         protocols = ensure_iterable(cls.__protocol__, iterable=set)

@@ -61,7 +61,7 @@ def event_processing(
     :param dict event: event to process.
     :param Engine engine: engine which consumes the event.
     :param TopologyManager manager: topology manager to use.
-    :param Logger logger: logger to use in this task.
+    :param logger: logger to use in this task.
     :param Context ctx:
     :param TopologManager tm:
     :param CheckManager cm:

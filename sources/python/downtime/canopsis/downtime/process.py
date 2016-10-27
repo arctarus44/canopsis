@@ -57,7 +57,7 @@ def event_processing(
     :param Context manager: context manager to use. Default is shared ctxmgr.
     :param PBehaviorManager manager: pbehavior manager to use. Default is
         pbmgr.
-    :param Logger logger: logger to use in this task.
+    :param logger: logger to use in this task.
     """
 
     if context is None:
@@ -128,7 +128,7 @@ def beat_processing(engine, context=None, manager=None, logger=None, **kwargs):
     :param Context manager: context manager to use. Default is shared ctxmgr.
     :param PBehaviorManager manager: pbehavior manager to use. Default is
         pbmgr.
-    :param Logger logger: logger to use in this task.
+    :param logger: logger to use in this task.
     """
 
     if context is None:

@@ -182,7 +182,7 @@ class Configurable(object):
             """
             Set right handler related to input lvl, path and format.
 
-            :param Logger logger: logger on which add an handler.
+            :param logger: logger on which add an handler.
             :param str lvl: logging level.
             :param str path: file path.
             :param str _format: logging message format.
@@ -453,7 +453,7 @@ class Configurable(object):
         :param conf_paths: list of conf files. If None, use self.conf_paths
         :type conf_paths: list of str
 
-        :param Logger logger: logger to use for logging info/error messages.
+        :param logger: logger to use for logging info/error messages.
             If None, use self.logger
 
         :param drivers: conf drivers to use. If None, use self.drivers
@@ -511,7 +511,7 @@ class Configurable(object):
 
         :param str conf_paths: conf_path to udate with params
         :param dict parameter_by_categories: (dict(str: dict(str: object))
-        :param Logger logger: logger to use to set params.
+        :param logger: logger to use to set params.
         """
 
         result = None

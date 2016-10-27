@@ -96,7 +96,7 @@ class ConfigurationDriver(object):
         :param str conf_path: conf file to parse and from get parameters
         :param Configuration conf: conf to fill with conf_path values and
             conf param names.
-        :param Logger logger: logger to use in order to trace information/error
+        :param logger: logger to use in order to trace information/error
         :param bool override: if True (by default), override self configuration
         """
 
@@ -214,7 +214,7 @@ class ConfigurationDriver(object):
 
         :param Configuration conf: conf to write to conf_path.
 
-        :param Logger logger: used to log info/errors
+        :param logger: used to log info/errors
         """
 
         result = None
@@ -323,7 +323,7 @@ class ConfigurationDriver(object):
 
         :param str conf_path: if not None, the config conf_resource is \
             conf_path content.
-        :param Logger logger: logger used to log processing information
+        :param logger: logger used to log processing information
 
         :return: empty config conf_resource if conf_path is None, else \
             conf_path content.

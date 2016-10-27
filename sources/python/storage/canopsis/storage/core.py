@@ -115,7 +115,7 @@ class DataBase(Middleware):
     def retention(self):
         """Get retention rule.
 
-        :rtye: str"""
+        :rtype: str"""
 
         return self._retention
 
@@ -149,8 +149,7 @@ class DataBase(Middleware):
     def drop(self, table=None, *args, **kwargs):
         """Drop related all tables or one table if given.
 
-        :param table: table to drop
-        :type table: str
+        :param str table: table to drop
 
         :return: True if dropped
         :rtype: bool
@@ -161,12 +160,10 @@ class DataBase(Middleware):
     def size(self, table=None, criteria=None, *args, **kwargs):
         """Get database size in Bytes.
 
-        :param table: table from where get data size
-        :type table: str
+        :param str table: table from where get data size
 
-        :param criteria: dictionary of field/value which correspond to
+        :param dict criteria: dictionary of field/value which correspond to
             elements to get size.
-        :type criteria: dict
 
         :return: database size in Bytes of elements if criteria is not None,
             else all storage size.
@@ -336,7 +333,7 @@ class Storage(DataBase):
             - one name
             - one tuple of kind (name, ASC/DESC)
             - a list of tuple or name [{(name, ASC/DESC), name}* ]
-        :type value: str, tuple ot list
+        :type value: str,tuple,list
         """
 
         indexes = []
@@ -460,8 +457,8 @@ class Storage(DataBase):
         """Execute a query or the query cache depending on values of _cache_size
         and input cache parameter.
 
-        :param function query_op: query operation.
-        :param function cache_op: query operation to cache.
+        :param query_op: query operation.
+        :param cache_op: query operation to cache.
         :param dict query_kwargs: query operation kwargs.
         :param dict cache_kwargs: query operation kwargs to cache.
         :param bool cache: avoid cache operation if False (True by default).
@@ -637,7 +634,7 @@ class Storage(DataBase):
 
         :return: a Cursor of input id elements, or one element if ids is a
             string (None if this element does not exist).
-        :rtype: Cursor of dict elements or dict or NoneType
+        :rtype: Cursor
         """
 
         raise NotImplementedError()
@@ -844,8 +841,7 @@ class Storage(DataBase):
         If self implements directly cstorage.Storage, we don't care about
         target type
 
-        :param target: target storage where copy content
-        :type target: same as self or any storage if type(self) is Storage
+        :param target: target storage where copy content.
         """
 
         result = 0
@@ -940,7 +936,7 @@ class Storage(DataBase):
             - tuple: [(sort[0], sort[1])]
             - list:
                 - str
-        :rtype: str, dict, tuple or list
+        :rtype: str,dict,tuple,list
         """
 
         result = []
