@@ -36,9 +36,7 @@ from canopsis.alerts.status import get_last_state, get_last_status, OFF
 
 from time import time
 
-from b3j0f.requester import (
-    CreateAnnotation, ReadAnnotation, UpdateAnnotation, DeleteAnnotation
-)
+from b3j0f.requester import CreateAnnotation, ReadAnnotation, UpdateAnnotation
 from b3j0f.requester.driver.custom import datafromgateway
 
 
