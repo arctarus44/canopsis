@@ -35,6 +35,7 @@ from canopsis.common.init import basestring
 from canopsis.common.utils import isiterable
 from canopsis.configuration.model import Parameter
 from canopsis.middleware.core import Middleware
+from canopsis.sysreq.storage import storagetranslator
 
 from b3j0f.requester.driver.custom import CreateAnnotation
 from b3j0f.requester.driver.custom import ReadAnnotation
@@ -974,7 +975,7 @@ class Storage(DataBase):
 
         return result
 
-    @CreateAnnotation()
+    @CreateAnnotation(translator=storagetranslator)
     def sysreq_create_elements(
         self,
         _id=None,
@@ -991,7 +992,7 @@ class Storage(DataBase):
             cache=cache
         )
 
-    @ReadAnnotation(gateway=False)
+    @ReadAnnotation(gateway=False, translator=storagetranslator)
     def sysreq_get_elements(self, transaction, crud):
         return self.get_elements(
             limit=crud.limit(),
@@ -999,7 +1000,7 @@ class Storage(DataBase):
             sort=crud.orderby()
         )
 
-    @UpdateAnnotation(gateway=False)
+    @UpdateAnnotation(gateway=False, translator=storagetranslator)
     def sysreq_update_elements(self, transaction, crud):
         ctx = Context()
 
@@ -1017,7 +1018,7 @@ class Storage(DataBase):
 
         return result
 
-    @DeleteAnnotation(gateway=False)
+    @DeleteAnnotation(gateway=False, translator=storagetranslator)
     def sysreq_remove_elements(self, transaction, crud):
         ctx = Context()
 
