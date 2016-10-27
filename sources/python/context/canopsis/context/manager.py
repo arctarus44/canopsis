@@ -341,13 +341,13 @@ class Context(MiddlewareRegistry):
         :param int skip: first element index among searched list.
         :param sort: contains a list of couples of field (name, ASC/DESC)
             or field name which denots an implicitelly ASC order.
-        :type sort: list of {(str, {ASC, DESC}}), or str}
+        :type sort: list
         :param bool with_count: If True (False by default), add count to the
             result.
 
         :return: a Cursor of input id elements, or one element if ids is a
             string (None if this element does not exist).
-        :rtype: Cursor of dict elements or dict or NoneType
+        :rtype: canopsis.storage.core.Cursor
         """
 
         result = self[Context.CTX_STORAGE].get_elements(

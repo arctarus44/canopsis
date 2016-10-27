@@ -133,7 +133,7 @@ class SysReq(Middleware):
                 for obj in self.middlewares + self.managers
             ]
 
-            self._driver = DriverComposite(drivers)
+            self._driver = DriverComposite(drivers=drivers)
             self.dirty = False
 
         return self._driver
@@ -144,3 +144,17 @@ class SysReq(Middleware):
 
         t = self.driver.open(ctx=ctx, cruds=cruds)
         return t.commit()
+
+    def __repr__(self):
+
+        result = 'Sysreq('
+
+        if self.middlewares:
+            result += 'middlewares: {0}, '.format(self.middlewares)
+
+        if self.managers:
+            result += 'managers: {0}, '.format(self.managers)
+
+        result += 'driver: {0})'.format(self.driver)
+
+        return result

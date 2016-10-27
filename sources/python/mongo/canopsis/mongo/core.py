@@ -167,7 +167,7 @@ class MongoDataBase(DataBase):
 
         return result
 
-    def size(self, table=None, criteria=None, *args, **kwargs):
+    def dbsize(self, table=None, criteria=None, *args, **kwargs):
 
         result = 0
 

@@ -18,9 +18,7 @@
 # along with Canopsis.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------
 
-__version__ = '0.1'
-
-__all__ = ['DataBase', 'Storage']
+"""Storage core module."""
 
 from functools import reduce
 
@@ -45,6 +43,10 @@ from b3j0f.requester.driver.custom import DeleteAnnotation
 from b3j0f.requester.driver.py import processdelete, processupdate
 from b3j0f.requester.driver.ctx import Context
 
+__version__ = '0.1'
+
+__all__ = ['DataBase', 'Storage']
+
 
 class DataBase(Middleware):
     """Abstract class which aims to manage access to a data base.
@@ -52,8 +54,7 @@ class DataBase(Middleware):
     Related to a configuration file, it can connects to a database
     depending on several parameters like.
 
-    :param host: db host name
-    :type host: basestring
+    :param str host: db host name
     """
 
     CATEGORY = 'DATABASE'
@@ -157,7 +158,7 @@ class DataBase(Middleware):
 
         raise NotImplementedError()
 
-    def size(self, table=None, criteria=None, *args, **kwargs):
+    def dbsize(self, table=None, criteria=None, *args, **kwargs):
         """Get database size in Bytes.
 
         :param str table: table from where get data size
@@ -167,7 +168,7 @@ class DataBase(Middleware):
 
         :return: database size in Bytes of elements if criteria is not None,
             else all storage size.
-        :rtype: number
+        :rtype: int
         """
 
         raise NotImplementedError()

@@ -395,7 +395,7 @@ class ConfigurableRegistry(Configurable):
         and args, kwargs, None otherwise.
 
         :param configurable: configurable path, class or instance
-        :type configurable: str, class or Configurable
+        :type configurable: str,type,Configurable
 
         :return: configurable instance or None if input configurable can not be
             solved such as a configurable.
