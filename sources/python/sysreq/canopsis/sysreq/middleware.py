@@ -27,6 +27,8 @@ from b3j0f.utils.path import lookup
 from canopsis.middleware.core import Middleware
 from six import string_types
 
+from time import sleep
+
 try:
     from threading import Thread
 
@@ -88,6 +90,8 @@ class SysReq(Middleware):
                     )
                 )
 
+        sleep(0.001)
+
         for thread in threads:
             thread.join()
 
@@ -119,6 +123,8 @@ class SysReq(Middleware):
 
             else:
                 self._managers.append(manager)
+
+        sleep(0.001)
 
         for thread in threads:
             thread.join()
