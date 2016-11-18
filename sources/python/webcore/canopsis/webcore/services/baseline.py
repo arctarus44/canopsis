@@ -19,35 +19,50 @@ def exports(ws):
         'value',
         'period',
         'margin',
-        'component',
+        'entity',
         'resource',
         'check_frequency',
         'aggregation_method',
-        'value_name'])
+        'value_name',
+        'state'])
     def baselineconf(
             baseline_name,
             mode,
             period,
             margin,
-            component,
+            entity,
             resource,
             check_frequency,
             value,
+            state,
             aggregation_method='sum',
-            value_name=None):
+            value_name=None,
+            tw_start=-1,
+            tw_stop=-1):
         return manager.add_baselineconf(
             baseline_name,
             mode,
             period,
             margin,
-            component,
+            entity,
             resource,
             check_frequency,
             value,
+            state,
             aggregation_method,
-            value_name
+            value_name,
+            tw_start,
+            tw_stop
             )
 
     @route(ws.application.delete, payload=['baseline_name'])
     def baselineconf(baseline_name):
         return manager.remove_baselineconf(baseline_name)
+
+    @route(ws.application.put, payload=[
+        'mode',
+        'baseline_name',
+        'check_frequency',
+        'value_name'])
+    def baselineconffeed(mode, baseline_name, check_frequency, value_name=None):
+        return manager.add_baselineconffeed(mode, baseline_name, check_frequency, value_name);

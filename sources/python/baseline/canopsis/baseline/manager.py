@@ -84,6 +84,17 @@ class Baseline(MiddlewareRegistry):
         point = (time(), value)
         self[Baseline.STORAGE].put(data_id=name, points=[point])
 
+    def add_baselineconffeed(self, mode,  baseline_name, check_frequency, value_name=None):
+        element = {
+            'mode': mode,
+            'baseline_name': baseline_name,
+            'check_frequency': check_frequency,
+            'value_name': value_name
+        }
+        result = self[Baseline.CONFSTORAGE].put_element(element, _id=baseline_name)
+        return result
+
+
     def add_baselineconf(
         self,
         baseline_name,
@@ -94,8 +105,11 @@ class Baseline(MiddlewareRegistry):
         resource,
         check_frequency,
         value,
+        state,
         aggregation_method='sum',
-        value_name=None
+        value_name=None,
+        tw_start=-1,
+        tw_stop=-1
     ):
         """add_baselineconf
 
@@ -109,6 +123,8 @@ class Baseline(MiddlewareRegistry):
         :param value:
         :param aggregation_method:
         :param value_name:
+        :param tw_start:
+        :param tw_stop:
         """
         element = {
             'baseline_name': baseline_name,
@@ -120,7 +136,10 @@ class Baseline(MiddlewareRegistry):
             'resource': resource,
             'check_frequency': check_frequency,
             'aggregation_method': aggregation_method,
-            'value_name': value_name
+            'value_name': value_name,
+            'tw_start': tw_start,
+            'tw_stop': tw_stop,
+            'state': state
         }
 
         result = self[Baseline.CONFSTORAGE].put_element(
@@ -267,8 +286,9 @@ class Baseline(MiddlewareRegistry):
                 baseline_conf['value'] - baseline_conf['value'] * baseline_conf['margin'] / 100)
 
             if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
+                self.logger.error(baseline_conf)
                 self.send_alarm(
-                    baseline_conf['component'], baseline_conf['resource'])
+                    baseline_conf['component'], baseline_conf['resource'], baseline_conf['state'])
             return
 
         elif baseline_conf['mode'] == 'floatting':
@@ -295,14 +315,16 @@ class Baseline(MiddlewareRegistry):
 
         if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
             self.send_alarm(
-                baseline_conf['component'], baseline_conf['resource'])
+                baseline_conf['component'],
+                baseline_conf['resource'],
+                baseline_conf['state'])
 
         elif baseline_conf['mode'] == 'fix_last':
             baseline_conf['tw_start'] = timestamp - baseline_conf['period']
             baseline_conf['tw_stop'] = time_stamp
             self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
-    def send_alarm(self, component, resource):
+    def send_alarm(self, component, resource, state):
         """send_alarm
 
         send an alarm if the baseline is not normal
@@ -317,7 +339,7 @@ class Baseline(MiddlewareRegistry):
             "event_type": "check",
             "connector": "baseline_engine",
             "connector_name": "baseline",
-            "state": 3
+            "state": state
         }
 
         publish(alarm_event, Amqp())
@@ -407,5 +429,5 @@ class Baseline(MiddlewareRegistry):
         elif aggregation_method == 'max':
             return self.value_max(values)
 
-        elif aggregation_method == 'diff'
+        elif aggregation_method == 'diff':
             return self.value_diff(values)
