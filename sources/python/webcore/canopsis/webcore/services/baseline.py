@@ -24,7 +24,8 @@ def exports(ws):
         'check_frequency',
         'aggregation_method',
         'value_name',
-        'state'])
+        'state',
+        'output'])
     def baselineconf(
             baseline_name,
             mode,
@@ -33,8 +34,9 @@ def exports(ws):
             entity,
             resource,
             check_frequency,
-            value,
             state,
+            output,
+            value=None,
             aggregation_method='sum',
             value_name=None,
             tw_start=-1,
@@ -47,8 +49,9 @@ def exports(ws):
             entity,
             resource,
             check_frequency,
-            value,
             state,
+            output,
+            value,
             aggregation_method,
             value_name,
             tw_start,

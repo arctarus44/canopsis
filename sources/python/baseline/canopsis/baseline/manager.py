@@ -40,15 +40,16 @@ class Baseline(MiddlewareRegistry):
         :param timewindow: a time window
         """
         if timewindow is None:
-
             _timewindow = TimeWindow(0, time())
 
         else:
             _timewindow = timewindow
 
-        return self[Baseline.STORAGE].get(
+        ret_val = self[Baseline.STORAGE].get(
             data_id=baseline_name,
             timewindow=_timewindow)
+
+        return ret_val
 
     def get_value_name(self, baseline_name):
         """get_value_name
@@ -73,7 +74,7 @@ class Baseline(MiddlewareRegistry):
         for i in self[Baseline.CONFSTORAGE].get_elements(query={'_id': baseline_name}):
             baseline_conf = i
 
-        return baseline_conf['check_frequency'] == 'true'
+        return baseline_conf['check_frequency']
 
     def put(self, name, value):
         """put
@@ -91,9 +92,9 @@ class Baseline(MiddlewareRegistry):
             'check_frequency': check_frequency,
             'value_name': value_name
         }
-        result = self[Baseline.CONFSTORAGE].put_element(element, _id=baseline_name)
+        result = self[Baseline.CONFSTORAGE].put_element(
+            element, _id=baseline_name)
         return result
-
 
     def add_baselineconf(
         self,
@@ -104,8 +105,9 @@ class Baseline(MiddlewareRegistry):
         component,
         resource,
         check_frequency,
-        value,
         state,
+        output,
+        value=None,
         aggregation_method='sum',
         value_name=None,
         tw_start=-1,
@@ -139,7 +141,8 @@ class Baseline(MiddlewareRegistry):
             'value_name': value_name,
             'tw_start': tw_start,
             'tw_stop': tw_stop,
-            'state': state
+            'state': state,
+            'output': output
         }
 
         result = self[Baseline.CONFSTORAGE].put_element(
@@ -200,8 +203,7 @@ class Baseline(MiddlewareRegistry):
                 period = 2 * element['period']
                 l.append({element['baseline_name']: time() + period})
             else:
-                l.append({element['baseline_name']
-                         : time() + element['period']})
+                l.append({element['baseline_name']                          : time() + element['period']})
         else:
             l[index][element['baseline_name']] = time() + element['period']
 
@@ -272,6 +274,8 @@ class Baseline(MiddlewareRegistry):
                         baseline_conf['period'], stop=timestamp)
         values = self.get_baselines(baseline_name, tw)
 
+        self.logger.error('get values: {0}\n'.format(values))
+
         reference = []
 
         tw_start = 0
@@ -285,11 +289,19 @@ class Baseline(MiddlewareRegistry):
             margin_down = float(
                 baseline_conf['value'] - baseline_conf['value'] * baseline_conf['margin'] / 100)
 
+            self.logger.error('test: values {0}, up {1}, down {2}\n'.format(self.aggregation(values, aggregation_method), margin_up, margin_down))
+
             if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
-                self.logger.error(baseline_conf)
                 self.send_alarm(
-                    baseline_conf['component'], baseline_conf['resource'], baseline_conf['state'])
-            return
+                    baseline_conf['component'],
+                    baseline_conf['resource'],
+                    baseline_conf['state'],
+                    baseline_conf['output'])
+                self.open_alarm(baseline_conf)
+                return
+            else:
+                self.close_alarm(baseline_conf)
+                return
 
         elif baseline_conf['mode'] == 'floatting':
 
@@ -308,6 +320,7 @@ class Baseline(MiddlewareRegistry):
 
         tw = TimeWindow(start=tw_start, stop=tw_stop)
         reference = self.get_baselines(baseline_name, timewindow=tw)
+        self.logger.error('reference: {0}\n'.format(reference))
         margin_up = float(
             self.aggregation(reference, aggregation_method) + self.aggregation(reference, aggregation_method) * baseline_conf['margin'] / 100)
         margin_down = float(
@@ -317,14 +330,42 @@ class Baseline(MiddlewareRegistry):
             self.send_alarm(
                 baseline_conf['component'],
                 baseline_conf['resource'],
-                baseline_conf['state'])
+                baseline_conf['state'],
+                baseline_conf['output'])
+            self.open_alarm(baseline_conf)
+            return
 
         elif baseline_conf['mode'] == 'fix_last':
             baseline_conf['tw_start'] = timestamp - baseline_conf['period']
             baseline_conf['tw_stop'] = time_stamp
             self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
-    def send_alarm(self, component, resource, state):
+        if baseline_conf['alarm'] == 1:
+            self.close_alarm(baseline_conf)
+
+    def open_alarm(self, baseline_conf):
+        baseline_conf['alarm'] = 1
+        self[Baseline.CONFSTORAGE].put_element(baseline_conf)
+
+    def close_alarm(self, baseline_conf):
+        self.logger.error('close alarm\n')
+        baseline_conf['alarm'] = 0
+        self[Baseline.CONFSTORAGE].put_element(baseline_conf)
+        resolve_alarm_event = {
+            "component": baseline_conf['component'],
+            "resource": baseline_conf['resource'],
+            "connector": "baseline_engine",
+            "source_type": "resource",
+            "event_type": "check",
+            "connector": "baseline_engine",
+            "connector_name": "baseline",
+            "output": baseline_conf['output'],
+            "state": 0
+        }
+
+        publish(resolve_alarm_event, Amqp())
+
+    def send_alarm(self, component, resource, state, output):
         """send_alarm
 
         send an alarm if the baseline is not normal
@@ -339,7 +380,8 @@ class Baseline(MiddlewareRegistry):
             "event_type": "check",
             "connector": "baseline_engine",
             "connector_name": "baseline",
-            "state": state
+            "state": state,
+            "output": output
         }
 
         publish(alarm_event, Amqp())
@@ -415,6 +457,8 @@ class Baseline(MiddlewareRegistry):
         :return: aggregated values
         :rtype: float
         """
+        if len(values) == 0:
+            return -1
 
         ret_val = 0
         if aggregation_method == 'sum':

@@ -10,16 +10,15 @@ from canopsis.baseline.manager import Baseline
 
 baseline_manager = Baseline()
 
+
 @register_task
 def event_processing(engine, event, logger=None, **kwargs):
-
     manager = baseline_manager
     name = event['baseline_name']
 
     if manager.check_frequency(name):
 
         value = 1
-
         manager.put(name, value)
 
     else:
@@ -29,24 +28,25 @@ def event_processing(engine, event, logger=None, **kwargs):
             value = event['perf_data']
             manager.put(name, value)
 
-        elif 'perf_data_array' in event:
+        elif 'perfdata_array' in event:
 
             value_name = manager.get_value_name(name)
             value = None
-            for i in event['perf_data_array']:
+            for i in event['perfdata_array']:
                 if i['metric'] == value_name:
                     value = i['value']
 
             if value == None:
-                print('bad baseline configuration')
+                logger.error('bad baseline configuration')
                 raise Exception
 
             manager.put(name, value)
         else:
-            print('to build a baseline based on value, a perf_data event is needed')
+            logger.error(
+                'to build a baseline based on value, a perf_data event is needed')
 
 
 @register_task
 def beat_processing(engine, logger=None, **kwargs):
-
+    logger.error('beat!\n')
     baseline_manager.beat()
