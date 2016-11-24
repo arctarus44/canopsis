@@ -239,7 +239,7 @@ class engine(Engine):
 
         :param event: event who match baseline filter
         """
-        event['baseline_name'] = name
+        event['baseline_name'] = actions['baseline_name']
 
         publish(event=event, publisher=self.amqp, rk='Engine_baseline', exchange='amq.direct')
 

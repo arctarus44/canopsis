@@ -48,5 +48,4 @@ def event_processing(engine, event, logger=None, **kwargs):
 
 @register_task
 def beat_processing(engine, logger=None, **kwargs):
-    logger.error('beat!\n')
     baseline_manager.beat()

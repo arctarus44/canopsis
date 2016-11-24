@@ -274,8 +274,6 @@ class Baseline(MiddlewareRegistry):
                         baseline_conf['period'], stop=timestamp)
         values = self.get_baselines(baseline_name, tw)
 
-        self.logger.error('get values: {0}\n'.format(values))
-
         reference = []
 
         tw_start = 0
@@ -288,8 +286,6 @@ class Baseline(MiddlewareRegistry):
                 baseline_conf['value'] + baseline_conf['value'] * baseline_conf['margin'] / 100)
             margin_down = float(
                 baseline_conf['value'] - baseline_conf['value'] * baseline_conf['margin'] / 100)
-
-            self.logger.error('test: values {0}, up {1}, down {2}\n'.format(self.aggregation(values, aggregation_method), margin_up, margin_down))
 
             if self.aggregation(values, aggregation_method) > margin_up or self.aggregation(values, aggregation_method) < margin_down:
                 self.send_alarm(
@@ -320,7 +316,6 @@ class Baseline(MiddlewareRegistry):
 
         tw = TimeWindow(start=tw_start, stop=tw_stop)
         reference = self.get_baselines(baseline_name, timewindow=tw)
-        self.logger.error('reference: {0}\n'.format(reference))
         margin_up = float(
             self.aggregation(reference, aggregation_method) + self.aggregation(reference, aggregation_method) * baseline_conf['margin'] / 100)
         margin_down = float(
@@ -340,15 +335,16 @@ class Baseline(MiddlewareRegistry):
             baseline_conf['tw_stop'] = time_stamp
             self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
-        if baseline_conf['alarm'] == 1:
-            self.close_alarm(baseline_conf)
+
+        if 'alarm' in baseline_conf.keys():
+            if baseline_conf['alarm'] == 1:
+                self.close_alarm(baseline_conf)
 
     def open_alarm(self, baseline_conf):
         baseline_conf['alarm'] = 1
         self[Baseline.CONFSTORAGE].put_element(baseline_conf)
 
     def close_alarm(self, baseline_conf):
-        self.logger.error('close alarm\n')
         baseline_conf['alarm'] = 0
         self[Baseline.CONFSTORAGE].put_element(baseline_conf)
         resolve_alarm_event = {
@@ -452,7 +448,7 @@ class Baseline(MiddlewareRegistry):
         """aggregation
 
         :param values: list of values and timestamp from baseline events
-        :param aggregation_method: str 
+        :param aggregation_method: str
 
         :return: aggregated values
         :rtype: float
