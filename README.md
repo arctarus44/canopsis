@@ -17,8 +17,8 @@ A <a href="https://github.com/capensis/canopsis/wiki/Glossary" target="_blank">G
 ## How to try ?
 
 You can try Canopsis on demo platform:
-* Master branch (stable): http://sakura.canopsis.net
-* Devel branch (unstable): http://sakura-devel.canopsis.net
+* Master branch (stable): http://demo.canopsis.net
+* Devel branch (unstable): http://demo-devel.canopsis.net
 
 ## How to install ?
 
