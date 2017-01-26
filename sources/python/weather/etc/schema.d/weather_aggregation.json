@@ -1,0 +1,23 @@
+{
+  "title": "Weather aggregation",
+  "description": "Customizable parameters to build a weather aggregation in mongodb 3",
+
+  "lookups": [
+    "alarm",
+    "linklist",
+    "pbehaviors"
+  ],
+  "ui_projection": {
+    "entity_id": 1,
+    "sla_text": 1,
+    "criticity": 1,
+    "org": 1,
+    "display_name": 1,
+    "name": 1,
+    "linklist": 1,
+    "pbehaviors": 1,
+    "status": "$alarm.v.status",
+    "snooze": "$alarm.v.snooze",
+    "ack": "$alarm.v.ack"
+  }
+}
