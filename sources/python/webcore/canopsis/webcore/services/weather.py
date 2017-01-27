@@ -43,6 +43,29 @@ def exports(ws):
             sort_key='entity_id', sort_dir='ASC'
     ):
         """
+        Aggregate weather data in a format that can be used by the UI weather
+        widget.
+
+        Several aggregation operations are performed :
+
+          - Select selectors from context collection
+          - Limit selectors number
+          - Lookup in foreign collections (alarm, linklist, pbehavior).
+            Lookups are performed as described by schema configuration.
+          - Project fields so as UI can read infos more easily. Projection
+            if performed as described by schema configuration.
+          - Sort result documents
+
+        A field 'entities' is added to each selector, embeding all entities
+        that it selects.
+
+        :param dict filter_: Selector context filter
+        :param int limit: Maximum number of considered selectors
+        :param str sort_key: Field to sort data on
+        :param str sort_dir: 'ASC' or 'DESC'
+
+        :return: List of selectors
+        :rtype: list of dict
         """
 
         return wm.get_weather(

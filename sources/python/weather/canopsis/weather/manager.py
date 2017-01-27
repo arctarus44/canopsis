@@ -31,14 +31,30 @@ CONF_PATH = 'weather/manager.conf'
 @conf_paths(CONF_PATH)
 @add_category('WEATHER', content=[])
 class Weather(MiddlewareRegistry):
+
     @property
     def weather_aggr(self):
+        """
+        Weather aggregation is built with the help of the schema in order to
+        have somewhat configurable queries.
+        """
+
         if not hasattr(self, '_weather_aggr'):
             self._weather_aggr = get_schema('weather_aggregation')
 
         return self._weather_aggr
 
     def context_entities_aggr(self, filter_, limit):
+        """
+        Part of the weather aggregation responsible to fetch context entities.
+
+        :param dict filter_: Context filter
+        :param int limit: Maximum number of entities
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         return [
             {
                 '$match': filter_
@@ -49,6 +65,13 @@ class Weather(MiddlewareRegistry):
         ]
 
     def alarm_lookup_aggr(self):
+        """
+        Part of the weather aggregation adding entity_id current alarm fields.
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         return [
             {
                 '$lookup': {
@@ -67,6 +90,13 @@ class Weather(MiddlewareRegistry):
         ]
 
     def linklist_lookup_aggr(self):
+        """
+        Part of the weather aggregation adding entity_id linklist fields.
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         return [
             {
                 '$lookup': {
@@ -85,6 +115,13 @@ class Weather(MiddlewareRegistry):
         ]
 
     def pbehaviors_lookup_aggr(self):
+        """
+        Part of the weather aggregation adding entity_id pbehaviors.
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         return [
             {
                 '$lookup': {
@@ -97,6 +134,14 @@ class Weather(MiddlewareRegistry):
         ]
 
     def lookups_aggr(self):
+        """
+        Proxy applying necessary lookup aggregations as described in the
+        configuration.
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         conf = self.weather_aggr.get('lookups', [])
 
         aggr_lookups = []
@@ -116,6 +161,14 @@ class Weather(MiddlewareRegistry):
         return aggr_lookups
 
     def weather_projection_aggr(self):
+        """
+        Part of the weather aggregation keeping or aliasing fields as described
+        in the configuration.
+
+        :return: List of aggregations
+        :rtype: list of dict
+        """
+
         conf = self.weather_aggr.get('ui_projection')
 
         projection = [{'$project': conf}]
@@ -123,6 +176,18 @@ class Weather(MiddlewareRegistry):
         return projection
 
     def sort_aggr(self, sort_key, sort_dir):
+        """
+        Part of the weather aggregation sorting result documents.
+
+        :param str sort_key: Field to be sorted
+        :param str sort_dir: 'ASC' or 'DESC'
+
+        :return: List of aggregations
+        :rtype: list of dict
+
+        :raises ValueError: If sort_dir is neither 'ASC' nor 'DESC'
+        """
+
         if sort_dir == 'ASC':
             mongo_dir = 1
 
@@ -139,6 +204,15 @@ class Weather(MiddlewareRegistry):
         return [{'$sort': {sort_key: mongo_dir}}]
 
     def get_entities(self, selector_id):
+        """
+        Get entities selected by a selector.
+
+        :param str selector_id: entity_id of selector
+
+        :return: List of entities
+        :rtype: list of dict
+        """
+
         return []
 
     def get_weather(
@@ -148,6 +222,29 @@ class Weather(MiddlewareRegistry):
             sort_key='entity_id', sort_dir='ASC'
     ):
         """
+        Aggregate weather data in a format that can be used by the UI weather
+        widget.
+
+        Several aggregation operations are performed :
+
+          - Select selectors from context collection
+          - Limit selectors number
+          - Lookup in foreign collections (alarm, linklist, pbehavior).
+            Lookups are performed as described by schema configuration.
+          - Project fields so as UI can read infos more easily. Projection
+            if performed as described by schema configuration.
+          - Sort result documents
+
+        A field 'entities' is added to each selector, embeding all entities
+        that it selects.
+
+        :param dict filter_: Selector context filter
+        :param int limit: Maximum number of considered selectors
+        :param str sort_key: Field to sort data on
+        :param str sort_dir: 'ASC' or 'DESC'
+
+        :return: List of selectors
+        :rtype: list of dict
         """
 
         aggr = []
@@ -159,6 +256,8 @@ class Weather(MiddlewareRegistry):
 
         items = self['context_storage']._backend.aggregate(aggr)
 
+        # It might be performable with an aggregation, saving a lot of
+        # execution time
         for i in items:
             i['entities'] = self.get_entities(i['entity_id'])
 
