@@ -13,12 +13,12 @@ Introduction
 A new widget serviceweather was made. It was done with a static dataset that aggregates several types of data in Canopsis.
 The goal of this backend project is to implement the webservice that will provide the data to the frontend instead of the current dataset.
 
-
 Work
 ^^^^
+Your work has to be done in the weather project in Python directory
 
-* Write a webservice that provide the dataset given below.
-* Write the related manager.
+* Write a webservice that provide the dataset given below --> create the route /weather/get-serviceweather.
+* A manager exist but could be completed.
 * Test the manager with unittest.
 * The webservice will be tested by ourselves with the frontend widget.
 
